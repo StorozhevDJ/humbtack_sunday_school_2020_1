@@ -6,7 +6,7 @@ USE `hospital`;
 -- Table doctor `speciality` list
 -- -----------------------------------------------------
 CREATE TABLE speciality (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `speciality` VARCHAR(150) NOT NULL,
+    `speciality` VARCHAR(250) NOT NULL,
     UNIQUE KEY (`speciality`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
@@ -28,7 +28,7 @@ CREATE TABLE admin (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `position` VARCHAR(50) NOT NULL,
     `login` VARCHAR(50) NOT NULL,
     `password` CHAR(32) NOT NULL,
-    `tocken` VARCHAR(50) NULL,
+    `tocken` CHAR(36) NULL,
     UNIQUE KEY (`login`),
     UNIQUE KEY (`tocken`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
@@ -45,7 +45,7 @@ CREATE TABLE patient (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `phone` CHAR(12) NOT NULL,
     `login` VARCHAR(50) NOT NULL,
     `password` CHAR(32) NOT NULL,
-    `tocken` VARCHAR(50) NULL,
+    `tocken` CHAR(36) NULL,
     UNIQUE KEY (`login`),
     UNIQUE (`email`),
     UNIQUE (`phone`),
@@ -62,7 +62,7 @@ CREATE TABLE doctor (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `speciality` INT NOT NULL,
     `login` VARCHAR(50) NOT NULL,
     `password` CHAR(32) NOT NULL,
-    `tocken` VARCHAR(50) NULL,
+    `tocken` CHAR(36) NULL,
     UNIQUE KEY (`login`),
     UNIQUE KEY (`tocken`),
     FOREIGN KEY (`speciality`) REFERENCES `speciality`(id)
