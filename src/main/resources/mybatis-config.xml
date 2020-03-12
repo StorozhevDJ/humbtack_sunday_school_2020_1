@@ -24,9 +24,10 @@
         </environment>
     </environments>
     <mappers>
-        <mapper class="net.thumbtack.school.hospital.mappers.AdminMapper"/>
-        <mapper class="net.thumbtack.school.hospital.mappers.DoctorMapper"/>
-        <mapper class="net.thumbtack.school.hospital.mappers.PatientMapper"/>
-        <mapper class="net.thumbtack.school.hospital.mappers.ScheduleMapper"/>
+        <mapper class="net.thumbtack.school.hospital.database.mappers.UserMapper"/>
+        <mapper class="net.thumbtack.school.hospital.database.mappers.AdminMapper"/>
+        <mapper class="net.thumbtack.school.hospital.database.mappers.DoctorMapper"/>
+        <mapper class="net.thumbtack.school.hospital.database.mappers.PatientMapper"/>
+        <mapper class="net.thumbtack.school.hospital.database.mappers.ScheduleMapper"/>
     </mappers>
 </configuration>
