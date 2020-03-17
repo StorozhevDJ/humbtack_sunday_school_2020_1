@@ -1,12 +1,12 @@
 DROP DATABASE IF EXISTS `hospital`;
-CREATE DATABASE `hospital`;
+create DATABASE `hospital`;
 USE `hospital`;
 
 
 -- -----------------------------------------------------
 -- Table doctor `speciality` list
 -- -----------------------------------------------------
-CREATE TABLE `speciality` (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+create TABLE `speciality` (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `speciality` VARCHAR(150) NOT NULL,
     UNIQUE KEY (`speciality`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
@@ -14,7 +14,7 @@ CREATE TABLE `speciality` (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 -- -----------------------------------------------------
 -- Table `room` list for reception
 -- -----------------------------------------------------
-CREATE TABLE `room` (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+create TABLE `room` (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `room` VARCHAR(50) NOT NULL,
     UNIQUE KEY (`room`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
@@ -23,7 +23,7 @@ CREATE TABLE `room` (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 -- -----------------------------------------------------
 -- Table `user`
 -- -----------------------------------------------------
-CREATE TABLE `user` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+create TABLE `user` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `firstName` VARCHAR(50) NOT NULL,
     `lastName` VARCHAR(50) NOT NULL,
     `patronymic` VARCHAR(50) NULL,
@@ -38,22 +38,22 @@ CREATE TABLE `user` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 -- -----------------------------------------------------
 -- Table `admin` account
 -- -----------------------------------------------------
-CREATE TABLE `admin` (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+create TABLE `admin` (`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `userId` INT UNSIGNED NOT NULL,
     `position` VARCHAR(50) NOT NULL,
     UNIQUE (`userId`),
-    FOREIGN KEY (`userId`) REFERENCES `user`(id)  ON DELETE CASCADE
+    FOREIGN KEY (`userId`) REFERENCES `user`(id)  ON delete CASCADE
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 -- -----------------------------------------------------
 -- Table `patient` account
 -- -----------------------------------------------------
-CREATE TABLE `patient` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+create TABLE `patient` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`userId` INT UNSIGNED NOT NULL,
     `email` VARCHAR(50) NOT NULL,
     `address` VARCHAR(250) NOT NULL,
     `phone` CHAR(12) NOT NULL,
-    FOREIGN KEY (`userId`) REFERENCES `user`(id)  ON DELETE CASCADE,
+    FOREIGN KEY (`userId`) REFERENCES `user`(id)  ON delete CASCADE,
     UNIQUE (`email`),
     UNIQUE (`phone`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
@@ -61,28 +61,29 @@ CREATE TABLE `patient` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 -- -----------------------------------------------------
 -- Table `doctor` account
 -- -----------------------------------------------------
-CREATE TABLE doctor (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+create TABLE doctor (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `userId` INT UNSIGNED NOT NULL,
-    `speciality` INT NOT NULL,
-    FOREIGN KEY (`userId`) REFERENCES `user`(id)  ON DELETE CASCADE,
-    FOREIGN KEY (`speciality`) REFERENCES `speciality`(id)
+    `specialityId` INT NOT NULL,
+    UNIQUE (`userId`),
+    FOREIGN KEY (`userId`) REFERENCES `user`(id)  ON delete CASCADE,
+    FOREIGN KEY (`specialityId`) REFERENCES `speciality`(id)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 -- -----------------------------------------------------
 -- Table `schedule` reception
 -- -----------------------------------------------------
-CREATE TABLE `schedule` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+create TABLE `schedule` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`doctorId` INT UNSIGNED NOT NULL,
     `patientId` INT UNSIGNED NULL,
     `date` DATE NOT NULL,
     `time` TIME NOT NULL,
+    `timeEnd` TIME NOT NULL,
     `roomId` INT NOT NULL,
-    FOREIGN KEY (`doctorId`) REFERENCES `doctor`(id) ON DELETE CASCADE,
+    FOREIGN KEY (`doctorId`) REFERENCES `doctor`(id) ON delete CASCADE,
     FOREIGN KEY (`roomId`) REFERENCES `room`(id),
-    FOREIGN KEY (`patientId`) REFERENCES `patient`(id) ON DELETE SET NULL,
+    FOREIGN KEY (`patientId`) REFERENCES `patient`(id) ON delete SET NULL,
     UNIQUE (`doctorId`, `date`, `time`),
-    UNIQUE (`patientId`, `date`, `doctorId`), -- Пациент может записаться к нескольким врачам, но не может записаться более одного раза к одному и тому же врачу на один и тот же день
-    UNIQUE (`roomId`, `date`, `time`)
+    UNIQUE (`patientId`, `date`, `doctorId`) -- Пациент может записаться к нескольким врачам, но не может записаться более одного раза к одному и тому же врачу на один и тот же день
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 
@@ -90,8 +91,8 @@ CREATE TABLE `schedule` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 -- -----------------------------------------------------
 -- Insert default admin account
 -- -----------------------------------------------------
-INSERT INTO `user` (`firstName`, `lastName`, `type`, `login`, `password`)
-	VALUES ('firstNameAdmin', 'lastNameAdmin', 'admin', 'admin', MD5('admin'));
+insert into `user` (`firstName`, `lastName`, `type`, `login`, `password`)
+	values ('firstNameAdmin', 'lastNameAdmin', 'admin', 'admin', md5('admin'));
     
-INSERT INTO `admin` (`userId`, `position`)
-	VALUES (LAST_INSERT_ID(), 'Superadmin');
+insert into `admin` (`userId`, `position`)
+	values (last_insert_id(), 'Superadmin');

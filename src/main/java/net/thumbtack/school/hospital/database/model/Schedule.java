@@ -10,23 +10,25 @@ public class Schedule {
     private String room;
     private Date date;
     private Time time;
+    private Time timeEnd;
     private Patient patient;
 
-    public Schedule(int id, Doctor doctor, String room, Date date, Time time, Patient patient) {
+    public Schedule(int id, Doctor doctor, String room, Date date, Time time, Time timeEnd, Patient patient) {
         setId(id);
         setDoctor(doctor);
         setRoom(room);
         setDate(date);
         setTime(time);
+        setTimeEnd(timeEnd);
         setPatient(patient);
     }
 
-    public Schedule(Doctor doctor, String room, Date date, Time time, Patient patient) {
-        this(0, doctor, room, date, time, patient);
+    public Schedule(Doctor doctor, String room, Date date, Time time, Time timeEnd, Patient patient) {
+        this(0, doctor, room, date, time, timeEnd, patient);
     }
 
     public Schedule() {
-        this(0, null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     public int getId() {
@@ -69,6 +71,14 @@ public class Schedule {
         this.time = time;
     }
 
+    public Time getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(Time timeEnd) {
+        this.timeEnd = timeEnd;
+    }
+
     public Patient getPatient() {
         return patient;
     }
@@ -94,4 +104,5 @@ public class Schedule {
     public int hashCode() {
         return Objects.hash(id, doctor, room, date, time, patient);
     }
+
 }

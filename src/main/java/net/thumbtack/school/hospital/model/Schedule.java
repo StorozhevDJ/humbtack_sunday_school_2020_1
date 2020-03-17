@@ -10,6 +10,7 @@ public class Schedule {
     private String room;
     private Date date;
     private Time time;
+    private short duration;
     private Patient patient;
 
     public Schedule(int id, Doctor doctor, String room, Date date, Time time, Patient patient) {
@@ -69,6 +70,14 @@ public class Schedule {
         this.time = time;
     }
 
+    public short getDuration() {
+        return duration;
+    }
+
+    public void setDuration(short duration) {
+        this.duration = duration;
+    }
+
     public Patient getPatient() {
         return patient;
     }
@@ -94,4 +103,6 @@ public class Schedule {
     public int hashCode() {
         return Objects.hash(id, doctor, room, date, time, patient);
     }
+
+
 }

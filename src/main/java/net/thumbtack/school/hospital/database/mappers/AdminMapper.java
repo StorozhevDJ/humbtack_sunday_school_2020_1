@@ -18,7 +18,7 @@ public interface AdminMapper {
 
     @Select("SELECT admin.id, user.id AS userId, user.firstName, user.lastName, user.patronymic, user.type, user.login, admin.position "
             + "FROM hospital.admin JOIN hospital.user "
-            + "WHERE user.id = #{id} AND admin.userId = user.id;")
+            + "ON admin.userId = user.id WHERE user.id = #{id};")
     @Results({
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
