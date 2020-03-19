@@ -21,5 +21,20 @@ public interface UserDao {
      */
     User getByToken(String token);
 
+    /**
+     * LogIn user (Insert token for sign in user)
+     *
+     * @param user model with login/password and new token
+     * @return true if user login successful
+     */
+    boolean logIn(User user);
+
+    /**
+     * LogOut user (delete token)
+     *
+     * @param token to logOut user
+     * @return true if user logout successful
+     */
+    boolean logOut(String token);
 
 }

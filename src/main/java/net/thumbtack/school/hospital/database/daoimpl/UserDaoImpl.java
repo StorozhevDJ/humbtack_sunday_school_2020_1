@@ -33,5 +33,38 @@ public class UserDaoImpl extends DaoImplBase implements UserDao {
         }
     }
 
+    @Override
+    public boolean logIn(User user) {
+        LOGGER.debug("DAO LogIn user \"{}\" ", user.getLogin());
+        int res = 0;
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                res = getUserMapper(sqlSession).insertToken(user);
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't LogIn user {} {} ", user.getLogin(), ex);
+                sqlSession.rollback();
+                throw ex;
+            }
+            sqlSession.commit();
+            return res == 1;
+        }
+    }
+
+    @Override
+    public boolean logOut(String token) {
+        LOGGER.debug("DAO LogOut user with token {} ", token);
+        int res = 0;
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                res = getUserMapper(sqlSession).deleteToken(token);
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't LogOut user with token {} {} ", token, ex);
+                sqlSession.rollback();
+            }
+            sqlSession.commit();
+            return res == 1;
+        }
+    }
+
 
 }

@@ -50,5 +50,18 @@ public class AdminDaoImpl extends DaoImplBase implements AdminDao {
         }
     }
 
+    @Override
+    public int getCount() {
+        LOGGER.debug("DAO get admins count");
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                return getAdminMapper(sqlSession).getCount();
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't get admins count {} ", ex);
+                throw ex;
+            }
+        }
+    }
+
 
 }

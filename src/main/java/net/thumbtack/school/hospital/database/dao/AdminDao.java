@@ -26,4 +26,11 @@ public interface AdminDao {
      * @return
      */
     Admin getByUserId(int id);
+
+    /**
+     * Get Admins count in DB
+     *
+     * @return int
+     */
+    int getCount();
 }

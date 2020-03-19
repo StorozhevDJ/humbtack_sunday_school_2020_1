@@ -1,5 +1,7 @@
 package net.thumbtack.school.hospital.database.dao;
 
+import java.util.List;
+
 import net.thumbtack.school.hospital.database.model.Doctor;
 
 public interface DoctorDao {
@@ -11,19 +13,41 @@ public interface DoctorDao {
      */
     Doctor insert(Doctor doctor);
 
-    /**
-     * Get doctor info by token from JAVASESSIONID cookie
-     *
-     * @param token
-     * @return doctor account
-     */
-    Doctor getByToken(String token);
+	/**
+	 * Get doctor info by token from JAVASESSIONID cookie
+	 *
+	 * @param token
+	 * @return doctor account
+	 */
+	Doctor getByToken(String token);
 
-    /**
-     * Get doctor info by DB ID
-     *
-     * @param id
-     * @return
-     */
-    Doctor getById(String id);
+	/**
+	 * Get Doctor info by User ID
+	 *
+	 * @param id
+	 * @return
+	 */
+	Doctor getByUserId(int id);
+
+	/**
+	 * Get Doctor info by Doctor ID
+	 *
+	 * @param id
+	 * @return
+	 */
+	Doctor getByDoctorId(int id);
+
+	/**
+	 * Get Doctor list by Speciality
+	 *
+	 * @param speciality
+	 * @return
+	 */
+	List<Doctor> getBySpeciality(String speciality);
+
+	/**
+	 * @return int
+	 */
+	int getCount();
+
 }

@@ -14,13 +14,15 @@ public interface PatientMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Patient patient);
 
-    @Select("SELECT * FROM `patient` WHERE id = #{id}")
+    @Select("SELECT patient.id, userId, firstName, lastName, patronymic, 'type', login, token, email, address, phone " +
+            "FROM patient JOIN user ON user.id = patient.userId" +
+            "WHERE patient.id = #{id}")
     Patient getById(int id);
 
-    @Select("SELECT patient.id, user.id AS userId, user.firstName, user.lastName, user.patronymic, user.type, user.login, user.tocken, patient.email, patient.address, patient.phone "
-            + "FROM `patient` JOIN `user` "
-            + "WHERE user.token = #{token};")
-    Patient getByToken(String tocken);
+    @Select("SELECT patient.id, userId, firstName, lastName, patronymic, 'type', login, token, email, address, phone " +
+            "FROM patient JOIN user ON user.id = patient.userId" +
+            "WHERE token = #{token}")
+    Patient getByToken(String token);
 
     @Delete("DELETE FROM `patient`")
     void deleteAll();

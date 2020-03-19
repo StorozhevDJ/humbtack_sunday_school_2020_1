@@ -39,6 +39,10 @@ public class User {
         this(0, firstName, lastName, patronymic, null, login, password, token);
     }
 
+    public User(String login, String password, String token) {
+        this(0, null, null, null, null, login, password, token);
+    }
+
     public User() {
     }
 

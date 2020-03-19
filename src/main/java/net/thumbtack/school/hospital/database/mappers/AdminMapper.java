@@ -16,9 +16,10 @@ public interface AdminMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Admin admin);
 
-    @Select("SELECT admin.id, user.id AS userId, user.firstName, user.lastName, user.patronymic, user.type, user.login, admin.position "
-            + "FROM hospital.admin JOIN hospital.user "
-            + "ON admin.userId = user.id WHERE user.id = #{id};")
+    @Select("SELECT admin.id, userId, firstName, lastName, patronymic, type, login, position "
+            + "FROM admin JOIN user "
+            + "ON userId = user.id "
+            + "WHERE user.id = #{id};")
     @Results({
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
@@ -29,10 +30,22 @@ public interface AdminMapper {
     })
     Admin getByUserId(int id);
 
-    @Select("SELECT admin.id, user.id AS userId, user.firstName, user.lastName, user.patronymic, user.type, user.login, user.token, admin.position "
-            + "FROM hospital.admin JOIN hospital.user "
-            + "WHERE user.token = #{token};")
+    @Select("SELECT admin.id, userId, firstName, lastName, patronymic, type, login, token, position "
+            + "FROM admin JOIN user "
+            + "WHERE token = #{token};")
+    @Results({
+            @Result(property = "user.id", column = "userId"),
+            @Result(property = "user.firstName", column = "firstName"),
+            @Result(property = "user.lastName", column = "lastName"),
+            @Result(property = "user.patronymic", column = "patronymic"),
+            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.login", column = "login"),
+            @Result(property = "user.token", column = "token")
+    })
     Admin getByToken(String token);
+
+    @Select("SELECT COUNT(*) FROM admin;")
+    int getCount();
 
     @Delete("DELETE FROM admin")
     void deleteAll();

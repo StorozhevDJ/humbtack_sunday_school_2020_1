@@ -3,11 +3,13 @@ package net.thumbtack.school.hospital.database.model;
 public class Doctor {
     private int id;
     private User user;
-    private Speciality speciality;
+    //private Speciality speciality;
+    private String speciality;
 
 
-    public Doctor(int id, User user, String specialityn) {
+    public Doctor(int id, User user, String speciality) {
         setId(id);
+        user.setType("doctor");
         setUser(user);
         setSpeciality(speciality);
     }
@@ -36,11 +38,19 @@ public class Doctor {
         this.id = id;
     }
 
-    public Speciality getSpeciality() {
+    /*public Speciality getSpeciality() {
         return speciality;
     }
 
     public void setSpeciality(Speciality speciality) {
+        this.speciality = speciality;
+    }*/
+
+    public String getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(String speciality) {
         this.speciality = speciality;
     }
 
@@ -58,7 +68,9 @@ public class Doctor {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (!(obj instanceof Doctor))
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
             return false;
         Doctor other = (Doctor) obj;
         if (id != other.id)

@@ -11,8 +11,8 @@ import net.thumbtack.school.hospital.database.model.User;
 public class AdminDaoTest extends DatabaseTest {
 
     @Test
-    public void testAddAdmin() {
-        User user = new User("Вася", "Петечкин", "Васильевич", "admin2", "password", null);
+    public void testAddAdminGetByUserId() {
+        User user = new User("Вася", "Петечкин", "Васильевич", "testAdmin", "password", null);
         Admin admin = new Admin(user, "SecondAdmin");
         adminDao.insert(admin);
         // Check double add
@@ -20,7 +20,8 @@ public class AdminDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertNotEquals(0, admin.getId()),
                 () -> assertEquals(admin.getUser().getId(), user.getId()),
-                () -> assertEquals("admin", admin.getUser().getType())
+                () -> assertEquals("admin", admin.getUser().getType()),
+                () -> assertEquals(2, adminDao.getCount())
         );
 
         Admin getAdmin = adminDao.getByUserId(user.getId());
@@ -32,7 +33,7 @@ public class AdminDaoTest extends DatabaseTest {
                 () -> assertEquals("Вася", getAdmin.getUser().getFirstName(), "User firstName is not Вася"),
                 () -> assertEquals("Петечкин", getAdmin.getUser().getLastName(), "User lastname is not Петечкин"),
                 () -> assertEquals("Васильевич", getAdmin.getUser().getPatronymic(), "User patronymic is not Васильевич"),
-                () -> assertEquals("admin2", getAdmin.getUser().getLogin(), "User login is not admin2"),
+                () -> assertEquals("testAdmin", getAdmin.getUser().getLogin(), "User login is not testAdmin"),
                 () -> assertNull(getAdmin.getUser().getPassword(), "User password is not null")
         );
     }
@@ -41,10 +42,26 @@ public class AdminDaoTest extends DatabaseTest {
     public void testGetDefaultAdmin() {
         User user = userDao.getByLogin("admin", "admin");
         Admin admin = adminDao.getByUserId(user.getId());
-        assertTrue(admin.getId() != 0);
-        assertTrue(admin.getUser().getId() != 0);
-        assertTrue(admin.getUser().getId() != 0);
+        assertNotEquals(0, admin.getId());
+        assertNotEquals(0, admin.getUser().getId());
+        assertNotEquals(0, admin.getUser().getId());
     }
 
+    @Test
+    public void testGetByToken() {
+        assertTrue(userDao.logIn(new User("admin", "admin", "token")));
+
+        Admin admin = adminDao.getByToken("token");
+        assertAll(
+                () -> assertEquals("Superadmin", admin.getPosition(), "Admin position is not Superadmin"),
+                () -> assertEquals("admin", admin.getUser().getType(), "User type is not admin"),
+                () -> assertEquals("FirstNameAdmin", admin.getUser().getFirstName(), "User firstName is not FirstNameAdmin"),
+                () -> assertEquals("lastNameAdmin", admin.getUser().getLastName(), "User lastname is not lastNameAdmin"),
+                () -> assertNull(admin.getUser().getPatronymic(), "User patronymic is not null"),
+                () -> assertEquals("admin", admin.getUser().getLogin(), "User login is not dmin"),
+                () -> assertNull(admin.getUser().getPassword(), "User password is not null")
+        );
+
+    }
 
 }
