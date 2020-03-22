@@ -10,6 +10,7 @@ public class Patient {
 
     public Patient(int id, User user, String email, String address, String phone) {
         setId(id);
+        user.setType("patient");
         setUser(user);
         setEmail(email);
         setAddress(address);

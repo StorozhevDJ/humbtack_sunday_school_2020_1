@@ -11,8 +11,8 @@ import net.thumbtack.school.hospital.database.model.User;
 
 public interface UserMapper {
 
-    @Insert("INSERT INTO `user` ( `firstName`, `lastName`, `patronymic`, `login`, `password`, `token`) "
-            + "VALUES ( #{firstName}, #{lastName}, #{patronymic}, #{login}, MD5(#{password}), #{token} );")
+    @Insert("INSERT INTO `user` ( `firstName`, `lastName`, `patronymic`, type, `login`, `password`, `token`) "
+            + "VALUES ( #{firstName}, #{lastName}, #{patronymic}, #{type}, #{login}, MD5(#{password}), #{token} );")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(User user);
 

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import net.thumbtack.school.hospital.database.dao.AdminDao;
 import net.thumbtack.school.hospital.database.model.Admin;
 
+
 public class AdminDaoImpl extends DaoImplBase implements AdminDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminDaoImpl.class);

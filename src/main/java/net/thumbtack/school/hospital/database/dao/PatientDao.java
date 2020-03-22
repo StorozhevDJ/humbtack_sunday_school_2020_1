@@ -1,5 +1,7 @@
 package net.thumbtack.school.hospital.database.dao;
 
+import java.util.List;
+
 import net.thumbtack.school.hospital.database.model.Patient;
 
 public interface PatientDao {
@@ -12,10 +14,41 @@ public interface PatientDao {
     Patient insert(Patient patient);
 
     /**
-     * Get patient by ID
+     * Get patient by Patient ID
      *
      * @param id - patient DB id
      * @return patient
      */
-    Patient getById(int id);
+    Patient getByPatientId(int id);
+
+    /**
+     * Get patient by User ID
+     *
+     * @param id - patient DB id
+     * @return patient
+     */
+    Patient getByUserId(int id);
+
+    /**
+     * Get patient by token
+     *
+     * @param id - patient DB id
+     * @return patient
+     */
+    Patient getByToken(String token);
+
+    /**
+     * Get ALL patients by Doctor ID
+     *
+     * @param id - patient DB id
+     * @return patient
+     */
+    List<Patient> getAllPatientByDoctorId(int id);
+
+    /**
+     * Get Patients count in DB
+     *
+     * @return int
+     */
+    int getCount();
 }

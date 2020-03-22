@@ -26,9 +26,7 @@ public interface DoctorMapper {
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
             @Result(property = "user.type", column = "type"),
-            @Result(property = "user.login", column = "login"),
-            //@Result(property = "speciality.id", column = "speciality.id"),
-            @Result(property = "speciality", column = "speciality.speciality")
+            @Result(property = "user.login", column = "login")
     })
     Doctor getByUserId(int id);
 
@@ -43,9 +41,7 @@ public interface DoctorMapper {
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
             @Result(property = "user.type", column = "type"),
-            @Result(property = "user.login", column = "login"),
-            //       @Result(property = "speciality.id", column = "speciality.id"),
-            @Result(property = "speciality", column = "speciality.speciality")
+            @Result(property = "user.login", column = "login")
     })
     Doctor getByDoctorId(int id);
 
@@ -59,9 +55,7 @@ public interface DoctorMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
-            @Result(property = "speciality.id", column = "speciality.id"),
-            @Result(property = "speciality", column = "speciality.speciality")
+            @Result(property = "user.type", column = "type")
     })
     List<Doctor> getBySpeciality(String speciality);
 
@@ -77,8 +71,7 @@ public interface DoctorMapper {
             @Result(property = "user.patronymic", column = "patronymic"),
             @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login"),
-            //@Result(property = "speciality.id", column = "speciality.id"),
-            @Result(property = "speciality", column = "speciality.speciality")
+            @Result(property = "user.token", column = "token")
     })
     Doctor getByToken(String tocken);
 

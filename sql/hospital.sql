@@ -64,8 +64,10 @@ create TABLE `patient` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 create TABLE doctor (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `userId` INT UNSIGNED NOT NULL,
     `specialityId` INT NOT NULL,
+    `roomId` INT NOT NULL,
     UNIQUE (`userId`),
     FOREIGN KEY (`userId`) REFERENCES `user`(id)  ON delete CASCADE,
+    FOREIGN KEY (`roomId`) REFERENCES `room`(id),
     FOREIGN KEY (`specialityId`) REFERENCES `speciality`(id)
 ) ENGINE=INNODB;
 
@@ -73,14 +75,13 @@ create TABLE doctor (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 -- Table `schedule` reception
 -- -----------------------------------------------------
 create TABLE `schedule` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`ticket` VARCHAR(50) NULL,
 	`doctorId` INT UNSIGNED NOT NULL,
     `patientId` INT UNSIGNED NULL,
     `date` DATE NOT NULL,
     `time` TIME NOT NULL,
     `timeEnd` TIME NOT NULL,
-    `roomId` INT NOT NULL,
     FOREIGN KEY (`doctorId`) REFERENCES `doctor`(id) ON delete CASCADE,
-    FOREIGN KEY (`roomId`) REFERENCES `room`(id),
     FOREIGN KEY (`patientId`) REFERENCES `patient`(id) ON delete SET NULL,
     UNIQUE (`doctorId`, `date`, `time`),
     UNIQUE (`patientId`, `date`, `doctorId`) -- Пациент может записаться к нескольким врачам, но не может записаться более одного раза к одному и тому же врачу на один и тот же день

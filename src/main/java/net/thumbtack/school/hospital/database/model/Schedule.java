@@ -1,34 +1,34 @@
 package net.thumbtack.school.hospital.database.model;
 
 import java.sql.Time;
-import java.util.Date;
-import java.util.Objects;
+import java.sql.Date;
+
 
 public class Schedule {
     private int id;
-    private Doctor doctor;
-    private String room;
+    private String ticket;
+    private int doctorId;
     private Date date;
     private Time time;
     private Time timeEnd;
-    private Patient patient;
+    private int patientId;
 
-    public Schedule(int id, Doctor doctor, String room, Date date, Time time, Time timeEnd, Patient patient) {
+    public Schedule(int id, String ticket, int doctorId, Date date, Time time, Time timeEnd, int patientId) {
         setId(id);
-        setDoctor(doctor);
-        setRoom(room);
+        setTicket(ticket);
+        setDoctorId(doctorId);
         setDate(date);
         setTime(time);
         setTimeEnd(timeEnd);
-        setPatient(patient);
+        setPatientId(patientId);
     }
 
-    public Schedule(Doctor doctor, String room, Date date, Time time, Time timeEnd, Patient patient) {
-        this(0, doctor, room, date, time, timeEnd, patient);
+    public Schedule(String ticket, int doctorId, Date date, Time time, Time timeEnd, int patientId) {
+        this(0, ticket, doctorId, date, time, timeEnd, patientId);
     }
 
     public Schedule() {
-        this(null, null, null, null, null, null);
+
     }
 
     public int getId() {
@@ -39,20 +39,12 @@ public class Schedule {
         this.id = id;
     }
 
-    public Doctor getDoctor() {
-        return doctor;
+    public int getDoctorId() {
+        return doctorId;
     }
 
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
-
-    public String getRoom() {
-        return room;
-    }
-
-    public void setRoom(String room) {
-        this.room = room;
+    public void setDoctorId(int doctorId) {
+        this.doctorId = doctorId;
     }
 
     public Date getDate() {
@@ -79,30 +71,19 @@ public class Schedule {
         this.timeEnd = timeEnd;
     }
 
-    public Patient getPatient() {
-        return patient;
+    public int getPatientId() {
+        return patientId;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Schedule)) return false;
-        Schedule schedule = (Schedule) o;
-        return id == schedule.id &&
-                Objects.equals(doctor, schedule.doctor) &&
-                Objects.equals(room, schedule.room) &&
-                Objects.equals(date, schedule.date) &&
-                Objects.equals(time, schedule.time) &&
-                Objects.equals(patient, schedule.patient);
+    public String getTicket() {
+        return ticket;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, doctor, room, date, time, patient);
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
     }
-
 }

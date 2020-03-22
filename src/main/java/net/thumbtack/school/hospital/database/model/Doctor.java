@@ -5,21 +5,23 @@ public class Doctor {
     private User user;
     //private Speciality speciality;
     private String speciality;
+    private String room;
 
 
-    public Doctor(int id, User user, String speciality) {
+    public Doctor(int id, User user, String speciality, String room) {
         setId(id);
         user.setType("doctor");
         setUser(user);
         setSpeciality(speciality);
+        setRoom(room);
     }
 
-    public Doctor(User user, String speciality) {
-        this(0, user, speciality);
+    public Doctor(User user, String speciality, String room) {
+        this(0, user, speciality, room);
     }
 
     public Doctor() {
-        this(new User(), new String());
+        this(new User(), new String(), new String());
     }
 
     public int getId() {
@@ -54,39 +56,11 @@ public class Doctor {
         this.speciality = speciality;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        result = prime * result + ((speciality == null) ? 0 : speciality.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
-        return result;
+    public String getRoom() {
+        return room;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Doctor other = (Doctor) obj;
-        if (id != other.id)
-            return false;
-        if (speciality == null) {
-            if (other.speciality != null)
-                return false;
-        } else if (!speciality.equals(other.speciality))
-            return false;
-        if (user == null) {
-            if (other.user != null)
-                return false;
-        } else if (!user.equals(other.user))
-            return false;
-        return true;
+    public void setRoom(String room) {
+        this.room = room;
     }
-
-
 }

@@ -1,11 +1,8 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
+import net.thumbtack.school.hospital.database.mappers.*;
 import org.apache.ibatis.session.SqlSession;
 
-import net.thumbtack.school.hospital.database.mappers.AdminMapper;
-import net.thumbtack.school.hospital.database.mappers.DoctorMapper;
-import net.thumbtack.school.hospital.database.mappers.PatientMapper;
-import net.thumbtack.school.hospital.database.mappers.UserMapper;
 import net.thumbtack.school.hospital.database.utils.MyBatisUtils;
 
 public class DaoImplBase {
@@ -24,6 +21,10 @@ public class DaoImplBase {
 
     protected PatientMapper getPatientMapper(SqlSession sqlSession) {
         return sqlSession.getMapper(PatientMapper.class);
+    }
+
+    protected ScheduleMapper getScheduleMapper(SqlSession sqlSession) {
+        return sqlSession.getMapper(ScheduleMapper.class);
     }
 
     protected UserMapper getUserMapper(SqlSession sqlSession) {
