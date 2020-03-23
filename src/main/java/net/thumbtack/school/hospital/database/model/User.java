@@ -1,5 +1,7 @@
 package net.thumbtack.school.hospital.database.model;
 
+import java.util.Objects;
+
 public class User {
 
     private int id;
@@ -33,7 +35,7 @@ public class User {
      * @param patronymic - Отчество
      * @param login      - Логин для входа
      * @param password   - Пароль
-     * @param token
+     * @param token      Session ID
      */
     public User(String firstName, String lastName, String patronymic, String login, String password, String token) {
         this(0, firstName, lastName, patronymic, null, login, password, token);
@@ -111,66 +113,22 @@ public class User {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-        result = prime * result + id;
-        result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-        result = prime * result + ((login == null) ? 0 : login.hashCode());
-        result = prime * result + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + ((patronymic == null) ? 0 : patronymic.hashCode());
-        result = prime * result + ((token == null) ? 0 : token.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getId() == user.getId() &&
+                Objects.equals(getFirstName(), user.getFirstName()) &&
+                Objects.equals(getLastName(), user.getLastName()) &&
+                Objects.equals(getPatronymic(), user.getPatronymic()) &&
+                Objects.equals(getType(), user.getType()) &&
+                Objects.equals(getLogin(), user.getLogin()) &&
+                Objects.equals(getPassword(), user.getPassword()) &&
+                Objects.equals(getToken(), user.getToken());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof User))
-            return false;
-        User other = (User) obj;
-        if (firstName == null) {
-            if (other.firstName != null)
-                return false;
-        } else if (!firstName.equals(other.firstName))
-            return false;
-        if (id != other.id)
-            return false;
-        if (lastName == null) {
-            if (other.lastName != null)
-                return false;
-        } else if (!lastName.equals(other.lastName))
-            return false;
-        if (login == null) {
-            if (other.login != null)
-                return false;
-        } else if (!login.equals(other.login))
-            return false;
-        if (password == null) {
-            if (other.password != null)
-                return false;
-        } else if (!password.equals(other.password))
-            return false;
-        if (patronymic == null) {
-            if (other.patronymic != null)
-                return false;
-        } else if (!patronymic.equals(other.patronymic))
-            return false;
-        if (token == null) {
-            if (other.token != null)
-                return false;
-        } else if (!token.equals(other.token))
-            return false;
-        if (type == null) {
-            if (other.type != null)
-                return false;
-        } else if (!type.equals(other.type))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(getId(), getFirstName(), getLastName(), getPatronymic(), getType(), getLogin(), getPassword(), getToken());
     }
-
-
 }

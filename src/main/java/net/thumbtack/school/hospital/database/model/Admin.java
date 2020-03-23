@@ -1,5 +1,7 @@
 package net.thumbtack.school.hospital.database.model;
 
+import java.util.Objects;
+
 public class Admin {
     private int id;
     private User user;
@@ -46,36 +48,17 @@ public class Admin {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        result = prime * result + ((position == null) ? 0 : position.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Admin)) return false;
+        Admin admin = (Admin) o;
+        return getId() == admin.getId() &&
+                Objects.equals(getUser(), admin.getUser()) &&
+                Objects.equals(getPosition(), admin.getPosition());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof Admin))
-            return false;
-        Admin other = (Admin) obj;
-        if (id != other.id)
-            return false;
-        if (position == null) {
-            if (other.position != null)
-                return false;
-        } else if (!position.equals(other.position))
-            return false;
-        if (user == null) {
-            if (other.user != null)
-                return false;
-        } else if (!user.equals(other.user))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(getId(), getUser(), getPosition());
     }
-
-
 }

@@ -3,6 +3,8 @@ package net.thumbtack.school.hospital.database;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.Ignore;
@@ -14,7 +16,6 @@ import net.thumbtack.school.hospital.database.model.Schedule;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 
 public class ScheduleDaoTest extends DatabaseTest {
@@ -22,30 +23,22 @@ public class ScheduleDaoTest extends DatabaseTest {
     @Test
     public void testCreateSchedule() {
 
-        List<Schedule> scheduleList = new ArrayList<>();
-        /*scheduleList.add(new Schedule(
-                //1,
-                "ticket",
-                "room1",
-                new java.sql.Date(System.currentTimeMillis()),
-                Time.valueOf( LocalTime.now() ),
-                Time.valueOf( LocalTime.now() ),
-                1
-        ));*/
+        Doctor doc = doctorDao.getBySpeciality("spec").get(0);
+        List<Schedule> scheduleList = createTestSchedule(doc, 15, 8);
+
         int insertedCnt = scheduleDao.createSchedule(scheduleList);
-    	
-        /*User user = new User("Вася", "Петечкин", "Васильевич", "testDoc", "password", null);
-        assertThrows(RuntimeException.class, () -> doctorDao.insert(new Doctor(user, "ErrorSpeciality")));
-        Doctor doc = new Doctor(user, "spec");
-        doctorDao.insert(doc);
-        assertThrows(RuntimeException.class, () -> doctorDao.insert(doc));// Check double add
-        assertThrows(RuntimeException.class, () -> doctorDao.insert(null));
+        assertEquals(8, insertedCnt);
+
+        List<Schedule> scheduleList2 = scheduleDao.getByDoctorId(doc.getId());
+
         assertAll(
-                () -> assertNotEquals(0, doc.getId()),
-                () -> assertEquals(doc.getUser().getId(), user.getId()),
-                () -> assertEquals("doctor", doc.getUser().getType()),
-                () -> assertEquals(2, doctorDao.getCount())
-        );*/
+                () -> assertNotEquals(0, scheduleList2.get(1).getId()),
+                () -> assertEquals(scheduleList.get(0).getDoctorId(), scheduleList2.get(0).getDoctorId()),
+                () -> assertEquals(scheduleList.get(0).getRoom(), scheduleList2.get(0).getRoom()),
+                () -> assertNull(scheduleList.get(0).getPatientId()),
+                () -> assertNull(scheduleList.get(0).getTicket()),
+                () -> assertEquals(8, scheduleList2.size())
+        );
     }
 
     @Test
@@ -61,14 +54,37 @@ public class ScheduleDaoTest extends DatabaseTest {
 
     @Test
     public void testGetDoctorSchedule() {
-
+        //List<Schedule> scheduleList = scheduleDao.getByDoctorId(id);
 
     }
 
     @Test
-    public void testGetSpecialitySchedule() {
+    public void testGetScheduleBySpeciality() {
+        Doctor doc = doctorDao.getBySpeciality("spec").get(0);
+        List<Schedule> scheduleList = createTestSchedule(doc, 15, 8);
+
+        int insertedCnt = scheduleDao.createSchedule(scheduleList);
+
+        List<Schedule> scheduleList2 = scheduleDao.getByDoctorSpeciality("spec");
+
+        assertEquals(8, scheduleList2.size());
+
+    }
 
 
+    private List<Schedule> createTestSchedule(Doctor doc, int interval, int count) {
+        List<Schedule> scheduleList = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            scheduleList.add(new Schedule(
+                    doc.getId(),
+                    new java.sql.Date(System.currentTimeMillis()),
+                    Time.valueOf(LocalTime.now().plusMinutes(i * interval)),
+                    Time.valueOf(LocalTime.now().plusMinutes((i + 1) * interval - 1)),
+                    doc.getRoom()
+            ));
+        }
+        return scheduleList;
     }
 
 }

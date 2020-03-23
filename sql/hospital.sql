@@ -81,8 +81,11 @@ create TABLE `schedule` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `date` DATE NOT NULL,
     `time` TIME NOT NULL,
     `timeEnd` TIME NOT NULL,
+    `roomId` INT NOT NULL,
     FOREIGN KEY (`doctorId`) REFERENCES `doctor`(id) ON delete CASCADE,
     FOREIGN KEY (`patientId`) REFERENCES `patient`(id) ON delete SET NULL,
+    FOREIGN KEY (`roomId`) REFERENCES `room`(id),
+    UNIQUE (`ticket`),
     UNIQUE (`doctorId`, `date`, `time`),
     UNIQUE (`patientId`, `date`, `doctorId`) -- Пациент может записаться к нескольким врачам, но не может записаться более одного раза к одному и тому же врачу на один и тот же день
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
@@ -131,8 +134,8 @@ insert into `patient` (`userId`, `email`, `address`, `phone`)
 -- Doctors
 insert into `user` (`firstName`, `lastName`, `patronymic`, `type`, `login`, `password`)
 	values ('firstNameDoc', 'lastNameDco', 'patronymicDco', 'doctor', 'doctor', md5('doctor'));
-insert into `doctor` (`userId`, `specialityId`) values (last_insert_id(), 1);
+insert into `doctor` (`userId`, `specialityId`, `roomId`) values (last_insert_id(), 1, 1);
 
 insert into `user` (`firstName`, `lastName`, `patronymic`, `type`, `login`, `password`)
 	values ('firstNameDoc2', 'lastNameDoc2', 'patronymicDoc2', 'doctor', 'doctor2', md5('doctor'));
-insert into `doctor` (`userId`, `specialityId`) values (last_insert_id(), 2);
+insert into `doctor` (`userId`, `specialityId`, `roomId`) values (last_insert_id(), 2, 2);

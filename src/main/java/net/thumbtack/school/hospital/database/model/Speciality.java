@@ -1,5 +1,7 @@
 package net.thumbtack.school.hospital.database.model;
 
+import java.util.Objects;
+
 public class Speciality {
     private int id;
     private String value;
@@ -31,30 +33,16 @@ public class Speciality {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Speciality)) return false;
+        Speciality that = (Speciality) o;
+        return getId() == that.getId() &&
+                Objects.equals(getValue(), that.getValue());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof Speciality))
-            return false;
-        Speciality other = (Speciality) obj;
-        if (id != other.id)
-            return false;
-        if (value == null) {
-            if (other.value != null)
-                return false;
-        } else if (!value.equals(other.value))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(getId(), getValue());
     }
-
-
 }

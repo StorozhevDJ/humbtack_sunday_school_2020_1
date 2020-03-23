@@ -39,6 +39,7 @@ public class DoctorDaoTest extends DatabaseTest {
         Doctor doc = doctorDao.getByToken("token");
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality()),
+                () -> assertEquals("1", doc.getRoom()),
                 () -> assertEquals("doctor", doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),
@@ -61,6 +62,7 @@ public class DoctorDaoTest extends DatabaseTest {
 
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality()),
+                () -> assertEquals("1", doc.getRoom()),
                 () -> assertEquals("doctor", doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),
@@ -81,6 +83,7 @@ public class DoctorDaoTest extends DatabaseTest {
 
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality()),
+                () -> assertEquals("1", doc.getRoom()),
                 () -> assertEquals("doctor", doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),

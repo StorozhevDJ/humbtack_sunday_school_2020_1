@@ -44,7 +44,7 @@ public class PatientDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
-                () -> assertEquals("79001112233", patient.getPhone()),
+                () -> assertEquals("+79001112233", patient.getPhone()),
                 () -> assertEquals("patient", patient.getUser().getType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
@@ -67,7 +67,7 @@ public class PatientDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
-                () -> assertEquals("79001112233", patient.getPhone()),
+                () -> assertEquals("+79001112233", patient.getPhone()),
                 () -> assertEquals("patient", patient.getUser().getType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
@@ -89,7 +89,7 @@ public class PatientDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
-                () -> assertEquals("79001112233", patient.getPhone()),
+                () -> assertEquals("+79001112233", patient.getPhone()),
                 () -> assertEquals("patient", patient.getUser().getType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),

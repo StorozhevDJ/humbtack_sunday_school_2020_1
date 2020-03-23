@@ -1,5 +1,7 @@
 package net.thumbtack.school.hospital.database.model;
 
+import java.util.Objects;
+
 public class Patient {
     private int id;
     private User user;
@@ -66,50 +68,19 @@ public class Patient {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((address == null) ? 0 : address.hashCode());
-        result = prime * result + ((email == null) ? 0 : email.hashCode());
-        result = prime * result + id;
-        result = prime * result + ((phone == null) ? 0 : phone.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Patient)) return false;
+        Patient patient = (Patient) o;
+        return getId() == patient.getId() &&
+                Objects.equals(getUser(), patient.getUser()) &&
+                Objects.equals(getEmail(), patient.getEmail()) &&
+                Objects.equals(getAddress(), patient.getAddress()) &&
+                Objects.equals(getPhone(), patient.getPhone());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Patient other = (Patient) obj;
-        if (address == null) {
-            if (other.address != null)
-                return false;
-        } else if (!address.equals(other.address))
-            return false;
-        if (email == null) {
-            if (other.email != null)
-                return false;
-        } else if (!email.equals(other.email))
-            return false;
-        if (id != other.id)
-            return false;
-        if (phone == null) {
-            if (other.phone != null)
-                return false;
-        } else if (!phone.equals(other.phone))
-            return false;
-        if (user == null) {
-            if (other.user != null)
-                return false;
-        } else if (!user.equals(other.user))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(getId(), getUser(), getEmail(), getAddress(), getPhone());
     }
-
-
 }

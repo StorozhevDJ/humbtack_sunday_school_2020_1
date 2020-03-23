@@ -2,6 +2,7 @@ package net.thumbtack.school.hospital.database.model;
 
 import java.sql.Time;
 import java.sql.Date;
+import java.util.Objects;
 
 
 public class Schedule {
@@ -11,9 +12,10 @@ public class Schedule {
     private Date date;
     private Time time;
     private Time timeEnd;
-    private int patientId;
+    private Integer patientId;
+    private String room;
 
-    public Schedule(int id, String ticket, int doctorId, Date date, Time time, Time timeEnd, int patientId) {
+    public Schedule(int id, String ticket, int doctorId, Date date, Time time, Time timeEnd, Integer patientId, String room) {
         setId(id);
         setTicket(ticket);
         setDoctorId(doctorId);
@@ -21,10 +23,15 @@ public class Schedule {
         setTime(time);
         setTimeEnd(timeEnd);
         setPatientId(patientId);
+        setRoom(room);
     }
 
-    public Schedule(String ticket, int doctorId, Date date, Time time, Time timeEnd, int patientId) {
-        this(0, ticket, doctorId, date, time, timeEnd, patientId);
+    public Schedule(String ticket, int doctorId, Date date, Time time, Time timeEnd, Integer patientId, String room) {
+        this(0, ticket, doctorId, date, time, timeEnd, patientId, room);
+    }
+
+    public Schedule(int doctorId, Date date, Time time, Time timeEnd, String room) {
+        this(0, null, doctorId, date, time, timeEnd, null, room);
     }
 
     public Schedule() {
@@ -71,11 +78,11 @@ public class Schedule {
         this.timeEnd = timeEnd;
     }
 
-    public int getPatientId() {
+    public Integer getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(int patientId) {
+    public void setPatientId(Integer patientId) {
         this.patientId = patientId;
     }
 
@@ -85,5 +92,33 @@ public class Schedule {
 
     public void setTicket(String ticket) {
         this.ticket = ticket;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Schedule)) return false;
+        Schedule schedule = (Schedule) o;
+        return getId() == schedule.getId() &&
+                getDoctorId() == schedule.getDoctorId() &&
+                getTicket().equals(schedule.getTicket()) &&
+                getDate().equals(schedule.getDate()) &&
+                getTime().equals(schedule.getTime()) &&
+                getTimeEnd().equals(schedule.getTimeEnd()) &&
+                getPatientId().equals(schedule.getPatientId()) &&
+                getRoom().equals(schedule.getRoom());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTicket(), getDoctorId(), getDate(), getTime(), getTimeEnd(), getPatientId(), getRoom());
     }
 }

@@ -48,9 +48,25 @@ public interface ScheduleDao {
 	 * Insert new Schedule in to DB
 	 *
 	 * @param schedule list
-	 * @return
+	 * @return count of schedule record
 	 */
 	int createSchedule(List<Schedule> schedule);
+
+	/**
+	 * Get Doctor schedule
+	 *
+	 * @param id Doctor
+	 * @return Schedule list
+	 */
+	List<Schedule> getByDoctorId(int id);
+
+	/**
+	 * Get schedule for all doctors with speciality
+	 *
+	 * @param speciality for find doctor
+	 * @return Schedule list
+	 */
+	List<Schedule> getByDoctorSpeciality(String speciality);
 
 	List<Schedule> getAllShedule();
 

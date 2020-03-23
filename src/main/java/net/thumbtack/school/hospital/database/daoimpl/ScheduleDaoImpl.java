@@ -30,8 +30,31 @@ public class ScheduleDaoImpl extends DaoImplBase implements ScheduleDao {
     }
 
     @Override
+    public List<Schedule> getByDoctorId(int id) {
+        LOGGER.debug("DAO get Doctor Shedule by id {}", id);
+        try (SqlSession sqlSession = getSession()) {
+            return getScheduleMapper(sqlSession).getByDoctorId(id);
+        } catch (RuntimeException ex) {
+            LOGGER.info("Can't get Doctor Schedule by id {} {}", id, ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public List<Schedule> getByDoctorSpeciality(String speciality) {
+        LOGGER.debug("DAO get Doctor Shedule by speciality {}", speciality);
+        try (SqlSession sqlSession = getSession()) {
+            return getScheduleMapper(sqlSession).getBySpeciality(speciality);
+        } catch (RuntimeException ex) {
+            LOGGER.info("Can't get Doctor Schedule by speciality {} {}", speciality, ex);
+            throw ex;
+        }
+    }
+
+    @Override
     public List<Schedule> getAllShedule() {
         return null;
     }
+
 
 }

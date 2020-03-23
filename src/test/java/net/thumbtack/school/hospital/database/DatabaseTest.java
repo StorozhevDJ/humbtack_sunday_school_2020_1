@@ -44,13 +44,13 @@ public class DatabaseTest {
         User user = new User("FirstNameAdmin", "lastNameAdmin", null, "admin", "admin", null);
         adminDao.insert(new Admin(user, "Superadmin"));
 
-        doctorDao.insert(new Doctor(new User("FirstNameDoc", "lastNameDoc", null, "doc", "doctor", null), "spec", "6"));
+        doctorDao.insert(new Doctor(new User("FirstNameDoc", "lastNameDoc", null, "doc", "doctor", null), "spec", "1"));
 
         patientDao.insert(new Patient(
                 new User("FirstNamePatient", "lastNamePatient", "partronymicPatient", "patientLogin", "passwordPatient", null),
                 "patient@mail",
                 "addrPatient",
-                "79001112233"));
+                "+79001112233"));
     }
 
 }
