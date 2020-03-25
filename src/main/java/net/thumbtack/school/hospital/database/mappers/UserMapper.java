@@ -32,6 +32,7 @@ public interface UserMapper {
             + "WHERE token = #{token};")
     User getByToken(String token);
 
+
     @Delete("DELETE FROM user;")
     void deleteAll();
 

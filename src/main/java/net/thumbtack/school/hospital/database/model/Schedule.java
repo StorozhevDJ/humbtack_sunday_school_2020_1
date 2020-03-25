@@ -8,30 +8,34 @@ import java.util.Objects;
 public class Schedule {
     private int id;
     private String ticket;
-    private int doctorId;
+    //private int doctorId;
+    private Doctor doctor;
     private Date date;
     private Time time;
     private Time timeEnd;
-    private Integer patientId;
+    //private Integer patientId;
+    private Patient patient;
     private String room;
 
-    public Schedule(int id, String ticket, int doctorId, Date date, Time time, Time timeEnd, Integer patientId, String room) {
+    public Schedule(int id, String ticket, Doctor doctor, Date date, Time time, Time timeEnd, Patient patient, String room) {
         setId(id);
         setTicket(ticket);
-        setDoctorId(doctorId);
+        //setDoctorId(doctorId);
+        setDoctor(doctor);
         setDate(date);
         setTime(time);
         setTimeEnd(timeEnd);
-        setPatientId(patientId);
+        //setPatientId(patientId);
+        setPatient(patient);
         setRoom(room);
     }
 
-    public Schedule(String ticket, int doctorId, Date date, Time time, Time timeEnd, Integer patientId, String room) {
-        this(0, ticket, doctorId, date, time, timeEnd, patientId, room);
+    public Schedule(String ticket, Doctor doctor, Date date, Time time, Time timeEnd, Patient patient, String room) {
+        this(0, ticket, doctor, date, time, timeEnd, patient, room);
     }
 
-    public Schedule(int doctorId, Date date, Time time, Time timeEnd, String room) {
-        this(0, null, doctorId, date, time, timeEnd, null, room);
+    public Schedule(Doctor doctor, Date date, Time time, Time timeEnd, String room) {
+        this(0, null, doctor, date, time, timeEnd, null, room);
     }
 
     public Schedule() {
@@ -46,12 +50,20 @@ public class Schedule {
         this.id = id;
     }
 
-    public int getDoctorId() {
+    /*public int getDoctorId() {
         return doctorId;
     }
 
     public void setDoctorId(int doctorId) {
         this.doctorId = doctorId;
+    }*/
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public Date getDate() {
@@ -78,12 +90,20 @@ public class Schedule {
         this.timeEnd = timeEnd;
     }
 
-    public Integer getPatientId() {
+    /*public Integer getPatientId() {
         return patientId;
     }
 
     public void setPatientId(Integer patientId) {
         this.patientId = patientId;
+    }*/
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public String getTicket() {
@@ -108,17 +128,19 @@ public class Schedule {
         if (!(o instanceof Schedule)) return false;
         Schedule schedule = (Schedule) o;
         return getId() == schedule.getId() &&
-                getDoctorId() == schedule.getDoctorId() &&
+                //getDoctorId() == schedule.getDoctorId() &&
+                getDoctor() == schedule.getDoctor() &&
                 getTicket().equals(schedule.getTicket()) &&
                 getDate().equals(schedule.getDate()) &&
                 getTime().equals(schedule.getTime()) &&
                 getTimeEnd().equals(schedule.getTimeEnd()) &&
-                getPatientId().equals(schedule.getPatientId()) &&
+                //getPatientId().equals(schedule.getPatientId()) &&
+                getPatient().equals(schedule.getPatient()) &&
                 getRoom().equals(schedule.getRoom());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTicket(), getDoctorId(), getDate(), getTime(), getTimeEnd(), getPatientId(), getRoom());
+        return Objects.hash(getId(), getTicket(), getDoctor(), getDate(), getTime(), getTimeEnd(), getPatient(), getRoom());
     }
 }

@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
 
+    @Value("${max_name_length}")
     private int maxNameLength;
-    //@Value("${min_password_length}")
+    @Value("${min_password_length}")
     private int minPasswordLength;
 
     public int getMaxNameLength() {

@@ -68,6 +68,19 @@ public interface ScheduleDao {
 	 */
 	List<Schedule> getByDoctorSpeciality(String speciality);
 
+	/**
+	 * Get All schedule
+	 *
+	 * @return
+	 */
 	List<Schedule> getAllShedule();
+
+	/**
+	 * Add ticket to schedule
+	 *
+	 * @param schedule
+	 * @return
+	 */
+	boolean addTicket(Schedule schedule);
 
 }
