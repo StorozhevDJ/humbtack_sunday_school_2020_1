@@ -8,9 +8,11 @@ public class User {
     private String firstName;
     private String lastName;
     private String patronymic;
+    // REVU лучше enum
     private String type;
     private String login;
     private String password;
+    // REVU здесь быть не должно. Сделайте класс Session
     private String token;
 
 

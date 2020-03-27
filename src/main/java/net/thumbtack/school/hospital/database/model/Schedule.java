@@ -11,6 +11,7 @@ public class Schedule {
     //private int doctorId;
     private Doctor doctor;
     private Date date;
+    // REVU измените имя, непонятно
     private Time time;
     private Time timeEnd;
     //private Integer patientId;
