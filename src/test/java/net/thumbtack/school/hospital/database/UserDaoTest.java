@@ -17,7 +17,7 @@ public class UserDaoTest extends DatabaseTest {
 	public void testGetUserByLogin() {
 		User user = userDao.getByLogin("admin", "admin");
 		assertAll(() -> assertNotEquals(0, user.getId(), "User id = 0"),
-				() -> assertEquals("admin", user.getType(), "User type is not admin"),
+				() -> assertEquals(User.Type.ADMINISTRATOR, user.getType(), "User type is not admin"),
 				() -> assertEquals("FirstNameAdmin", user.getFirstName(), "User firstName is not FirstNameAdmin"),
 				() -> assertEquals("lastNameAdmin", user.getLastName(), "User lastname is not lastNameAdmin"),
 				() -> assertNull(user.getPatronymic(), "User patronymic is not null"),
@@ -27,18 +27,18 @@ public class UserDaoTest extends DatabaseTest {
 
 	@Test
 	public void testLogInLogOut() {
-		assertAll(() -> assertFalse(userDao.logIn(new User("admin", "errorPass", "token"))),
-				() -> assertFalse(userDao.logIn(new User("errorUser", "admin", "token"))),
-				() -> assertFalse(userDao.logIn(new User("admin", "", "token"))),
-				() -> assertFalse(userDao.logIn(new User("", "errorPass", "token"))),
-				() -> assertFalse(userDao.logIn(new User(null, null, "token"))),
-				() -> assertFalse(userDao.logIn(new User("admin", "Admin", "token"))),
-				() -> assertTrue(userDao.logIn(new User("admin", "admin", "token0"))),
-				() -> assertTrue(userDao.logIn(new User("AdMin", "admin", "token"))),
-				() -> assertFalse(userDao.logOut("errorToken")),
-				() -> assertFalse(userDao.logOut("")),
+		assertAll(() -> assertFalse(userDao.logIn(new User("admin", "errorPass", new User.Session("token")))),
+				() -> assertFalse(userDao.logIn(new User("errorUser", "admin", new User.Session("token")))),
+				() -> assertFalse(userDao.logIn(new User("admin", "", new User.Session("token")))),
+				() -> assertFalse(userDao.logIn(new User("", "errorPass", new User.Session("token")))),
+				() -> assertFalse(userDao.logIn(new User(null, null, new User.Session("token")))),
+				() -> assertFalse(userDao.logIn(new User("admin", "Admin", new User.Session("token")))),
+				() -> assertTrue(userDao.logIn(new User("admin", "admin", new User.Session("token0")))),
+				() -> assertTrue(userDao.logIn(new User("AdMin", "admin", new User.Session("token")))),
+				() -> assertFalse(userDao.logOut(new User.Session("errorToken"))),
+				() -> assertFalse(userDao.logOut(new User.Session(""))),
 				() -> assertFalse(userDao.logOut(null)),
-				() -> assertTrue(userDao.logOut("token"))
+				() -> assertTrue(userDao.logOut(new User.Session("token")))
 		);
 	}
 }

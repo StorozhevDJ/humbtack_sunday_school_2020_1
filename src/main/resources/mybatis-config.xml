@@ -29,5 +29,6 @@
         <mapper class="net.thumbtack.school.hospital.database.mappers.DoctorMapper"/>
         <mapper class="net.thumbtack.school.hospital.database.mappers.PatientMapper"/>
         <mapper class="net.thumbtack.school.hospital.database.mappers.ScheduleMapper"/>
+        <mapper class="net.thumbtack.school.hospital.database.mappers.CommissionMapper"/>
     </mappers>
 </configuration>

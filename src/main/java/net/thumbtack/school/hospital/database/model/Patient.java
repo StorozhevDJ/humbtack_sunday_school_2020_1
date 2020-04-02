@@ -12,7 +12,7 @@ public class Patient {
 
     public Patient(int id, User user, String email, String address, String phone) {
         setId(id);
-        user.setType("patient");
+        user.setType(User.Type.PATIENT);
         setUser(user);
         setEmail(email);
         setAddress(address);

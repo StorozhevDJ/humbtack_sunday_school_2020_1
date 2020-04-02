@@ -2,6 +2,7 @@ package net.thumbtack.school.hospital.database.dao;
 
 import java.util.List;
 
+import net.thumbtack.school.hospital.database.model.Commission;
 import net.thumbtack.school.hospital.database.model.Schedule;
 
 public interface ScheduleDao {
@@ -51,6 +52,14 @@ public interface ScheduleDao {
 	 * @return count of schedule record
 	 */
 	int createSchedule(List<Schedule> schedule);
+
+	/**
+	 * Add commission in to schedule
+	 *
+	 * @param commissions
+	 * @return
+	 */
+	int addCommission(List<Commission> commissions);
 
 	/**
 	 * Get Doctor schedule

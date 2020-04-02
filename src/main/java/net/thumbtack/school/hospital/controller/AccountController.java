@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.thumbtack.school.hospital.serverException.ServerException;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 
 @RestController
 @RequestMapping("/api/account")

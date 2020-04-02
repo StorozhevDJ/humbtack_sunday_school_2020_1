@@ -20,7 +20,7 @@ public class AdminDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertNotEquals(0, admin.getId()),
                 () -> assertEquals(admin.getUser().getId(), user.getId()),
-                () -> assertEquals("admin", admin.getUser().getType()),
+                () -> assertEquals(User.Type.ADMINISTRATOR, admin.getUser().getType()),
                 () -> assertEquals(2, adminDao.getCount())
         );
 
@@ -29,7 +29,7 @@ public class AdminDaoTest extends DatabaseTest {
                 () -> assertNotEquals(0, getAdmin.getId(), "admin id = 0"),
                 () -> assertEquals(getAdmin.getUser().getId(), user.getId(), "Admin and user IDs is different"),
                 () -> assertEquals("SecondAdmin", getAdmin.getPosition(), "Admin position is not SecondAdmin"),
-                () -> assertEquals("admin", getAdmin.getUser().getType(), "User type is not admin"),
+                () -> assertEquals(User.Type.ADMINISTRATOR, getAdmin.getUser().getType(), "User type is not admin"),
                 () -> assertEquals("Вася", getAdmin.getUser().getFirstName(), "User firstName is not Вася"),
                 () -> assertEquals("Петечкин", getAdmin.getUser().getLastName(), "User lastname is not Петечкин"),
                 () -> assertEquals("Васильевич", getAdmin.getUser().getPatronymic(), "User patronymic is not Васильевич"),
@@ -49,16 +49,16 @@ public class AdminDaoTest extends DatabaseTest {
 
     @Test
     public void testGetByToken() {
-        assertTrue(userDao.logIn(new User("admin", "admin", "token")));
+        assertTrue(userDao.logIn(new User("admin", "admin", new User.Session("token"))));
 
-        Admin admin = adminDao.getByToken("token");
+        Admin admin = adminDao.getByToken(new User.Session("token"));
         assertAll(
                 () -> assertEquals("Superadmin", admin.getPosition(), "Admin position is not Superadmin"),
-                () -> assertEquals("admin", admin.getUser().getType(), "User type is not admin"),
+                () -> assertEquals(User.Type.ADMINISTRATOR, admin.getUser().getType(), "User type is not admin"),
                 () -> assertEquals("FirstNameAdmin", admin.getUser().getFirstName(), "User firstName is not FirstNameAdmin"),
                 () -> assertEquals("lastNameAdmin", admin.getUser().getLastName(), "User lastname is not lastNameAdmin"),
                 () -> assertNull(admin.getUser().getPatronymic(), "User patronymic is not null"),
-                () -> assertEquals("admin", admin.getUser().getLogin(), "User login is not dmin"),
+                () -> assertEquals("admin", admin.getUser().getLogin(), "User login is not Admin"),
                 () -> assertNull(admin.getUser().getPassword(), "User password is not null")
         );
 

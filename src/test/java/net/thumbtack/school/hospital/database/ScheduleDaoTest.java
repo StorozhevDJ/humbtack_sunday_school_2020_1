@@ -2,16 +2,11 @@ package net.thumbtack.school.hospital.database;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
+import net.thumbtack.school.hospital.database.model.*;
 import org.junit.jupiter.api.Test;
 
-import net.thumbtack.school.hospital.database.model.Doctor;
-import net.thumbtack.school.hospital.database.model.Patient;
-import net.thumbtack.school.hospital.database.model.Schedule;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -32,8 +27,6 @@ public class ScheduleDaoTest extends DatabaseTest {
 
         assertAll(
                 () -> assertNotEquals(0, scheduleList2.get(1).getId()),
-                //() -> assertTrue(scheduleList.get(0).getDoctor().equals(scheduleList2.get(0).getDoctor())),
-                () -> assertEquals(scheduleList.get(0).getRoom(), scheduleList2.get(0).getRoom()),
                 () -> assertNull(scheduleList.get(0).getPatient()),
                 () -> assertNull(scheduleList.get(0).getTicket()),
                 () -> assertEquals(8, scheduleList2.size())
@@ -48,14 +41,11 @@ public class ScheduleDaoTest extends DatabaseTest {
 
         scheduleList.get(0).setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
 
-
         scheduleDao.createSchedule(scheduleList);
 
         List<Schedule> scheduleList2 = scheduleDao.getAllShedule();
 
         assertEquals(15, scheduleList2.size());
-        //Patient patienet = scheduleList2.get(0).getPatient();
-        //assertEquals("patientLogin", patienet.getUser().getLogin());
     }
 
     @Test
@@ -66,14 +56,11 @@ public class ScheduleDaoTest extends DatabaseTest {
 
         scheduleList.get(0).setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
 
-
         scheduleDao.createSchedule(scheduleList);
 
         List<Schedule> scheduleList2 = scheduleDao.getByDoctorSpeciality("spec");
 
         assertEquals(10, scheduleList2.size());
-        //Patient patienet = scheduleList2.get(0).getPatient();
-        //assertEquals("patientLogin", patienet.getUser().getLogin());
     }
 
     @Test
@@ -90,6 +77,60 @@ public class ScheduleDaoTest extends DatabaseTest {
         assertFalse(scheduleDao.addTicket(schedule));
     }
 
+    @Test
+    public void testAddCommission() {
+        Doctor doc1 = doctorDao.getBySpeciality("spec").get(0);
+
+        User user = new User("Вася", "Петечкин", "Васильевич", "testDoc", "password", null);
+        assertThrows(RuntimeException.class, () -> doctorDao.insert(new Doctor(user, "ErrorSpeciality", "room")));
+        Doctor doc2 = new Doctor(user, "spec", "6");
+        doctorDao.insert(doc2);
+
+        List<Schedule> scheduleList = createTestSchedule(doc1, 15, 8);
+        scheduleDao.createSchedule(scheduleList);
+
+        Schedule schedule = scheduleList.get(5);
+        schedule.setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
+        schedule.setTicket("testTicket");
+
+        assertTrue(scheduleDao.addTicket(schedule));
+
+        List<Commission> commissionList = new ArrayList<>();
+        commissionList.add(new Commission(schedule.getId(), doc2.getId()));
+
+        assertEquals(0, commissionList.get(0).getId());
+        assertEquals(1, scheduleDao.addCommission(commissionList));
+        assertNotEquals(0, commissionList.get(0).getId());
+        assertThrows(RuntimeException.class, () -> scheduleDao.addCommission(commissionList));
+    }
+
+    @Test
+    public void testGetCommission() {
+        Doctor doc1 = doctorDao.getBySpeciality("spec").get(0);
+
+        User user = new User("Вася", "Петечкин", "Васильевич", "testDoc", "password", null);
+        assertThrows(RuntimeException.class, () -> doctorDao.insert(new Doctor(user, "ErrorSpeciality", "room")));
+        Doctor doc2 = new Doctor(user, "spec", "6");
+        doctorDao.insert(doc2);
+
+        List<Schedule> scheduleList = createTestSchedule(doc1, 15, 8);
+        scheduleDao.createSchedule(scheduleList);
+
+        Schedule schedule = scheduleList.get(5);
+        schedule.setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
+        schedule.setTicket("testTicket");
+
+        assertTrue(scheduleDao.addTicket(schedule));
+
+        List<Commission> commissionList = new ArrayList<>();
+        commissionList.add(new Commission(schedule.getId(), doc2.getId()));
+
+        assertEquals(1, scheduleDao.addCommission(commissionList));
+
+        scheduleList = scheduleDao.getByDoctorId(doc1.getId());
+        assertNotNull(scheduleList.get(0).getCommission());
+    }
+
 
     private List<Schedule> createTestSchedule(Doctor doc, int interval, int count) {
         List<Schedule> scheduleList = new ArrayList<>();
@@ -99,8 +140,7 @@ public class ScheduleDaoTest extends DatabaseTest {
                     doc,
                     new java.sql.Date(System.currentTimeMillis()),
                     Time.valueOf(LocalTime.now().plusMinutes(i * interval)),
-                    Time.valueOf(LocalTime.now().plusMinutes((i + 1) * interval - 1)),
-                    doc.getRoom()
+                    Time.valueOf(LocalTime.now().plusMinutes((i + 1) * interval - 1))
             ));
         }
         return scheduleList;

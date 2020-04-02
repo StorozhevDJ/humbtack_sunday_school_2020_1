@@ -1,5 +1,6 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
+import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class AdminDaoImpl extends DaoImplBase implements AdminDao {
     }
 
     @Override
-    public Admin getByToken(String token) {
+    public Admin getByToken(User.Session token) {
         LOGGER.debug("DAO get Admin by token {}", token);
         try (SqlSession sqlSession = getSession()) {
             return getAdminMapper(sqlSession).getByToken(token);

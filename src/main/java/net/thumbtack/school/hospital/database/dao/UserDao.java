@@ -7,7 +7,7 @@ public interface UserDao {
     /**
      * Get user info by Login and password
      *
-     * @param ligin
+     * @param login
      * @param password
      * @return inserted user if login and password is correct
      */
@@ -19,7 +19,7 @@ public interface UserDao {
      * @param token
      * @return inserted user if login and password is correct
      */
-    User getByToken(String token);
+    User getByToken(User.Session token);
 
     /**
      * LogIn user (Insert token for sign in user)
@@ -35,6 +35,6 @@ public interface UserDao {
      * @param token to logOut user
      * @return true if user logout successful
      */
-    boolean logOut(String token);
+    boolean logOut(User.Session token);
 
 }

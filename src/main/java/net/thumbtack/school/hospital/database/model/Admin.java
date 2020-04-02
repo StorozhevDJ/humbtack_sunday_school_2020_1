@@ -10,7 +10,7 @@ public class Admin {
 
     public Admin(int id, User user, String position) {
         setId(id);
-        user.setType("admin");
+        user.setType(User.Type.ADMINISTRATOR);
         setUser(user);
         setPosition(position);
     }

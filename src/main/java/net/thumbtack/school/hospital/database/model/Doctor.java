@@ -12,7 +12,7 @@ public class Doctor {
 
     public Doctor(int id, User user, String speciality, String room) {
         setId(id);
-        user.setType("doctor");
+        user.setType(User.Type.DOCTOR);
         setUser(user);
         setSpeciality(speciality);
         setRoom(room);

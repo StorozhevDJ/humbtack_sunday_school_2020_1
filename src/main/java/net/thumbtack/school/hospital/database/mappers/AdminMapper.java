@@ -1,5 +1,6 @@
 package net.thumbtack.school.hospital.database.mappers;
 
+import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
@@ -25,7 +26,7 @@ public interface AdminMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     Admin getByUserId(int id);
@@ -38,11 +39,11 @@ public interface AdminMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login"),
-            @Result(property = "user.token", column = "token")
+            @Result(property = "user.session.token", column = "token")
     })
-    Admin getByToken(String token);
+    Admin getByToken(User.Session token);
 
     @Select("SELECT COUNT(*) FROM admin;")
     int getCount();

@@ -2,6 +2,7 @@ package net.thumbtack.school.hospital.database.mappers;
 
 import java.util.List;
 
+import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
@@ -26,7 +27,7 @@ public interface PatientMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     Patient getByPatientId(int id);
@@ -39,7 +40,7 @@ public interface PatientMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     Patient getByUserId(int id);
@@ -52,11 +53,11 @@ public interface PatientMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login"),
-            @Result(property = "user.token", column = "token")
+            @Result(property = "user.session.token", column = "token")
     })
-    Patient getByToken(String token);
+    Patient getByToken(User.Session token);
 
     @Select("SELECT patient.id, userId, firstName, lastName, patronymic, type, login, email, address, phone " +
             "FROM patient JOIN user ON user.id = patient.userId " +
@@ -66,7 +67,7 @@ public interface PatientMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     List<Patient> getByDoctorId(int id);

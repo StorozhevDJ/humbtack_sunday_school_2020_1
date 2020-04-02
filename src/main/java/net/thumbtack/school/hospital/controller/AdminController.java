@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.thumbtack.school.hospital.dto.request.AddAdminDtoRequest;
 import net.thumbtack.school.hospital.dto.response.AddAdminDtoResponse;
-import net.thumbtack.school.hospital.serverException.ServerException;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 
 @RestController
 @RequestMapping("/api/admin")

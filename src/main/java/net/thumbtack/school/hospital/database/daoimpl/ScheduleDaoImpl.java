@@ -3,6 +3,7 @@ package net.thumbtack.school.hospital.database.daoimpl;
 import java.util.List;
 
 import net.thumbtack.school.hospital.database.dao.ScheduleDao;
+import net.thumbtack.school.hospital.database.model.Commission;
 import net.thumbtack.school.hospital.database.model.Schedule;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -30,8 +31,25 @@ public class ScheduleDaoImpl extends DaoImplBase implements ScheduleDao {
     }
 
     @Override
+    public int addCommission(List<Commission> commissions) {
+        LOGGER.debug("DAO insert Commission {}", commissions);
+        int ret = 0;
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                ret = getCommissionMapper(sqlSession).insertCommission(commissions);
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't insert Commission {} {}", commissions, ex);
+                sqlSession.rollback();
+                throw ex;
+            }
+            sqlSession.commit();
+        }
+        return ret;
+    }
+
+    @Override
     public List<Schedule> getByDoctorId(int id) {
-        LOGGER.debug("DAO get Doctor Shedule by id {}", id);
+        LOGGER.debug("DAO get Doctor Schedule by id {}", id);
         try (SqlSession sqlSession = getSession()) {
             return getScheduleMapper(sqlSession).getByDoctorId(id);
         } catch (RuntimeException ex) {

@@ -4,6 +4,7 @@ import net.thumbtack.school.hospital.database.model.Doctor;
 
 import java.util.List;
 
+import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.annotations.*;
 
 public interface DoctorMapper {
@@ -26,7 +27,7 @@ public interface DoctorMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     Doctor getByUserId(int id);
@@ -42,7 +43,7 @@ public interface DoctorMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     Doctor getByDoctorId(int id);
@@ -58,7 +59,7 @@ public interface DoctorMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type")
+            @Result(property = "user.type.text", column = "type")
     })
     List<Doctor> getBySpeciality(String speciality);
 
@@ -73,11 +74,11 @@ public interface DoctorMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.type.text", column = "type"),
             @Result(property = "user.login", column = "login"),
-            @Result(property = "user.token", column = "token")
+            @Result(property = "user.session.token", column = "token")
     })
-    Doctor getByToken(String tocken);
+    Doctor getByToken(User.Session token);
 
     @Select("SELECT COUNT(*) FROM doctor;")
     int getCount();

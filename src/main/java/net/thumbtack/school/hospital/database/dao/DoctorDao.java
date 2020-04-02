@@ -3,15 +3,16 @@ package net.thumbtack.school.hospital.database.dao;
 import java.util.List;
 
 import net.thumbtack.school.hospital.database.model.Doctor;
+import net.thumbtack.school.hospital.database.model.User;
 
 public interface DoctorDao {
-    /**
-     * Add new doctor into DB
-     *
-     * @param doctor - new doctor
-     * @return inserted doctor
-     */
-    Doctor insert(Doctor doctor);
+	/**
+	 * Add new doctor into DB
+	 *
+	 * @param doctor - new doctor
+	 * @return inserted doctor
+	 */
+	Doctor insert(Doctor doctor);
 
 	/**
 	 * Get doctor info by token from JAVASESSIONID cookie
@@ -19,7 +20,7 @@ public interface DoctorDao {
 	 * @param token
 	 * @return doctor account
 	 */
-	Doctor getByToken(String token);
+	Doctor getByToken(User.Session token);
 
 	/**
 	 * Get Doctor info by User ID

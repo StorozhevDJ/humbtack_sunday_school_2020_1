@@ -27,6 +27,10 @@ public class DaoImplBase {
         return sqlSession.getMapper(ScheduleMapper.class);
     }
 
+    protected CommissionMapper getCommissionMapper(SqlSession sqlSession) {
+        return sqlSession.getMapper(CommissionMapper.class);
+    }
+
     protected UserMapper getUserMapper(SqlSession sqlSession) {
         return sqlSession.getMapper(UserMapper.class);
     }

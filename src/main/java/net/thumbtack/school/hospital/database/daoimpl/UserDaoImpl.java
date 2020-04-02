@@ -23,7 +23,7 @@ public class UserDaoImpl extends DaoImplBase implements UserDao {
     }
 
     @Override
-    public User getByToken(String token) {
+    public User getByToken(User.Session token) {
         LOGGER.debug("DAO get User by token {}", token);
         try (SqlSession sqlSession = getSession()) {
             return getUserMapper(sqlSession).getByToken(token);
@@ -51,7 +51,7 @@ public class UserDaoImpl extends DaoImplBase implements UserDao {
     }
 
     @Override
-    public boolean logOut(String token) {
+    public boolean logOut(User.Session token) {
         LOGGER.debug("DAO LogOut user with token {} ", token);
         int res = 0;
         try (SqlSession sqlSession = getSession()) {

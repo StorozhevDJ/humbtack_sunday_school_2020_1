@@ -1,36 +1,38 @@
 package net.thumbtack.school.hospital.database.mappers;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-
 import net.thumbtack.school.hospital.database.model.User;
+import org.apache.ibatis.annotations.*;
 
 public interface UserMapper {
 
     @Insert("INSERT INTO `user` ( `firstName`, `lastName`, `patronymic`, type, `login`, `password`, `token`) "
-            + "VALUES ( #{firstName}, #{lastName}, #{patronymic}, #{type}, #{login}, MD5(#{password}), #{token} );")
+            + "VALUES ( #{firstName}, #{lastName}, #{patronymic}, #{type.text}, #{login}, MD5(#{password}), #{session.token} );")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(User user);
 
-    @Update("UPDATE `user` SET token = #{token} WHERE login = #{login} AND password = MD5(#{password});")
+    @Update("UPDATE `user` SET token = #{session.token} WHERE login = #{login} AND password = MD5(#{password});")
     int insertToken(User user);
 
     @Update("UPDATE `user` SET token = NULL WHERE token = #{token};")
-    int deleteToken(String token);
+    int deleteToken(User.Session token);
 
     @Select("SELECT id, firstName, lastName, patronymic, type, login, token "
             + "FROM user "
             + "WHERE login = #{login} AND password = MD5(#{password});")
+    @Results({
+            @Result(property = "type", column = "type", javaType = User.Type.class),
+            @Result(property = "session.token", column = "token")
+    })
     User getByLogin(@Param("login") String login, @Param("password") String password);
 
     @Select("SELECT id, firstName, lastName, patronymic, type, login, token "
             + "FROM user "
             + "WHERE token = #{token};")
-    User getByToken(String token);
+    @Results({
+            @Result(property = "type", column = "type", javaType = User.Type.class),
+            @Result(property = "session.token", column = "token")
+    })
+    User getByToken(User.Session token);
 
 
     @Delete("DELETE FROM user;")

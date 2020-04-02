@@ -2,41 +2,41 @@ package net.thumbtack.school.hospital.database.model;
 
 import java.sql.Time;
 import java.sql.Date;
+import java.util.List;
 import java.util.Objects;
 
 
 public class Schedule {
     private int id;
     private String ticket;
-    //private int doctorId;
     private Doctor doctor;
     private Date date;
-    // REVU измените имя, непонятно
-    private Time time;
+    private Time timeStart;
     private Time timeEnd;
-    //private Integer patientId;
     private Patient patient;
-    private String room;
+    private List<Commission> commission;
 
-    public Schedule(int id, String ticket, Doctor doctor, Date date, Time time, Time timeEnd, Patient patient, String room) {
+    public Schedule(int id, String ticket, Doctor doctor, Date date, Time timeStart, Time timeEnd, Patient patient, List<Commission> commission) {
         setId(id);
         setTicket(ticket);
-        //setDoctorId(doctorId);
         setDoctor(doctor);
         setDate(date);
-        setTime(time);
+        setTimeStart(timeStart);
         setTimeEnd(timeEnd);
-        //setPatientId(patientId);
         setPatient(patient);
-        setRoom(room);
+        setCommission(commission);
     }
 
-    public Schedule(String ticket, Doctor doctor, Date date, Time time, Time timeEnd, Patient patient, String room) {
-        this(0, ticket, doctor, date, time, timeEnd, patient, room);
+    public Schedule(int id, String ticket, Doctor doctor, Date date, Time timeStart, Time timeEnd, Patient patient) {
+        this(0, ticket, doctor, date, timeStart, timeEnd, patient, null);
     }
 
-    public Schedule(Doctor doctor, Date date, Time time, Time timeEnd, String room) {
-        this(0, null, doctor, date, time, timeEnd, null, room);
+    public Schedule(String ticket, Doctor doctor, Date date, Time timeStart, Time timeEnd, Patient patient) {
+        this(0, ticket, doctor, date, timeStart, timeEnd, patient);
+    }
+
+    public Schedule(Doctor doctor, Date date, Time timeStart, Time timeEnd) {
+        this(0, null, doctor, date, timeStart, timeEnd, null);
     }
 
     public Schedule() {
@@ -50,14 +50,6 @@ public class Schedule {
     public void setId(int id) {
         this.id = id;
     }
-
-    /*public int getDoctorId() {
-        return doctorId;
-    }
-
-    public void setDoctorId(int doctorId) {
-        this.doctorId = doctorId;
-    }*/
 
     public Doctor getDoctor() {
         return doctor;
@@ -75,12 +67,12 @@ public class Schedule {
         this.date = date;
     }
 
-    public Time getTime() {
-        return time;
+    public Time getTimeStart() {
+        return timeStart;
     }
 
-    public void setTime(Time time) {
-        this.time = time;
+    public void setTimeStart(Time timeStart) {
+        this.timeStart = timeStart;
     }
 
     public Time getTimeEnd() {
@@ -90,14 +82,6 @@ public class Schedule {
     public void setTimeEnd(Time timeEnd) {
         this.timeEnd = timeEnd;
     }
-
-    /*public Integer getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(Integer patientId) {
-        this.patientId = patientId;
-    }*/
 
     public Patient getPatient() {
         return patient;
@@ -115,12 +99,12 @@ public class Schedule {
         this.ticket = ticket;
     }
 
-    public String getRoom() {
-        return room;
+    public List<Commission> getCommission() {
+        return commission;
     }
 
-    public void setRoom(String room) {
-        this.room = room;
+    public void setCommission(List<Commission> commission) {
+        this.commission = commission;
     }
 
     @Override
@@ -129,19 +113,17 @@ public class Schedule {
         if (!(o instanceof Schedule)) return false;
         Schedule schedule = (Schedule) o;
         return getId() == schedule.getId() &&
-                //getDoctorId() == schedule.getDoctorId() &&
-                getDoctor() == schedule.getDoctor() &&
-                getTicket().equals(schedule.getTicket()) &&
-                getDate().equals(schedule.getDate()) &&
-                getTime().equals(schedule.getTime()) &&
-                getTimeEnd().equals(schedule.getTimeEnd()) &&
-                //getPatientId().equals(schedule.getPatientId()) &&
-                getPatient().equals(schedule.getPatient()) &&
-                getRoom().equals(schedule.getRoom());
+                Objects.equals(getTicket(), schedule.getTicket()) &&
+                Objects.equals(getDoctor(), schedule.getDoctor()) &&
+                Objects.equals(getDate(), schedule.getDate()) &&
+                Objects.equals(getTimeStart(), schedule.getTimeStart()) &&
+                Objects.equals(getTimeEnd(), schedule.getTimeEnd()) &&
+                Objects.equals(getPatient(), schedule.getPatient()) &&
+                Objects.equals(getCommission(), schedule.getCommission());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTicket(), getDoctor(), getDate(), getTime(), getTimeEnd(), getPatient(), getRoom());
+        return Objects.hash(getId(), getTicket(), getDoctor(), getDate(), getTimeStart(), getTimeEnd(), getPatient(), getCommission());
     }
 }
