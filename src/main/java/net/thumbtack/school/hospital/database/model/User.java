@@ -4,11 +4,13 @@ import java.util.Objects;
 
 public class User {
 
+	// REVU вынесите в отдельный файл
     public enum Type {
         ADMINISTRATOR("Administrator"),
         DOCTOR("Doctor"),
         PATIENT("Patient");
 
+    	// REVU не нужно, бесполезно 
         private String text;
 
         Type(String code) {

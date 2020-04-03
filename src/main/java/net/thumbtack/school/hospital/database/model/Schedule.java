@@ -14,6 +14,7 @@ public class Schedule {
     private Time timeStart;
     private Time timeEnd;
     private Patient patient;
+    // REVU не надо здесь
     private List<Commission> commission;
 
     public Schedule(int id, String ticket, Doctor doctor, Date date, Time timeStart, Time timeEnd, Patient patient, List<Commission> commission) {

@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Commission {
     private int id;
     private int scheduleId;
+    // REVU List<Doctor> doctors;
     private int doctorId;
 
     public int getId() {

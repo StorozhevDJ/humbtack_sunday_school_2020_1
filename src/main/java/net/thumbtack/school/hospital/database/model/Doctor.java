@@ -8,6 +8,7 @@ public class Doctor {
     //private Speciality speciality;
     private String speciality;
     private String room;
+    // REVU и вот сюда List или Set из Schedule
 
 
     public Doctor(int id, User user, String speciality, String room) {
