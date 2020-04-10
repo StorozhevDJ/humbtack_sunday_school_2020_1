@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import net.thumbtack.school.hospital.database.model.Session;
+import net.thumbtack.school.hospital.database.model.UserType;
 import org.junit.jupiter.api.Test;
 
 import net.thumbtack.school.hospital.database.model.Patient;
@@ -29,31 +31,31 @@ public class PatientDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertNotEquals(0, patient.getId()),
                 () -> assertEquals(patient.getUser().getId(), user.getId()),
-                () -> assertEquals(User.Type.PATIENT, patient.getUser().getType()),
+                () -> assertEquals(UserType.PATIENT, patient.getUser().getType()),
                 () -> assertEquals(2, patientDao.getCount())
         );
     }
 
     @Test
     public void testGetByToken() {
-        assertTrue(userDao.logIn(new User("patientLogin", "passwordPatient", new User.Session("token"))));
+        assertTrue(userDao.logIn(new User("patientLogin", "passwordPatient", new Session("token"))));
 
-        Patient patient = patientDao.getByToken(new User.Session("token"));
+        Patient patient = patientDao.getByToken(new Session("token"));
         assertAll(
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
                 () -> assertEquals("+79001112233", patient.getPhone()),
-                () -> assertEquals(User.Type.PATIENT, patient.getUser().getType(), "User type is not patient"),
+                () -> assertEquals(UserType.PATIENT, patient.getUser().getType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
                 () -> assertEquals("partronymicPatient", patient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),
                 () -> assertEquals("patientLogin", patient.getUser().getLogin(), "User login is not patientLogin"),
                 () -> assertEquals("token", patient.getUser().getSession().getToken(), "User token is not token"),
                 () -> assertNull(patient.getUser().getPassword(), "User password is not null"),
-                () -> assertNull(patientDao.getByToken(new User.Session("errorToken"))),
-                () -> assertNull(patientDao.getByToken(new User.Session(""))),
-                () -> assertNull(patientDao.getByToken(new User.Session("   "))),
-                () -> assertNull(patientDao.getByToken(new User.Session(" token "))),
+                () -> assertNull(patientDao.getByToken(new Session("errorToken"))),
+                () -> assertNull(patientDao.getByToken(new Session(""))),
+                () -> assertNull(patientDao.getByToken(new Session("   "))),
+                () -> assertNull(patientDao.getByToken(new Session(" token "))),
                 () -> assertNull(patientDao.getByToken(null))
         );
     }
@@ -66,7 +68,7 @@ public class PatientDaoTest extends DatabaseTest {
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
                 () -> assertEquals("+79001112233", patient.getPhone()),
-                () -> assertEquals(User.Type.PATIENT, patient.getUser().getType(), "User type is not patient"),
+                () -> assertEquals(UserType.PATIENT, patient.getUser().getType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
                 () -> assertEquals("partronymicPatient", patient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),
@@ -88,7 +90,7 @@ public class PatientDaoTest extends DatabaseTest {
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
                 () -> assertEquals("+79001112233", patient.getPhone()),
-                () -> assertEquals(User.Type.PATIENT, patient.getUser().getType(), "User type is not patient"),
+                () -> assertEquals(UserType.PATIENT, patient.getUser().getType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
                 () -> assertEquals("partronymicPatient", patient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),

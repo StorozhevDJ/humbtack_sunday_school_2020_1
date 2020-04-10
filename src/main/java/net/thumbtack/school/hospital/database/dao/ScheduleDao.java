@@ -3,6 +3,7 @@ package net.thumbtack.school.hospital.database.dao;
 import java.util.List;
 
 import net.thumbtack.school.hospital.database.model.Commission;
+import net.thumbtack.school.hospital.database.model.DaySchedule;
 import net.thumbtack.school.hospital.database.model.Schedule;
 
 public interface ScheduleDao {
@@ -54,14 +55,6 @@ public interface ScheduleDao {
 	int createSchedule(List<Schedule> schedule);
 
 	/**
-	 * Add commission in to schedule
-	 *
-	 * @param commissions
-	 * @return
-	 */
-	int addCommission(List<Commission> commissions);
-
-	/**
 	 * Get Doctor schedule
 	 *
 	 * @param id Doctor
@@ -82,7 +75,7 @@ public interface ScheduleDao {
 	 *
 	 * @return
 	 */
-	List<Schedule> getAllShedule();
+	List<Schedule> getAllSchedule();
 
 	/**
 	 * Add ticket to schedule
@@ -90,6 +83,6 @@ public interface ScheduleDao {
 	 * @param schedule
 	 * @return
 	 */
-	boolean addTicket(Schedule schedule);
+	boolean addTicket(DaySchedule schedule);
 
 }

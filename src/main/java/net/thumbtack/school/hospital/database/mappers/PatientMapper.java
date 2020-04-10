@@ -2,6 +2,7 @@ package net.thumbtack.school.hospital.database.mappers;
 
 import java.util.List;
 
+import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -57,7 +58,7 @@ public interface PatientMapper {
             @Result(property = "user.login", column = "login"),
             @Result(property = "user.session.token", column = "token")
     })
-    Patient getByToken(User.Session token);
+    Patient getByToken(Session token);
 
     @Select("SELECT patient.id, userId, firstName, lastName, patronymic, type, login, email, address, phone " +
             "FROM patient JOIN user ON user.id = patient.userId " +

@@ -1,11 +1,28 @@
 package net.thumbtack.school.hospital.database.model;
 
+import java.sql.Time;
+import java.util.List;
 import java.util.Objects;
 
 public class Commission {
     private int id;
-    private int scheduleId;
-    private int doctorId;
+    private String ticket;
+    private Time timeStart;
+    private Time timeEnd;
+    private Patient patient;
+    private List<Doctor> doctorList;
+
+    public Commission(int id, String ticket, Time timeStart, Time timeEnd, Patient patient, List<Doctor> doctorList) {
+        setId(id);
+        setTicket(ticket);
+        setTimeStart(timeStart);
+        setTimeEnd(timeEnd);
+        setPatient(patient);
+        setDoctorList(doctorList);
+    }
+
+    public Commission() {
+    }
 
     public int getId() {
         return id;
@@ -15,33 +32,44 @@ public class Commission {
         this.id = id;
     }
 
-    public int getScheduleId() {
-        return scheduleId;
+    public String getTicket() {
+        return ticket;
     }
 
-    public void setScheduleId(int scheduleId) {
-        this.scheduleId = scheduleId;
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
     }
 
-    public int getDoctorId() {
-        return doctorId;
+    public Time getTimeStart() {
+        return timeStart;
     }
 
-    public void setDoctorId(int doctorId) {
-        this.doctorId = doctorId;
+    public void setTimeStart(Time timeStart) {
+        this.timeStart = timeStart;
     }
 
-    public Commission(int id, int scheduleId, int doctorId) {
-        this.id = id;
-        this.scheduleId = scheduleId;
-        this.doctorId = doctorId;
+    public Time getTimeEnd() {
+        return timeEnd;
     }
 
-    public Commission(int scheduleId, int doctorId) {
-        this(0, scheduleId, doctorId);
+    public void setTimeEnd(Time timeEnd) {
+        this.timeEnd = timeEnd;
     }
 
-    public Commission() {
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public List<Doctor> getDoctorList() {
+        return doctorList;
+    }
+
+    public void setDoctorList(List<Doctor> doctorList) {
+        this.doctorList = doctorList;
     }
 
     @Override
@@ -50,12 +78,15 @@ public class Commission {
         if (!(o instanceof Commission)) return false;
         Commission that = (Commission) o;
         return getId() == that.getId() &&
-                getScheduleId() == that.getScheduleId() &&
-                getDoctorId() == that.getDoctorId();
+                Objects.equals(getTicket(), that.getTicket()) &&
+                Objects.equals(getTimeStart(), that.getTimeStart()) &&
+                Objects.equals(getTimeEnd(), that.getTimeEnd()) &&
+                Objects.equals(getPatient(), that.getPatient()) &&
+                Objects.equals(getDoctorList(), that.getDoctorList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getScheduleId(), getDoctorId());
+        return Objects.hash(getId(), getTicket(), getTimeStart(), getTimeEnd(), getPatient(), getDoctorList());
     }
 }

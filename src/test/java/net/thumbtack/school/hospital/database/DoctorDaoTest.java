@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import net.thumbtack.school.hospital.database.model.Session;
+import net.thumbtack.school.hospital.database.model.UserType;
 import org.junit.jupiter.api.Test;
 
 import net.thumbtack.school.hospital.database.model.Doctor;
@@ -27,29 +29,29 @@ public class DoctorDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertNotEquals(0, doc.getId()),
                 () -> assertEquals(doc.getUser().getId(), user.getId()),
-                () -> assertEquals(User.Type.DOCTOR, doc.getUser().getType()),
+                () -> assertEquals(UserType.DOCTOR, doc.getUser().getType()),
                 () -> assertEquals(2, doctorDao.getCount())
         );
     }
 
     @Test
     public void testGetByToken() {
-        assertTrue(userDao.logIn(new User("doc", "doctor", new User.Session("token"))));
+        assertTrue(userDao.logIn(new User("doc", "doctor", new Session("token"))));
 
-        Doctor doc = doctorDao.getByToken(new User.Session("token"));
+        Doctor doc = doctorDao.getByToken(new Session("token"));
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality()),
                 () -> assertEquals("1", doc.getRoom()),
-                () -> assertEquals(User.Type.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
+                () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),
                 () -> assertNull(doc.getUser().getPatronymic(), "User patronymic is not null"),
                 () -> assertEquals("doc", doc.getUser().getLogin(), "User login is not doc"),
                 () -> assertNull(doc.getUser().getPassword(), "User password is not null"),
-                () -> assertNull(doctorDao.getByToken(new User.Session("errorToken"))),
-                () -> assertNull(doctorDao.getByToken(new User.Session(""))),
-                () -> assertNull(doctorDao.getByToken(new User.Session("   "))),
-                () -> assertNull(doctorDao.getByToken(new User.Session(" token "))),
+                () -> assertNull(doctorDao.getByToken(new Session("errorToken"))),
+                () -> assertNull(doctorDao.getByToken(new Session(""))),
+                () -> assertNull(doctorDao.getByToken(new Session("   "))),
+                () -> assertNull(doctorDao.getByToken(new Session(" token "))),
                 () -> assertNull(doctorDao.getByToken(null))
         );
     }
@@ -63,7 +65,7 @@ public class DoctorDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality()),
                 () -> assertEquals("1", doc.getRoom()),
-                () -> assertEquals(User.Type.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
+                () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),
                 () -> assertNull(doc.getUser().getPatronymic(), "User patronymic is not null"),
@@ -84,7 +86,7 @@ public class DoctorDaoTest extends DatabaseTest {
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality()),
                 () -> assertEquals("1", doc.getRoom()),
-                () -> assertEquals(User.Type.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
+                () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),
                 () -> assertNull(doc.getUser().getPatronymic(), "User patronymic is not null"),

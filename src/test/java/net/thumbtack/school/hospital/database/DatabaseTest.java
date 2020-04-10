@@ -1,20 +1,10 @@
 package net.thumbtack.school.hospital.database;
 
+import net.thumbtack.school.hospital.database.dao.*;
+import net.thumbtack.school.hospital.database.daoimpl.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import net.thumbtack.school.hospital.database.dao.AdminDao;
-import net.thumbtack.school.hospital.database.dao.CommonDao;
-import net.thumbtack.school.hospital.database.dao.DoctorDao;
-import net.thumbtack.school.hospital.database.dao.PatientDao;
-import net.thumbtack.school.hospital.database.dao.ScheduleDao;
-import net.thumbtack.school.hospital.database.dao.UserDao;
-import net.thumbtack.school.hospital.database.daoimpl.AdminDaoImpl;
-import net.thumbtack.school.hospital.database.daoimpl.CommonDaoImpl;
-import net.thumbtack.school.hospital.database.daoimpl.DoctorDaoImpl;
-import net.thumbtack.school.hospital.database.daoimpl.PatientDaoImpl;
-import net.thumbtack.school.hospital.database.daoimpl.ScheduleDaoImpl;
-import net.thumbtack.school.hospital.database.daoimpl.UserDaoImpl;
 import net.thumbtack.school.hospital.database.model.Admin;
 import net.thumbtack.school.hospital.database.model.Doctor;
 import net.thumbtack.school.hospital.database.model.Patient;
@@ -29,6 +19,7 @@ public class DatabaseTest {
     protected DoctorDao doctorDao = new DoctorDaoImpl();
     protected PatientDao patientDao = new PatientDaoImpl();
     protected ScheduleDao scheduleDao = new ScheduleDaoImpl();
+    protected DayScheduleDao dayScheduleDao = new DayScheduleDaoImpl();
 
     @BeforeAll()
     public static void setUp() {

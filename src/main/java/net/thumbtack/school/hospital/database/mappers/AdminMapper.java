@@ -1,5 +1,6 @@
 package net.thumbtack.school.hospital.database.mappers;
 
+import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -43,7 +44,7 @@ public interface AdminMapper {
             @Result(property = "user.login", column = "login"),
             @Result(property = "user.session.token", column = "token")
     })
-    Admin getByToken(User.Session token);
+    Admin getByToken(Session token);
 
     @Select("SELECT COUNT(*) FROM admin;")
     int getCount();

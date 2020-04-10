@@ -1,6 +1,8 @@
 package net.thumbtack.school.hospital.database.mappers;
 
+import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
+import net.thumbtack.school.hospital.database.model.UserType;
 import org.apache.ibatis.annotations.*;
 
 public interface UserMapper {
@@ -14,13 +16,13 @@ public interface UserMapper {
     int insertToken(User user);
 
     @Update("UPDATE `user` SET token = NULL WHERE token = #{token};")
-    int deleteToken(User.Session token);
+    int deleteToken(Session token);
 
     @Select("SELECT id, firstName, lastName, patronymic, type, login, token "
             + "FROM user "
             + "WHERE login = #{login} AND password = MD5(#{password});")
     @Results({
-            @Result(property = "type", column = "type", javaType = User.Type.class),
+            @Result(property = "type", column = "type", javaType = UserType.class),
             @Result(property = "session.token", column = "token")
     })
     User getByLogin(@Param("login") String login, @Param("password") String password);
@@ -29,10 +31,10 @@ public interface UserMapper {
             + "FROM user "
             + "WHERE token = #{token};")
     @Results({
-            @Result(property = "type", column = "type", javaType = User.Type.class),
+            @Result(property = "type", column = "type", javaType = UserType.class),
             @Result(property = "session.token", column = "token")
     })
-    User getByToken(User.Session token);
+    User getByToken(Session token);
 
 
     @Delete("DELETE FROM user;")

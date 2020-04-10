@@ -1,13 +1,13 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
-import java.util.List;
-
 import net.thumbtack.school.hospital.database.dao.ScheduleDao;
-import net.thumbtack.school.hospital.database.model.Commission;
+import net.thumbtack.school.hospital.database.model.DaySchedule;
 import net.thumbtack.school.hospital.database.model.Schedule;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class ScheduleDaoImpl extends DaoImplBase implements ScheduleDao {
 
@@ -19,26 +19,12 @@ public class ScheduleDaoImpl extends DaoImplBase implements ScheduleDao {
         int ret = 0;
         try (SqlSession sqlSession = getSession()) {
             try {
-                ret = getScheduleMapper(sqlSession).insert(schedule);
+                getScheduleMapper(sqlSession).insert(schedule);
+                for (Schedule s : schedule) {
+                    ret += getDayScheduleMapper(sqlSession).insertDay(s.getDaySchedule(), s.getId());
+                }
             } catch (RuntimeException ex) {
                 LOGGER.info("Can't insert Schedule {} {}", schedule, ex);
-                sqlSession.rollback();
-                throw ex;
-            }
-            sqlSession.commit();
-        }
-        return ret;
-    }
-
-    @Override
-    public int addCommission(List<Commission> commissions) {
-        LOGGER.debug("DAO insert Commission {}", commissions);
-        int ret = 0;
-        try (SqlSession sqlSession = getSession()) {
-            try {
-                ret = getCommissionMapper(sqlSession).insertCommission(commissions);
-            } catch (RuntimeException ex) {
-                LOGGER.info("Can't insert Commission {} {}", commissions, ex);
                 sqlSession.rollback();
                 throw ex;
             }
@@ -60,7 +46,7 @@ public class ScheduleDaoImpl extends DaoImplBase implements ScheduleDao {
 
     @Override
     public List<Schedule> getByDoctorSpeciality(String speciality) {
-        LOGGER.debug("DAO get Doctor Shedule by speciality {}", speciality);
+        LOGGER.debug("DAO get Doctor Schedule by speciality {}", speciality);
         try (SqlSession sqlSession = getSession()) {
             return getScheduleMapper(sqlSession).getBySpeciality(speciality);
         } catch (RuntimeException ex) {
@@ -70,18 +56,18 @@ public class ScheduleDaoImpl extends DaoImplBase implements ScheduleDao {
     }
 
     @Override
-    public List<Schedule> getAllShedule() {
-        LOGGER.debug("DAO get All Doctor Shedule");
+    public List<Schedule> getAllSchedule() {
+        LOGGER.debug("DAO get All Doctor Schedule");
         try (SqlSession sqlSession = getSession()) {
             return getScheduleMapper(sqlSession).getAll();
         } catch (RuntimeException ex) {
-            LOGGER.info("Can't get All Doctor {}", ex);
+            LOGGER.info("Can't get All Doctor Schedule {}", ex);
             throw ex;
         }
     }
 
     @Override
-    public boolean addTicket(Schedule schedule) {
+    public boolean addTicket(DaySchedule schedule) {
         LOGGER.debug("DAO insert Ticket {}", schedule);
         int ret = 0;
         try (SqlSession sqlSession = getSession()) {

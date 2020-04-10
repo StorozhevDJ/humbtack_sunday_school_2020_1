@@ -1,6 +1,7 @@
 package net.thumbtack.school.hospital.database.dao;
 
 import net.thumbtack.school.hospital.database.model.Admin;
+import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
 
 public interface AdminDao {
@@ -18,7 +19,7 @@ public interface AdminDao {
      * @param token
      * @return admin account
      */
-    Admin getByToken(User.Session token);
+    Admin getByToken(Session token);
 
     /**
      * Get admin info by User ID

@@ -3,6 +3,7 @@ package net.thumbtack.school.hospital.database.dao;
 import java.util.List;
 
 import net.thumbtack.school.hospital.database.model.Patient;
+import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
 
 public interface PatientDao {
@@ -35,7 +36,7 @@ public interface PatientDao {
      *
      * @return patient
      */
-    Patient getByToken(User.Session token);
+    Patient getByToken(Session token);
 
     /**
      * Get ALL patients by Doctor ID

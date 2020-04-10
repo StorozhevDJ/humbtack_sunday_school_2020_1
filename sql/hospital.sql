@@ -71,42 +71,81 @@ create TABLE doctor (
     `userId` INT UNSIGNED NOT NULL,
     `specialityId` INT NOT NULL,
     `roomId` INT NOT NULL,
-    UNIQUE KEY (`userId`),
-    FOREIGN KEY (`userId`) REFERENCES `user`(id)  ON delete CASCADE,
-    FOREIGN KEY (`roomId`) REFERENCES `room`(id),
-    FOREIGN KEY (`specialityId`) REFERENCES `speciality`(id)
-) ENGINE=INNODB;
+UNIQUE KEY(`userId`),
+FOREIGN KEY(`userId`)REFERENCES `user`(id)ON
+delete CASCADE,
+FOREIGN KEY(`roomId`)REFERENCES `room`(id),
+FOREIGN KEY(`specialityId`)REFERENCES `speciality`(id)
+)ENGINE = INNODB
+;
 
 -- -----------------------------------------------------
--- Table `schedule` reception
+-- Table Doctor `schedule`
 -- -----------------------------------------------------
 create TABLE `schedule` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	`ticket` VARCHAR(50) NULL,
 	`doctorId` INT UNSIGNED NOT NULL,
+    `date` DATE NOT NULL,    -- Date of schedule
+FOREIGN KEY(`doctorId`)REFERENCES `doctor`(id)ON
+delete CASCADE,
+UNIQUE(`doctorId`, `date`)
+)ENGINE = INNODB DEFAULT CHARSET = utf8
+;
+
+-- -----------------------------------------------------
+-- Table `day_schedule` reception
+-- -----------------------------------------------------
+create TABLE `day_schedule` (
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `scheduleId` INT UNSIGNED NULL,
+    `ticket` VARCHAR(50) NULL,	-- NULL if schedule free
     `patientId` INT UNSIGNED NULL,
-    `date` DATE NOT NULL,
-    `timeStart` TIME NOT NULL,
-    `timeEnd` TIME NOT NULL,
-    FOREIGN KEY (`doctorId`) REFERENCES `doctor`(id) ON delete CASCADE,
-    FOREIGN KEY (`patientId`) REFERENCES `patient`(id) ON delete SET NULL,
-    UNIQUE (`ticket`),
-    UNIQUE (`doctorId`, `date`, `timeStart`),
-    UNIQUE (`patientId`, `date`, `doctorId`) -- Пациент может записаться к нескольким врачам, но не может записаться более одного раза к одному и тому же врачу на один и тот же день
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+`timeStart` TIME NOT NULL,  -- Start reception time
+`timeEnd` TIME NOT NULL,  -- End reception time
+`type` ENUM('FREE', 'RECEPTION', 'COMMISSION', 'OTHER')NOT NULL DEFAULT 'FREE',
+FOREIGN KEY(`scheduleId`)REFERENCES `schedule`(id)ON
+delete CASCADE,
+FOREIGN KEY(`patientId`)REFERENCES `patient`(id)ON
+delete
+SET NULL,
+UNIQUE(`ticket`),
+UNIQUE(`scheduleId`, `timeStart`),
+UNIQUE(`scheduleId`, `patientId`)
+-- Пациент может записаться к нескольким врачам, но не может записаться более одного раза к одному и тому же врачу на один и тот же день
+)ENGINE= INNODB DEFAULT CHARSET=utf8;
 
 
 -- -----------------------------------------------------
 -- Table `commission`
 -- -----------------------------------------------------
 create TABLE `commission` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `ticket` VARCHAR(50) NULL,	-- NULL if schedule free
+    `patientId` INT UNSIGNED NULL,
+	`room` INT NULL,
+    `date` DATE NOT NULL,    -- Date of schedule
+`timeStart` TIME NOT NULL,  -- Start reception time
+`timeEnd` TIME NOT NULL,  -- End reception time
+FOREIGN KEY(`patientId`)REFERENCES `patient`(id)ON
+delete CASCADE,
+UNIQUE(`ticket`)
+)ENGINE = INNODB DEFAULT CHARSET = utf8
+;
+
+-- -----------------------------------------------------
+-- Doctor list for commission
+-- -----------------------------------------------------
+create TABLE `commission_doctor` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `scheduleId` INT UNSIGNED NOT NULL,
+    `commissionId` INT UNSIGNED NOT NULL,
     `doctorId` INT UNSIGNED NOT NULL,
-    FOREIGN KEY (`scheduleId`) REFERENCES `schedule`(id) ON delete CASCADE,
-    FOREIGN KEY (`doctorId`) REFERENCES `doctor`(id) ON delete CASCADE,
-    UNIQUE (`doctorId`, `scheduleId`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+FOREIGN KEY(`commissionId`)REFERENCES `commission`(id)ON
+delete CASCADE,
+FOREIGN KEY(`doctorId`)REFERENCES `doctor`(id)ON
+delete CASCADE,
+UNIQUE(`doctorId`, `commissionId`)
+)ENGINE = INNODB DEFAULT CHARSET = utf8
+;
 
 
 
@@ -115,8 +154,8 @@ create TABLE `commission` (
 -- -----------------------------------------------------
 
 -- Admin account
-insert into `user` (`firstName`, `lastName`, `type`, `login`, `password`)
-	values ('firstNameAdmin', 'lastNameAdmin', 'Administrator', 'admin', md5('admin'));
+insert into `user`(`firstName`, `lastName`, `type`, `login`, `password`)
+values ('firstNameAdmin', 'lastNameAdmin', 'Administrator', 'admin', md5('admin'));
     
 insert into `admin` (`userId`, `position`)
 	values (last_insert_id(), 'Superadmin');

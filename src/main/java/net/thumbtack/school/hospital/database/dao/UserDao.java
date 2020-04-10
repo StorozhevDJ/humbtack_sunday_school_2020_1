@@ -1,5 +1,6 @@
 package net.thumbtack.school.hospital.database.dao;
 
+import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
 
 public interface UserDao {
@@ -19,7 +20,7 @@ public interface UserDao {
      * @param token
      * @return inserted user if login and password is correct
      */
-    User getByToken(User.Session token);
+    User getByToken(Session token);
 
     /**
      * LogIn user (Insert token for sign in user)
@@ -35,6 +36,6 @@ public interface UserDao {
      * @param token to logOut user
      * @return true if user logout successful
      */
-    boolean logOut(User.Session token);
+    boolean logOut(Session token);
 
 }

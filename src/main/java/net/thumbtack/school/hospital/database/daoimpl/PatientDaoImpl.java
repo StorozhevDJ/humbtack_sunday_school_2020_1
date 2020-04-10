@@ -2,6 +2,7 @@ package net.thumbtack.school.hospital.database.daoimpl;
 
 import java.util.List;
 
+import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class PatientDaoImpl extends DaoImplBase implements PatientDao {
     }
 
     @Override
-    public Patient getByToken(User.Session token) {
+    public Patient getByToken(Session token) {
         LOGGER.debug("DAO get Patient by token {}", token);
         try (SqlSession sqlSession = getSession()) {
             return getPatientMapper(sqlSession).getByToken(token);

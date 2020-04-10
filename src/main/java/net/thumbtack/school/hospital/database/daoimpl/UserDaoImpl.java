@@ -1,5 +1,6 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
+import net.thumbtack.school.hospital.database.model.Session;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class UserDaoImpl extends DaoImplBase implements UserDao {
     }
 
     @Override
-    public User getByToken(User.Session token) {
+    public User getByToken(Session token) {
         LOGGER.debug("DAO get User by token {}", token);
         try (SqlSession sqlSession = getSession()) {
             return getUserMapper(sqlSession).getByToken(token);
@@ -51,7 +52,7 @@ public class UserDaoImpl extends DaoImplBase implements UserDao {
     }
 
     @Override
-    public boolean logOut(User.Session token) {
+    public boolean logOut(Session token) {
         LOGGER.debug("DAO LogOut user with token {} ", token);
         int res = 0;
         try (SqlSession sqlSession = getSession()) {

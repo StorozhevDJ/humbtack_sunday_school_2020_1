@@ -4,6 +4,7 @@ import net.thumbtack.school.hospital.database.model.Doctor;
 
 import java.util.List;
 
+import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.annotations.*;
 
@@ -78,7 +79,7 @@ public interface DoctorMapper {
             @Result(property = "user.login", column = "login"),
             @Result(property = "user.session.token", column = "token")
     })
-    Doctor getByToken(User.Session token);
+    Doctor getByToken(Session token);
 
     @Select("SELECT COUNT(*) FROM doctor;")
     int getCount();
