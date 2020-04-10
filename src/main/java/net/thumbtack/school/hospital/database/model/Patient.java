@@ -8,6 +8,7 @@ public class Patient {
     private String email;
     private String address;
     private String phone;
+    // а здесь Set или List из его талонов
 
 
     public Patient(int id, User user, String email, String address, String phone) {
