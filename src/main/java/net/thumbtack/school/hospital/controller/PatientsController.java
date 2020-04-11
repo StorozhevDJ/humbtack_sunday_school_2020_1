@@ -1,3 +1,4 @@
+// REVU слишком много контроллеров. Думаю, 3-4 вполне хватит
 package net.thumbtack.school.hospital.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;

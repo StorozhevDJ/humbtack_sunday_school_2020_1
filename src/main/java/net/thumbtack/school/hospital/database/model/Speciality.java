@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class Speciality {
     private int id;
+    // REVU слово value ничего не говорит. Лучше name. И в БД тоже
     private String value;
 
 

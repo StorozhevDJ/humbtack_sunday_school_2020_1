@@ -5,6 +5,7 @@ public enum UserType {
     DOCTOR("Doctor"),
     PATIENT("Patient");
 
+	// REVU лишнее, лучше удалить. Простой enum, без полей
     private String text;
 
     UserType(String code) {

@@ -5,11 +5,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-
+// REVU по-моему, это как раз DaySchedule - приемодень
+// А DaySchedule Ваш - это один прием
+// переименуйте, не вводите в заблуждение
 public class Schedule {
     private int id;
     private Doctor doctor;
     private LocalDate date;
+    // REVU private
     List<DaySchedule> daySchedule;
 
     public Schedule(int id, Doctor doctor, LocalDate date, List<DaySchedule> daySchedule) {

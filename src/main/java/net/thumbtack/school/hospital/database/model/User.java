@@ -10,6 +10,8 @@ public class User {
     private UserType type;
     private String login;
     private String password;
+    // REVU тут этого не нужно
+    // сессии создаются в сервисе при логине
     private Session session = new Session(null);
 
 
