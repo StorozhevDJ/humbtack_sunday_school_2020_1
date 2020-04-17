@@ -6,11 +6,6 @@ public class Doctor {
     private int id;
     private User user;
     private Speciality speciality;
-    //private String speciality;
-    // REVU если уж у Вас есть класс Speciality, то заведите и класс Room
-    // альтернатива - оставить все String, как сейчас
-    // классы лучше (вдруг там еще что-то появится, например, шифр специальности или номер этажа для комнаты)
-    // но в рамках данного ТЗ и String сойдет
     private Room room;
     // REVU и вот сюда List или Set из Schedule
 

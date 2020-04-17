@@ -23,12 +23,12 @@ public class DaoImplBase {
         return sqlSession.getMapper(PatientMapper.class);
     }
 
-    protected ScheduleMapper getScheduleMapper(SqlSession sqlSession) {
-        return sqlSession.getMapper(ScheduleMapper.class);
+    protected DayScheduleMapper getScheduleMapper(SqlSession sqlSession) {
+        return sqlSession.getMapper(DayScheduleMapper.class);
     }
 
-    protected DayScheduleMapper getDayScheduleMapper(SqlSession sqlSession) {
-        return sqlSession.getMapper(DayScheduleMapper.class);
+    protected TicketScheduleMapper getDayScheduleMapper(SqlSession sqlSession) {
+        return sqlSession.getMapper(TicketScheduleMapper.class);
     }
 
     protected CommissionMapper getCommissionMapper(SqlSession sqlSession) {

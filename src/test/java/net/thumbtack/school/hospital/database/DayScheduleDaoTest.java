@@ -1,9 +1,9 @@
 package net.thumbtack.school.hospital.database;
 
 import net.thumbtack.school.hospital.database.model.DaySchedule;
+import net.thumbtack.school.hospital.database.model.TicketSchedule;
 import net.thumbtack.school.hospital.database.model.Doctor;
 import net.thumbtack.school.hospital.database.model.Patient;
-import net.thumbtack.school.hospital.database.model.Schedule;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
 
@@ -16,18 +16,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ScheduleDaoTest extends DatabasePrepare {
+public class DayScheduleDaoTest extends DatabasePrepare {
 
     @Test
     public void testCreateSchedule() {
 
         Doctor doc = doctorDao.getBySpeciality("spec").get(0);
-        List<Schedule> scheduleList = createTestSchedule(doc, 15, 8);
+        List<DaySchedule> dayScheduleList = createTestSchedule(doc, 15, 8);
 
-        int insertedCnt = scheduleDao.createSchedule(scheduleList);
+        int insertedCnt = scheduleDao.createSchedule(dayScheduleList);
         assertEquals(8, insertedCnt);
 
-        List<Schedule> scheduleList2 = scheduleDao.getByDoctorId(doc.getId());
+        List<DaySchedule> dayScheduleList2 = scheduleDao.getByDoctorId(doc.getId());
 
         /*List<DaySchedule> ds = dayScheduleDao.getDayByScheduleId(scheduleList2.get(0).getId());
 
@@ -42,69 +42,69 @@ public class ScheduleDaoTest extends DatabasePrepare {
     @Test
     public void testGetAllSchedule() {
         Doctor doc = doctorDao.getBySpeciality("spec").get(0);
-        List<Schedule> scheduleList = createTestSchedule(doc, 20, 15);
+        List<DaySchedule> dayScheduleList = createTestSchedule(doc, 20, 15);
         try {
-            scheduleList.get(0).getDaySchedule().get(0).setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
+            dayScheduleList.get(0).getTicketSchedule().get(0).setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
         } catch (ServerException e) {
             fail();
         }
-        scheduleDao.createSchedule(scheduleList);
-        List<Schedule> scheduleList2 = scheduleDao.getAllSchedule();
-        assertEquals(15, scheduleList2.size());
+        scheduleDao.createSchedule(dayScheduleList);
+        List<DaySchedule> dayScheduleList2 = scheduleDao.getAllSchedule();
+        assertEquals(15, dayScheduleList2.size());
     }
 
     @Test
     public void testGetScheduleBySpeciality() {
         Doctor doc = doctorDao.getBySpeciality("spec").get(0);
 
-        List<Schedule> scheduleList = createTestSchedule(doc, 15, 10);
+        List<DaySchedule> dayScheduleList = createTestSchedule(doc, 15, 10);
         try {
-            scheduleList.get(0).getDaySchedule().get(0).setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
+            dayScheduleList.get(0).getTicketSchedule().get(0).setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
         } catch (ServerException e) {
             fail();
         }
-        scheduleDao.createSchedule(scheduleList);
-        List<Schedule> scheduleList2 = scheduleDao.getByDoctorSpeciality("spec");
-        assertEquals(10, scheduleList2.size());
+        scheduleDao.createSchedule(dayScheduleList);
+        List<DaySchedule> dayScheduleList2 = scheduleDao.getByDoctorSpeciality("spec");
+        assertEquals(10, dayScheduleList2.size());
     }
 
     @Test
     public void testAddTicket() {
         Doctor doc = doctorDao.getBySpeciality("spec").get(0);
-        List<Schedule> scheduleList = createTestSchedule(doc, 15, 8);
-        scheduleDao.createSchedule(scheduleList);
+        List<DaySchedule> dayScheduleList = createTestSchedule(doc, 15, 8);
+        scheduleDao.createSchedule(dayScheduleList);
 
-        Schedule schedule = scheduleList.get(0);
+        DaySchedule daySchedule = dayScheduleList.get(0);
         try {
-            schedule.getDaySchedule().get(0).setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
+            daySchedule.getTicketSchedule().get(0).setPatient(patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()));
         } catch (ServerException e) {
             fail();
         }
-        schedule.getDaySchedule().get(0).setTicket("testTicket");
+        daySchedule.getTicketSchedule().get(0).setTicket("testTicket");
 
         //assertTrue(scheduleDao.addTicket(schedule.getDaySchedule().get(0)));
         //assertFalse(scheduleDao.addTicket(schedule));
     }
 
 
-    private List<Schedule> createTestSchedule(Doctor doc, int interval, int count) {
-        List<Schedule> scheduleList = new ArrayList<>();
+    private List<DaySchedule> createTestSchedule(Doctor doc, int interval, int count) {
+        List<DaySchedule> dayScheduleList = new ArrayList<>();
 
-        List<DaySchedule> daySchedule = new ArrayList<>();
+        List<TicketSchedule> ticketSchedule = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            daySchedule.add(
-                    new DaySchedule("ticket",
+            ticketSchedule.add(
+                    new TicketSchedule("ticket",
                             LocalTime.now().plusMinutes(i * interval),
                             LocalTime.now().plusMinutes((i + 1) * interval - 1),
                             new Patient()
                     ));
         }
-        scheduleList.add(new Schedule(
+        dayScheduleList.add(new DaySchedule(
                 doc,
                 LocalDate.now(),
-                daySchedule
+                ticketSchedule
         ));
-        return scheduleList;
+        return dayScheduleList;
     }
 }

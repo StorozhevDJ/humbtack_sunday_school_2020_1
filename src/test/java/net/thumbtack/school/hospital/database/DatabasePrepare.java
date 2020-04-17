@@ -15,8 +15,8 @@ public class DatabasePrepare {
     protected AdminDao adminDao = new AdminDaoImpl();
     protected DoctorDao doctorDao = new DoctorDaoImpl();
     protected PatientDao patientDao = new PatientDaoImpl();
-    protected ScheduleDao scheduleDao = new ScheduleDaoImpl();
-    protected DayScheduleDao dayScheduleDao = new DayScheduleDaoImpl();
+    protected DayScheduleDao scheduleDao = new DayScheduleDaoImpl();
+    protected TicketScheduleDao ticketScheduleDao = new TicketScheduleDaoImpl();
 
     @BeforeAll()
     public static void setUp() {
