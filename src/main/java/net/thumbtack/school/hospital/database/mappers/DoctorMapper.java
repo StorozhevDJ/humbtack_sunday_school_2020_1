@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 public interface DoctorMapper {
 
     @Insert("INSERT INTO `doctor` (userId, specialityId, roomId) "
-            + "SELECT #{user.id}, id, (SELECT id FROM room WHERE room = #{room}) AS roomId "
+            + "SELECT #{user.id}, id, (SELECT id FROM room WHERE room = #{room.number}) AS roomId "
             + "FROM `speciality` "
             + "WHERE name=#{speciality.name}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
@@ -27,7 +27,8 @@ public interface DoctorMapper {
             @Result(property = "user.patronymic", column = "patronymic"),
             @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login"),
-            @Result(property = "speciality.name", column = "name")
+            @Result(property = "speciality.name", column = "name"),
+            @Result(property = "room.number", column = "room")
     })
     Doctor getByUserId(int id);
 
@@ -39,6 +40,7 @@ public interface DoctorMapper {
             + "LEFT JOIN session ON session.userId = user.id "
             + "WHERE doctor.id = #{id};")
     @Results({
+            @Result(property = "room.number", column = "room"),
             @Result(property = "speciality.name", column = "name"),
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
@@ -56,6 +58,7 @@ public interface DoctorMapper {
             + "JOIN room ON room.id = roomId "
             + "WHERE speciality.name = #{name};")
     @Results({
+            @Result(property = "room.number", column = "room"),
             @Result(property = "speciality.name", column = "name"),
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
@@ -73,6 +76,7 @@ public interface DoctorMapper {
             + "JOIN session ON session.userId = user.id "
             + "WHERE session.token = #{token};")
     @Results({
+            @Result(property = "room.number", column = "room"),
             @Result(property = "speciality.name", column = "name"),
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),

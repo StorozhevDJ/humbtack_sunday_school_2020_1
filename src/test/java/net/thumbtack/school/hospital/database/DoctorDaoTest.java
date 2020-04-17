@@ -13,8 +13,8 @@ public class DoctorDaoTest extends DatabasePrepare {
     @Test
     public void testAddDoctor() {
         User user = new User("Вася", "Петечкин", "Васильевич", "testDoc", "password", null);
-        assertThrows(RuntimeException.class, () -> doctorDao.insert(new Doctor(user, new Speciality("ErrorSpeciality"), "room")));
-        Doctor doc = new Doctor(user, new Speciality("spec"), "6");
+        assertThrows(RuntimeException.class, () -> doctorDao.insert(new Doctor(user, new Speciality("ErrorSpeciality"), new Room("room"))));
+        Doctor doc = new Doctor(user, new Speciality("spec"), new Room("6"));
         doctorDao.insert(doc);
         assertThrows(RuntimeException.class, () -> doctorDao.insert(doc));// Check double add
         assertThrows(RuntimeException.class, () -> doctorDao.insert(null));
@@ -37,7 +37,7 @@ public class DoctorDaoTest extends DatabasePrepare {
         Doctor doc = doctorDao.getByToken(new Session("token"));
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality().getName()),
-                () -> assertEquals("1", doc.getRoom()),
+                () -> assertEquals("1", doc.getRoom().getNumber()),
                 () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),
@@ -60,7 +60,7 @@ public class DoctorDaoTest extends DatabasePrepare {
 
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality().getName()),
-                () -> assertEquals("1", doc.getRoom()),
+                () -> assertEquals("1", doc.getRoom().getNumber()),
                 () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),
@@ -81,7 +81,7 @@ public class DoctorDaoTest extends DatabasePrepare {
 
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality().getName()),
-                () -> assertEquals("1", doc.getRoom()),
+                () -> assertEquals("1", doc.getRoom().getNumber()),
                 () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
                 () -> assertEquals("lastNameDoc", doc.getUser().getLastName(), "User lastname is not lastNameDoc"),

@@ -11,11 +11,11 @@ public class Doctor {
     // альтернатива - оставить все String, как сейчас
     // классы лучше (вдруг там еще что-то появится, например, шифр специальности или номер этажа для комнаты)
     // но в рамках данного ТЗ и String сойдет
-    private String room;
+    private Room room;
     // REVU и вот сюда List или Set из Schedule
 
 
-    public Doctor(int id, User user, Speciality speciality, String room) {
+    public Doctor(int id, User user, Speciality speciality, Room room) {
         setId(id);
         user.setUserType(UserType.DOCTOR);
         setUser(user);
@@ -23,12 +23,12 @@ public class Doctor {
         setRoom(room);
     }
 
-    public Doctor(User user, Speciality speciality, String room) {
+    public Doctor(User user, Speciality speciality, Room room) {
         this(0, user, speciality, room);
     }
 
     public Doctor() {
-        this(new User(), new Speciality(new String()), new String());
+        this(new User(), new Speciality(new String()), new Room(new String()));
     }
 
     public int getId() {
@@ -55,11 +55,11 @@ public class Doctor {
         this.speciality = speciality;
     }
 
-    public String getRoom() {
+    public Room getRoom() {
         return room;
     }
 
-    public void setRoom(String room) {
+    public void setRoom(Room room) {
         this.room = room;
     }
 

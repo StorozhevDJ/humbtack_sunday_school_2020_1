@@ -32,7 +32,7 @@ public class DatabasePrepare {
         User user = new User("FirstNameAdmin", "lastNameAdmin", null, "admin", "admin", new Session());
         adminDao.insert(new Admin(user, "Superadmin"));
 
-        doctorDao.insert(new Doctor(new User("FirstNameDoc", "lastNameDoc", null, "doc", "doctor", new Session()), new Speciality("spec"), "1"));
+        doctorDao.insert(new Doctor(new User("FirstNameDoc", "lastNameDoc", null, "doc", "doctor", new Session()), new Speciality("spec"), new Room("1")));
 
         patientDao.insert(new Patient(
                 new User("FirstNamePatient", "lastNamePatient", "partronymicPatient", "patientLogin", "passwordPatient", new Session()),
