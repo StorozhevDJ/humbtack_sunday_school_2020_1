@@ -28,33 +28,37 @@ public interface PatientMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
+            @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     Patient getByPatientId(int id);
 
-    @Select("SELECT patient.id, userId, firstName, lastName, patronymic, type, login, email, address, phone " +
-            "FROM patient JOIN user ON user.id = userId " +
-            "WHERE userId = #{id}")
+    @Select("SELECT patient.id, patient.userId, firstName, lastName, patronymic, type, login, email, address, phone, token " +
+            "FROM patient JOIN user ON user.id = patient.userId " +
+            "LEFT JOIN session ON session.userId = user.id " +
+            "WHERE patient.userId = #{id}")
     @Results({
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
-            @Result(property = "user.login", column = "login")
+            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.login", column = "login"),
+            @Result(property = "user.session.userId", column = "userId"),
+            @Result(property = "user.session.token", column = "token")
     })
     Patient getByUserId(int id);
 
-    @Select("SELECT patient.id, userId, firstName, lastName, patronymic, type, login, token, email, address, phone " +
-            "FROM patient JOIN user ON user.id = userId " +
+    @Select("SELECT patient.id, patient.userId, firstName, lastName, patronymic, type, login, token, email, address, phone " +
+            "FROM patient JOIN user ON user.id = patient.userId " +
+            "JOIN session ON session.userId = user.id " +
             "WHERE token = #{token}")
     @Results({
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
+            @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login"),
             @Result(property = "user.session.token", column = "token")
     })
@@ -68,7 +72,7 @@ public interface PatientMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
+            @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     List<Patient> getByDoctorId(int id);

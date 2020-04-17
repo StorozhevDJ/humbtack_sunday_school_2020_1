@@ -4,13 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.UserType;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
 
 import net.thumbtack.school.hospital.database.model.Admin;
 import net.thumbtack.school.hospital.database.model.User;
 
 
-public class AdminDaoTest extends DatabaseTest {
+public class AdminDaoTest extends DatabasePrepare {
 
     @Test
     public void testAddAdminGetByUserId() {
@@ -42,7 +43,12 @@ public class AdminDaoTest extends DatabaseTest {
 
     @Test
     public void testGetDefaultAdmin() {
-        User user = userDao.getByLogin("admin", "admin");
+        User user = null;
+        try {
+            user = userDao.getByLogin("admin", "admin");
+        } catch (ServerException e) {
+            fail();
+        }
         Admin admin = adminDao.getByUserId(user.getId());
         assertNotEquals(0, admin.getId());
         assertNotEquals(0, admin.getUser().getId());
@@ -51,7 +57,11 @@ public class AdminDaoTest extends DatabaseTest {
 
     @Test
     public void testGetByToken() {
-        assertTrue(userDao.logIn(new User("admin", "admin", new Session("token"))));
+        try {
+            userDao.logIn(new User("admin", "admin", new Session("token")));
+        } catch (ServerException e) {
+            fail();
+        }
 
         Admin admin = adminDao.getByToken(new Session("token"));
         assertAll(

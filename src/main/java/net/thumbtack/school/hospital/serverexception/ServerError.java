@@ -2,7 +2,9 @@ package net.thumbtack.school.hospital.serverexception;
 
 public enum ServerError {
 
-    LOGIN_ALREADY_EXISTS("login", "User %s already exists!");
+    LOGIN_ALREADY_EXISTS("login", "User %s already exists!"),
+    LOGIN_OR_PASSWORD_INVALID("login", "User or password is incorrect!"),
+    TOKEN_INVALID("login", "Token invalid!");
 
 
     private String field;

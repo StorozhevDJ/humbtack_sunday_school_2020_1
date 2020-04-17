@@ -4,17 +4,16 @@ import java.util.Objects;
 
 public class Speciality {
     private int id;
-    // REVU слово value ничего не говорит. Лучше name. И в БД тоже
-    private String value;
+    private String name;
 
 
-    public Speciality(int id, String value) {
+    public Speciality(int id, String name) {
         setId(id);
-        setValue(value);
+        setName(name);
     }
 
-    public Speciality(String value) {
-        this(0, value);
+    public Speciality(String name) {
+        this(0, name);
     }
 
     public int getId() {
@@ -25,12 +24,12 @@ public class Speciality {
         this.id = id;
     }
 
-    public String getValue() {
-        return value;
+    public String getName() {
+        return name;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -39,11 +38,11 @@ public class Speciality {
         if (!(o instanceof Speciality)) return false;
         Speciality that = (Speciality) o;
         return getId() == that.getId() &&
-                Objects.equals(getValue(), that.getValue());
+                Objects.equals(getName(), that.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getValue());
+        return Objects.hash(getId(), getName());
     }
 }

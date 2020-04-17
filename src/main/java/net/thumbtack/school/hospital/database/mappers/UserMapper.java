@@ -7,23 +7,22 @@ import org.apache.ibatis.annotations.*;
 
 public interface UserMapper {
 
-    @Insert("INSERT INTO `user` ( `firstName`, `lastName`, `patronymic`, type, `login`, `password`, `token`) "
-            + "VALUES ( #{firstName}, #{lastName}, #{patronymic}, #{type.text}, #{login}, MD5(#{password}), #{session.token} );")
+    @Insert("INSERT INTO `user` ( `firstName`, `lastName`, `patronymic`, type, `login`, `password`) "
+            + "VALUES ( #{firstName}, #{lastName}, #{patronymic}, #{type}, #{login}, MD5(#{password}) );")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(User user);
 
-    @Update("UPDATE `user` SET token = #{session.token} WHERE login = #{login} AND password = MD5(#{password});")
+    @Update("REPLACE into session (userId, token) VALUES (#{id}, #{session.token});")
     int insertToken(User user);
 
-    @Update("UPDATE `user` SET token = NULL WHERE token = #{token};")
-    int deleteToken(Session token);
+    @Delete("DELETE FROM `session` WHERE token = #{token};")
+    int deleteToken(Session session);
 
-    @Select("SELECT id, firstName, lastName, patronymic, type, login, token "
+    @Select("SELECT id, firstName, lastName, patronymic, type, login "
             + "FROM user "
             + "WHERE login = #{login} AND password = MD5(#{password});")
     @Results({
-            @Result(property = "type", column = "type", javaType = UserType.class),
-            @Result(property = "session.token", column = "token")
+            @Result(property = "type", column = "type", javaType = UserType.class)
     })
     User getByLogin(@Param("login") String login, @Param("password") String password);
 

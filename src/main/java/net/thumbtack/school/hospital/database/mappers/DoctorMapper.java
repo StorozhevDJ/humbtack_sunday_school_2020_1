@@ -1,11 +1,8 @@
 package net.thumbtack.school.hospital.database.mappers;
 
 import net.thumbtack.school.hospital.database.model.Doctor;
-
 import java.util.List;
-
 import net.thumbtack.school.hospital.database.model.Session;
-import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.annotations.*;
 
 public interface DoctorMapper {
@@ -13,11 +10,11 @@ public interface DoctorMapper {
     @Insert("INSERT INTO `doctor` (userId, specialityId, roomId) "
             + "SELECT #{user.id}, id, (SELECT id FROM room WHERE room = #{room}) AS roomId "
             + "FROM `speciality` "
-            + "WHERE speciality=#{speciality}")
+            + "WHERE name=#{speciality.name}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Doctor doctor);
 
-    @Select("SELECT doctor.id, userId, firstName, lastName, patronymic, type, login, token, speciality.speciality, room "
+    @Select("SELECT doctor.id, userId, firstName, lastName, patronymic, type, login, token, name, room "
             + "FROM doctor JOIN user "
             + "ON userId = user.id "
             + "JOIN speciality ON specialityId = speciality.id "
@@ -28,54 +25,60 @@ public interface DoctorMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
-            @Result(property = "user.login", column = "login")
+            @Result(property = "user.type", column = "type"),
+            @Result(property = "user.login", column = "login"),
+            @Result(property = "speciality.name", column = "name")
     })
     Doctor getByUserId(int id);
 
-    @Select("SELECT doctor.id, userId, firstName, lastName, patronymic, type, login, token, speciality.speciality, room "
+    @Select("SELECT doctor.id, doctor.userId, firstName, lastName, patronymic, type, login, token, speciality.name, room "
             + "FROM doctor JOIN user "
             + "ON userId = user.id "
             + "JOIN speciality ON specialityId = speciality.id "
             + "JOIN room ON room.id = roomId "
+            + "LEFT JOIN session ON session.userId = user.id "
             + "WHERE doctor.id = #{id};")
     @Results({
+            @Result(property = "speciality.name", column = "name"),
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
+            @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     Doctor getByDoctorId(int id);
 
-    @Select("SELECT doctor.id, userId, firstName, lastName, patronymic, type, token, speciality.speciality, room "
+    @Select("SELECT doctor.id, userId, firstName, lastName, patronymic, type, speciality.name, room "
             + "FROM doctor JOIN user "
             + "ON userId = user.id "
             + "JOIN speciality ON specialityId = speciality.id "
             + "JOIN room ON room.id = roomId "
-            + "WHERE speciality.speciality = #{speciality};")
+            + "WHERE speciality.name = #{name};")
     @Results({
+            @Result(property = "speciality.name", column = "name"),
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type")
+            @Result(property = "user.type", column = "type")
     })
-    List<Doctor> getBySpeciality(String speciality);
+    List<Doctor> getBySpeciality(String name);
 
-    @Select("SELECT doctor.id, userId, firstName, lastName, patronymic, type, login, token, speciality.speciality, room "
+    @Select("SELECT doctor.id, session.userId, firstName, lastName, patronymic, type, login, session.token, speciality.name, room "
             + "FROM doctor JOIN user "
             + "ON userId = user.id "
             + "JOIN speciality ON specialityId = speciality.id "
             + "JOIN room ON room.id = roomId "
-            + "WHERE token = #{token};")
+            + "JOIN session ON session.userId = user.id "
+            + "WHERE session.token = #{token};")
     @Results({
+            @Result(property = "speciality.name", column = "name"),
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
+            @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login"),
             @Result(property = "user.session.token", column = "token")
     })

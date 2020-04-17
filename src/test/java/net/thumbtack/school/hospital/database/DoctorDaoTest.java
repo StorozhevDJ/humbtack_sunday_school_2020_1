@@ -1,28 +1,20 @@
 package net.thumbtack.school.hospital.database;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 
-import net.thumbtack.school.hospital.database.model.Session;
-import net.thumbtack.school.hospital.database.model.UserType;
+import net.thumbtack.school.hospital.database.model.*;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
 
-import net.thumbtack.school.hospital.database.model.Doctor;
-import net.thumbtack.school.hospital.database.model.User;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class DoctorDaoTest extends DatabaseTest {
+public class DoctorDaoTest extends DatabasePrepare {
 
     @Test
     public void testAddDoctor() {
         User user = new User("Вася", "Петечкин", "Васильевич", "testDoc", "password", null);
-        assertThrows(RuntimeException.class, () -> doctorDao.insert(new Doctor(user, "ErrorSpeciality", "room")));
-        Doctor doc = new Doctor(user, "spec", "6");
+        assertThrows(RuntimeException.class, () -> doctorDao.insert(new Doctor(user, new Speciality("ErrorSpeciality"), "room")));
+        Doctor doc = new Doctor(user, new Speciality("spec"), "6");
         doctorDao.insert(doc);
         assertThrows(RuntimeException.class, () -> doctorDao.insert(doc));// Check double add
         assertThrows(RuntimeException.class, () -> doctorDao.insert(null));
@@ -36,11 +28,15 @@ public class DoctorDaoTest extends DatabaseTest {
 
     @Test
     public void testGetByToken() {
-        assertTrue(userDao.logIn(new User("doc", "doctor", new Session("token"))));
+        try {
+            userDao.logIn(new User("doc", "doctor", new Session("token")));
+        } catch (ServerException e) {
+            fail();
+        }
 
         Doctor doc = doctorDao.getByToken(new Session("token"));
         assertAll(
-                () -> assertEquals("spec", doc.getSpeciality()),
+                () -> assertEquals("spec", doc.getSpeciality().getName()),
                 () -> assertEquals("1", doc.getRoom()),
                 () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
@@ -63,7 +59,7 @@ public class DoctorDaoTest extends DatabaseTest {
         Doctor doc = doctorDao.getByDoctorId(docList.get(0).getId());
 
         assertAll(
-                () -> assertEquals("spec", doc.getSpeciality()),
+                () -> assertEquals("spec", doc.getSpeciality().getName()),
                 () -> assertEquals("1", doc.getRoom()),
                 () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),
@@ -84,7 +80,7 @@ public class DoctorDaoTest extends DatabaseTest {
         Doctor doc = docList.get(0);
 
         assertAll(
-                () -> assertEquals("spec", doc.getSpeciality()),
+                () -> assertEquals("spec", doc.getSpeciality().getName()),
                 () -> assertEquals("1", doc.getRoom()),
                 () -> assertEquals(UserType.DOCTOR, doc.getUser().getType(), "User type is not doctor"),
                 () -> assertEquals("FirstNameDoc", doc.getUser().getFirstName(), "User firstName is not FirstNameDoc"),

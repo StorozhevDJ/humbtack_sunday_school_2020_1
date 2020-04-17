@@ -1,6 +1,8 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
 import net.thumbtack.school.hospital.database.model.Session;
+import net.thumbtack.school.hospital.serverexception.ServerError;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,46 +26,46 @@ public class UserDaoImpl extends DaoImplBase implements UserDao {
     }
 
     @Override
-    public User getByToken(Session token) {
+    public User getByToken(Session token) throws ServerException {
         LOGGER.debug("DAO get User by token {}", token);
         try (SqlSession sqlSession = getSession()) {
             return getUserMapper(sqlSession).getByToken(token);
         } catch (RuntimeException ex) {
             LOGGER.info("Can't get User by token {} {}", token, ex);
-            throw ex;
+            throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);
         }
     }
 
     @Override
-    public boolean logIn(User user) {
+    public void logIn(User user) throws ServerException {
         LOGGER.debug("DAO LogIn user \"{}\" ", user.getLogin());
-        int res = 0;
         try (SqlSession sqlSession = getSession()) {
             try {
-                res = getUserMapper(sqlSession).insertToken(user);
+                int userId = getUserMapper(sqlSession).getByLogin(user.getLogin(), user.getPassword()).getId();
+                user.setId(userId);
+                getUserMapper(sqlSession).insertToken(user);
             } catch (RuntimeException ex) {
-                LOGGER.info("Can't LogIn user {} {} ", user.getLogin(), ex);
                 sqlSession.rollback();
-                throw ex;
+                LOGGER.info("Can't LogIn user {} {} ", user.getLogin(), ex);
+                throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);
             }
             sqlSession.commit();
-            return res == 1;
         }
     }
 
     @Override
-    public boolean logOut(Session token) {
+    public void logOut(Session token) throws ServerException {
         LOGGER.debug("DAO LogOut user with token {} ", token);
-        int res = 0;
+
         try (SqlSession sqlSession = getSession()) {
             try {
-                res = getUserMapper(sqlSession).deleteToken(token);
+                getUserMapper(sqlSession).deleteToken(token);
             } catch (RuntimeException ex) {
                 LOGGER.info("Can't LogOut user with token {} {} ", token, ex);
                 sqlSession.rollback();
+                throw new ServerException(ServerError.TOKEN_INVALID);
             }
             sqlSession.commit();
-            return res == 1;
         }
     }
 

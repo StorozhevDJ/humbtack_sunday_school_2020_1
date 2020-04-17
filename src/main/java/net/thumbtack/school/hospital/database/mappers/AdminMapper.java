@@ -27,20 +27,21 @@ public interface AdminMapper {
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
+            @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login")
     })
     Admin getByUserId(int id);
 
-    @Select("SELECT admin.id, userId, firstName, lastName, patronymic, type, login, token, position "
+    @Select("SELECT admin.id, session.userId, firstName, lastName, patronymic, type, login, session.token, position "
             + "FROM admin JOIN user "
-            + "WHERE token = #{token};")
+            + "JOIN session ON session.userId = user.id "
+            + "WHERE session.token = #{token};")
     @Results({
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
             @Result(property = "user.lastName", column = "lastName"),
             @Result(property = "user.patronymic", column = "patronymic"),
-            @Result(property = "user.type.text", column = "type"),
+            @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login"),
             @Result(property = "user.session.token", column = "token")
     })

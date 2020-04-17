@@ -1,20 +1,16 @@
 package net.thumbtack.school.hospital.database;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.UserType;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
 
 import net.thumbtack.school.hospital.database.model.Patient;
 import net.thumbtack.school.hospital.database.model.User;
 
-public class PatientDaoTest extends DatabaseTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PatientDaoTest extends DatabasePrepare {
 
     @Test
     public void testGetCount() {
@@ -38,7 +34,11 @@ public class PatientDaoTest extends DatabaseTest {
 
     @Test
     public void testGetByToken() {
-        assertTrue(userDao.logIn(new User("patientLogin", "passwordPatient", new Session("token"))));
+        try {
+            userDao.logIn(new User("patientLogin", "passwordPatient", new Session("token")));
+        } catch (ServerException e) {
+            fail();
+        }
 
         Patient patient = patientDao.getByToken(new Session("token"));
         assertAll(
@@ -62,19 +62,25 @@ public class PatientDaoTest extends DatabaseTest {
 
     @Test
     public void testGetByUserId() {
-        Patient patient = patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId());
+        Patient patient = null;
+        try {
+            patient = patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId());
+        } catch (ServerException e) {
+            fail();
+        }
 
+        Patient finalPatient = patient;
         assertAll(
-                () -> assertEquals("patient@mail", patient.getEmail()),
-                () -> assertEquals("addrPatient", patient.getAddress()),
-                () -> assertEquals("+79001112233", patient.getPhone()),
-                () -> assertEquals(UserType.PATIENT, patient.getUser().getType(), "User type is not patient"),
-                () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
-                () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
-                () -> assertEquals("partronymicPatient", patient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),
-                () -> assertEquals("patientLogin", patient.getUser().getLogin(), "User login is not patientLogin"),
-                () -> assertNull(patient.getUser().getSession().getToken(), "User token is not null"),
-                () -> assertNull(patient.getUser().getPassword(), "User password is not null"),
+                () -> assertEquals("patient@mail", finalPatient.getEmail()),
+                () -> assertEquals("addrPatient", finalPatient.getAddress()),
+                () -> assertEquals("+79001112233", finalPatient.getPhone()),
+                () -> assertEquals(UserType.PATIENT, finalPatient.getUser().getType(), "User type is not patient"),
+                () -> assertEquals("FirstNamePatient", finalPatient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
+                () -> assertEquals("lastNamePatient", finalPatient.getUser().getLastName(), "User lastname is not lastNamePatient"),
+                () -> assertEquals("partronymicPatient", finalPatient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),
+                () -> assertEquals("patientLogin", finalPatient.getUser().getLogin(), "User login is not patientLogin"),
+                () -> assertNull(finalPatient.getUser().getSession().getToken(), "User token is not null"),
+                () -> assertNull(finalPatient.getUser().getPassword(), "User password is not null"),
                 () -> assertNull(patientDao.getByPatientId(0)),
                 () -> assertNull(patientDao.getByPatientId(123456))
         );
@@ -82,7 +88,12 @@ public class PatientDaoTest extends DatabaseTest {
 
     @Test
     public void testGetByPatientId() {
-        int id = patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()).getId();
+        int id = 0;
+        try {
+            id = patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()).getId();
+        } catch (ServerException e) {
+            fail();
+        }
 
         Patient patient = patientDao.getByPatientId(id);
 
@@ -95,7 +106,7 @@ public class PatientDaoTest extends DatabaseTest {
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
                 () -> assertEquals("partronymicPatient", patient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),
                 () -> assertEquals("patientLogin", patient.getUser().getLogin(), "User login is not patientLogin"),
-                () -> assertNull(patient.getUser().getSession().getToken(), "User token is not null"),
+                () -> assertNull(patient.getUser().getSession(), "User token is not null"),
                 () -> assertNull(patient.getUser().getPassword(), "User password is not null"),
                 () -> assertNull(patientDao.getByPatientId(0)),
                 () -> assertNull(patientDao.getByPatientId(123456))

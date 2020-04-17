@@ -2,6 +2,7 @@ package net.thumbtack.school.hospital.database.dao;
 
 import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 
 public interface UserDao {
 
@@ -12,7 +13,7 @@ public interface UserDao {
      * @param password
      * @return inserted user if login and password is correct
      */
-    User getByLogin(String login, String password);
+    User getByLogin(String login, String password) throws ServerException;
 
     /**
      * Get user info by token from JAVASESSIONID cookie
@@ -20,7 +21,7 @@ public interface UserDao {
      * @param token
      * @return inserted user if login and password is correct
      */
-    User getByToken(Session token);
+    User getByToken(Session token) throws ServerException;
 
     /**
      * LogIn user (Insert token for sign in user)
@@ -28,14 +29,13 @@ public interface UserDao {
      * @param user model with login/password and new token
      * @return true if user login successful
      */
-    boolean logIn(User user);
+    void logIn(User user) throws ServerException;
 
     /**
      * LogOut user (delete token)
      *
      * @param token to logOut user
-     * @return true if user logout successful
      */
-    boolean logOut(Session token);
+    void logOut(Session token) throws ServerException;
 
 }

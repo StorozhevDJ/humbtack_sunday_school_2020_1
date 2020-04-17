@@ -1,6 +1,5 @@
 package net.thumbtack.school.hospital.database.model;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -12,8 +11,7 @@ public class Schedule {
     private int id;
     private Doctor doctor;
     private LocalDate date;
-    // REVU private
-    List<DaySchedule> daySchedule;
+    private List<DaySchedule> daySchedule;
 
     public Schedule(int id, Doctor doctor, LocalDate date, List<DaySchedule> daySchedule) {
         setId(id);
