@@ -31,7 +31,7 @@ create TABLE `user` (
 	`firstName` VARCHAR(50) NOT NULL,
 	`lastName` VARCHAR(50) NOT NULL,
 	`patronymic` VARCHAR(50) NULL,
-	`type` ENUM('ADMINISTRATOR', 'DOCTOR', 'PATIENT')NOT NULL,
+	`type` ENUM('ADMINISTRATOR', 'DOCTOR', 'PATIENT') NOT NULL,
 	`login` VARCHAR(50)NOT NULL,
 	`password` CHAR(32)NOT NULL,
 	UNIQUE KEY(`login`)
@@ -45,8 +45,7 @@ create TABLE `session` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`userId` INT UNSIGNED NOT NULL,
 	`token` VARCHAR(32) NOT NULL,
-	FOREIGN KEY(`userId`)REFERENCES `user`(id)ON
-	delete CASCADE,
+	FOREIGN KEY(`userId`)REFERENCES `user`(id) ON delete CASCADE,
 	UNIQUE KEY(`userId`),
 	KEY(`token`)
 )ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE utf8_general_ci;
@@ -88,8 +87,7 @@ create TABLE `doctor` (
 	`specialityId` INT NOT NULL,
 	`roomId` INT NOT NULL,
 	UNIQUE KEY(`userId`),
-	FOREIGN KEY(`userId`)REFERENCES `user`(id)ON
-	delete CASCADE,
+	FOREIGN KEY(`userId`)REFERENCES `user`(id) ON delete CASCADE,
 	FOREIGN KEY(`roomId`)REFERENCES `room`(id),
 	FOREIGN KEY(`specialityId`)REFERENCES `speciality`(id)
 )ENGINE = INNODB;
@@ -102,8 +100,7 @@ create TABLE `schedule` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`doctorId` INT UNSIGNED NOT NULL,
 	`date` DATE NOT NULL,    -- Date of schedule
-	FOREIGN KEY(`doctorId`)REFERENCES `doctor`(id)ON
-	delete CASCADE,
+	FOREIGN KEY(`doctorId`)REFERENCES `doctor`(id) ON 	delete CASCADE,
 	UNIQUE(`doctorId`, `date`)
 )ENGINE = INNODB DEFAULT CHARSET = utf8;
 
@@ -124,7 +121,6 @@ create TABLE `ticket_schedule` (
 	UNIQUE(`ticket`),
 	UNIQUE(`scheduleId`, `timeStart`),
 	UNIQUE(`scheduleId`, `patientId`)
-	-- Пациент может записаться к нескольким врачам, но не может записаться более одного раза к одному и тому же врачу на один и тот же день
 )ENGINE= INNODB DEFAULT CHARSET=utf8;
 
 
@@ -139,8 +135,7 @@ create TABLE `commission` (
 	`date` DATE NOT NULL,    -- Date of schedule
 	`timeStart` TIME NOT NULL,  -- Start reception time
 	`timeEnd` TIME NOT NULL,  -- End reception time
-	FOREIGN KEY(`patientId`)REFERENCES `patient`(id)ON
-	delete CASCADE,
+	FOREIGN KEY(`patientId`)REFERENCES `patient`(id) ON delete CASCADE,
 	UNIQUE(`ticket`)
 )ENGINE = INNODB DEFAULT CHARSET = utf8;
 
@@ -152,10 +147,8 @@ create TABLE `commission_doctor` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`commissionId` INT UNSIGNED NOT NULL,
 	`doctorId` INT UNSIGNED NOT NULL,
-	FOREIGN KEY(`commissionId`)REFERENCES `commission`(id)ON
-	delete CASCADE,
-	FOREIGN KEY(`doctorId`)REFERENCES `doctor`(id)ON
-	delete CASCADE,
+	FOREIGN KEY(`commissionId`)REFERENCES `commission`(id) ON delete CASCADE,
+	FOREIGN KEY(`doctorId`)REFERENCES `doctor`(id) ON delete CASCADE,
 	UNIQUE(`doctorId`, `commissionId`)
 )ENGINE = INNODB DEFAULT CHARSET = utf8;
 
