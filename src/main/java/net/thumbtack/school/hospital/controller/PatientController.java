@@ -24,6 +24,8 @@ public class PatientController {
 
     private PatientService patientService;
 
+	// REVU совершенно чудовищное форматирование, читать невозможно
+	// Ctrl-Alt-L
     @Autowired
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
@@ -37,6 +39,7 @@ public class PatientController {
     )
     public LoginDtoResponse registerPatients(
             @RequestBody @Valid RegisterPatientDtoRequest dtoRequest,
+            // REVU private static final COOKIE_NAME = "JAVASESSIONID" и везде его 
             @CookieValue("JAVASESSIONID") String cookie
     ) throws ServerException {
         LoginDtoResponse dto = patientService.registerPatient(cookie, dtoRequest);

@@ -11,6 +11,16 @@ import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
 
+// REVU все проще
+// @MapperScan даст Вам все мапперы из пакета
+// посмотрите его исходники, а также
+// https://www.baeldung.com/spring-mybatis
+// и нужно будет лишь 
+// @Autowired
+// public AnyDaoImpl(AnyMapper anyMapper) {
+//    this.anyMapper = anyMapper;
+// }
+
 
 public class DaoImplBase {
 

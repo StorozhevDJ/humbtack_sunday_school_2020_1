@@ -29,6 +29,9 @@ public class UserService {
         if (user == null) {
             throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);
         }*/
+        // REVU для того, чтолбы сделать login, создавать самому User незачем
+        // надо его через dao попросить по логину и проверить пароль
+        // или дажк запросить по логину и паролю
         User user = new User(loginDtoRequest.getLogin(), loginDtoRequest.getPassword(), new Session(cookie));
         userDao.logIn(user);
         dto.setId(user.getId());
@@ -39,6 +42,7 @@ public class UserService {
 
     public String logoutUser (String cookie) throws ServerException {
         userDao.logOut(new Session(cookie));
+        // REVU верните DTO. Скажем, EmptyResponse
         return "{}";
     }
 

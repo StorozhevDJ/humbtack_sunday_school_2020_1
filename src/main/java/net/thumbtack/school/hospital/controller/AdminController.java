@@ -31,6 +31,8 @@ public class AdminController {
 	}
 
 
+	// REVU совершенно чудовищное форматирование, читать невозможно
+	// Ctrl-Alt-L
 	@PostMapping(
 			path = "/admins",
 			produces = MediaType.APPLICATION_JSON_VALUE,
