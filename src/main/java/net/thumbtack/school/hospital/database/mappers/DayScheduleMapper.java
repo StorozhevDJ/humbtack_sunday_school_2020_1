@@ -6,6 +6,7 @@ import net.thumbtack.school.hospital.database.model.*;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
+@Mapper
 public interface DayScheduleMapper {
 
 	@Insert({"<script>",
@@ -97,12 +98,7 @@ public interface DayScheduleMapper {
 	})
 	List<DaySchedule> getAll();
 
-	@Update("UPDATE ticket_schedule "
-			+ "SET ticket=#{ticket}, patientId=#{patient.id} "
-			+ "WHERE scheduleId=#{id} "
-			+ "AND timeStart = #{timeStart} "
-			+ "AND ticket IS NULL AND patientId IS null;")
-	int insertTicketByDoctorId(TicketSchedule ticket);
+
     
     /*@Update("UPDATE schedule "
     		+ "SET ticket=#{ticket}, patientId=#{patient.id} "

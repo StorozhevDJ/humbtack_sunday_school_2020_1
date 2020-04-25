@@ -12,7 +12,10 @@ package net.thumbtack.school.hospital.dto.request;
 "password": "пароль"
 }*/
 
-public class AddPatientDtoRequest {
+import net.thumbtack.school.hospital.dto.validation.Login;
+import net.thumbtack.school.hospital.dto.validation.Password;
+
+public class RegisterPatientDtoRequest {
 
     private String firstName;
     private String lastName;
@@ -20,12 +23,14 @@ public class AddPatientDtoRequest {
     private String email;
     private String address;
     private String phone;
+    @Login
     private String login;
+    @Password
     private String password;
 
 
-    public AddPatientDtoRequest(String firstName, String lastName, String patronymic, String email, String address,
-                                String phone, String login, String password) {
+    public RegisterPatientDtoRequest(String firstName, String lastName, String patronymic, String email, String address,
+                                     String phone, String login, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.patronymic = patronymic;

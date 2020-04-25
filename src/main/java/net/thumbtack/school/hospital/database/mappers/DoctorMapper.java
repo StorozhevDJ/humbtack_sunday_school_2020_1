@@ -5,6 +5,7 @@ import java.util.List;
 import net.thumbtack.school.hospital.database.model.Session;
 import org.apache.ibatis.annotations.*;
 
+@Mapper
 public interface DoctorMapper {
 
     @Insert("INSERT INTO `doctor` (userId, specialityId, roomId) "

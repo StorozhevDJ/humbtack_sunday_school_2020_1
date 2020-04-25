@@ -9,13 +9,17 @@ package net.thumbtack.school.hospital.dto.request;
 "newPassword": "новый пароль"
 }*/
 
+import net.thumbtack.school.hospital.dto.validation.Password;
+
 public class EditAdminDtoRequest {
 
     private String firstName;
     private String lastName;
     private String patronymic;
     private String position;
+    @Password
     private String oldPassword;
+    @Password
     private String newPassword;
 
 

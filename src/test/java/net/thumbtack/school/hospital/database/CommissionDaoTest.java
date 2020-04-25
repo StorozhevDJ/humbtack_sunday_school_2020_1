@@ -1,6 +1,16 @@
 package net.thumbtack.school.hospital.database;
 
+import net.thumbtack.school.hospital.database.dao.*;
+import net.thumbtack.school.hospital.database.daoimpl.*;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
+
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class, DayScheduleDao.class, TicketScheduleDaoImpl.class})
 public class CommissionDaoTest {
+
     /*@Test
     public void testAddCommission() {
         Doctor doc1 = doctorDao.getBySpeciality("spec").get(0);

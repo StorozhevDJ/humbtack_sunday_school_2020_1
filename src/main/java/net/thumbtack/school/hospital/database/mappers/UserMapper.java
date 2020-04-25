@@ -5,6 +5,7 @@ import net.thumbtack.school.hospital.database.model.User;
 import net.thumbtack.school.hospital.database.model.UserType;
 import org.apache.ibatis.annotations.*;
 
+@Mapper
 public interface UserMapper {
 
     @Insert("INSERT INTO `user` ( `firstName`, `lastName`, `patronymic`, type, `login`, `password`) "

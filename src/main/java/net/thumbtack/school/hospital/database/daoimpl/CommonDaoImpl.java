@@ -1,28 +1,44 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
-import org.apache.ibatis.session.SqlSession;
+import net.thumbtack.school.hospital.database.dao.CommonDao;
+import net.thumbtack.school.hospital.database.mappers.AdminMapper;
+import net.thumbtack.school.hospital.database.mappers.UserMapper;
+import net.thumbtack.school.hospital.serverexception.ServerError;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import net.thumbtack.school.hospital.database.dao.CommonDao;
-
-public class CommonDaoImpl extends DaoImplBase implements CommonDao {
+@Component
+public class CommonDaoImpl implements CommonDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonDaoImpl.class);
 
+    private AdminMapper adminMapper;
+    private UserMapper userMapper;
+
+    public CommonDaoImpl() {
+    }
+
+    @Autowired
+    public CommonDaoImpl (AdminMapper adminMapper, UserMapper userMapper) {
+        this.adminMapper = adminMapper;
+        this.userMapper = userMapper;
+    }
+
     @Override
-    public void clear() {
+    @Transactional(rollbackFor = Exception.class)
+    public void clear() throws ServerException {
         LOGGER.debug("Clear Database");
-        try (SqlSession sqlSession = getSession()) {
-            try {
-                getUserMapper(sqlSession).deleteAll();
-                getAdminMapper(sqlSession).deleteAll();
-            } catch (RuntimeException ex) {
-                LOGGER.info("Can't clear database");
-                sqlSession.rollback();
-                throw ex;
-            }
-            sqlSession.commit();
+        try {
+            userMapper.deleteAll();
+            adminMapper.deleteAll();
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't clear database");
+            throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
 }

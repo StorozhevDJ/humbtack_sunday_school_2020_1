@@ -34,14 +34,19 @@ daySchedule :{
  */
 
 
-public class AddDoctorDtoRequest {
+import net.thumbtack.school.hospital.dto.validation.Login;
+import net.thumbtack.school.hospital.dto.validation.Password;
+
+public class RegisterDoctorDtoRequest {
 
     private String firstName;
     private String lastName;
     private String patronymic;
     private String speciality;
     private String room;
+    @Login
     private String login;
+    @Password
     private String password;
     private String dateStart;
     private String dateEnd;

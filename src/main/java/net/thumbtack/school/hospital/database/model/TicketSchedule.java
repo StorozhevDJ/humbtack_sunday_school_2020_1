@@ -17,6 +17,7 @@ public class TicketSchedule {
     private Patient patient;
     private ScheduleType scheduleType;
 
+    public TicketSchedule () {}
 
     public TicketSchedule(int id, int scheduleId, String ticket, LocalTime timeStart, LocalTime timeEnd, Patient patient, ScheduleType scheduleType) {
         setId(id);

@@ -1,12 +1,23 @@
 package net.thumbtack.school.hospital.database.utils;
 
+import net.thumbtack.school.hospital.database.mappers.UserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+
+import javax.sql.DataSource;
 import java.io.Reader;
+
 
 public class MyBatisUtils {
 
@@ -27,8 +38,24 @@ public class MyBatisUtils {
         }
     }
 
-    public static SqlSessionFactory getSqlSessionFactory() {
+    /*public static SqlSessionFactory getSqlSessionFactory() {
         return sqlSessionFactory;
+    }*/
+
+    @Bean
+    public static SqlSessionFactory getSqlSessionFactory() throws Exception {
+        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+        factoryBean.setDataSource(dataSource());
+        SqlSessionFactory sessionFactory = factoryBean.getObject();
+        sessionFactory.getConfiguration().addMapper(UserMapper.class);
+        return sessionFactory;
     }
+
+    public static DataSource dataSource() {
+        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+        return dataSourceBuilder.build();
+    }
+
+
 
 }

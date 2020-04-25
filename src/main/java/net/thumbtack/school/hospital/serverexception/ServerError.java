@@ -4,7 +4,9 @@ public enum ServerError {
 
     LOGIN_ALREADY_EXISTS("login", "User %s already exists!"),
     LOGIN_OR_PASSWORD_INVALID("login", "User or password is incorrect!"),
-    TOKEN_INVALID("login", "Token invalid!");
+    TOKEN_INVALID("login", "Token invalid!"),
+    USER_ID_INVALID("user", "User ID invalid!"),
+    OTHER_ERROR("other", "Undefined error!");
 
 
     private String field;

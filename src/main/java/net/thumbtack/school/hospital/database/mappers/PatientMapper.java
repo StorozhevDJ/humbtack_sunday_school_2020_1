@@ -4,15 +4,11 @@ import java.util.List;
 
 import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import net.thumbtack.school.hospital.database.model.Patient;
 
+@Mapper
 public interface PatientMapper {
 
     @Insert("INSERT INTO `patient` ( `userId`, `email`, `address`, `phone`) "

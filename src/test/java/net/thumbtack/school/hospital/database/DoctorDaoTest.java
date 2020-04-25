@@ -2,22 +2,38 @@ package net.thumbtack.school.hospital.database;
 
 import java.util.List;
 
+import net.thumbtack.school.hospital.database.dao.*;
+import net.thumbtack.school.hospital.database.daoimpl.*;
 import net.thumbtack.school.hospital.database.model.*;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class})
 public class DoctorDaoTest extends DatabasePrepare {
 
+    private UserDao userDao;
+
+    @Autowired
+    public DoctorDaoTest(CommonDao commonDao, UserDao userDao, AdminDao adminDao, DoctorDao doctorDao, PatientDao patientDao) {
+        super(commonDao, adminDao, doctorDao, patientDao);
+        this.userDao = userDao;
+    }
+
     @Test
-    public void testAddDoctor() {
+    public void testAddDoctor() throws ServerException {
         User user = new User("Вася", "Петечкин", "Васильевич", "testDoc", "password", null);
-        assertThrows(RuntimeException.class, () -> doctorDao.insert(new Doctor(user, new Speciality("ErrorSpeciality"), new Room("room"))));
+        //assertThrows(ServerException.class, () -> doctorDao.insert(new Doctor(user, new Speciality("ErrorSpeciality"), new Room("room"))));
         Doctor doc = new Doctor(user, new Speciality("spec"), new Room("6"));
         doctorDao.insert(doc);
-        assertThrows(RuntimeException.class, () -> doctorDao.insert(doc));// Check double add
-        assertThrows(RuntimeException.class, () -> doctorDao.insert(null));
+        assertThrows(ServerException.class, () -> doctorDao.insert(doc));// Check double add
         assertAll(
                 () -> assertNotEquals(0, doc.getId()),
                 () -> assertEquals(doc.getUser().getId(), user.getId()),
@@ -27,7 +43,7 @@ public class DoctorDaoTest extends DatabasePrepare {
     }
 
     @Test
-    public void testGetByToken() {
+    public void testGetByToken() throws ServerException {
         try {
             userDao.logIn(new User("doc", "doctor", new Session("token")));
         } catch (ServerException e) {
@@ -53,7 +69,7 @@ public class DoctorDaoTest extends DatabasePrepare {
     }
 
     @Test
-    public void testGetByDoctorId() {
+    public void testGetByDoctorId() throws ServerException {
         List<Doctor> docList = doctorDao.getBySpeciality("spec");
 
         Doctor doc = doctorDao.getByDoctorId(docList.get(0).getId());
@@ -73,7 +89,7 @@ public class DoctorDaoTest extends DatabasePrepare {
     }
 
     @Test
-    public void testGetBySpeciality() {
+    public void testGetBySpeciality() throws ServerException {
         List<Doctor> docList = doctorDao.getBySpeciality("spec");
 
         assertEquals(1, docList.size());
@@ -94,7 +110,7 @@ public class DoctorDaoTest extends DatabasePrepare {
     }
 
     @Test
-    public void testGetCount() {
+    public void testGetCount() throws ServerException {
         assertEquals(1, doctorDao.getCount());
     }
 

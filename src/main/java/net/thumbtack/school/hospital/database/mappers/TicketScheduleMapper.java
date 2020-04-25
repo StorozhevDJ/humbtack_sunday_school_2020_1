@@ -1,13 +1,11 @@
 package net.thumbtack.school.hospital.database.mappers;
 
 import net.thumbtack.school.hospital.database.model.TicketSchedule;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+@Mapper
 public interface TicketScheduleMapper {
 
     @Insert({"<script>",
@@ -17,7 +15,7 @@ public interface TicketScheduleMapper {
             "</foreach>",
             "</script>"})
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insertDay(@Param("list") List<TicketSchedule> schedule, @Param("sid") int sid);
+    int insertTicket(@Param("list") List<TicketSchedule> schedule, @Param("sid") int sid);
 
     @Select("SELECT id , scheduleId, ticket, timeStart, timeEnd, patientId, type "
             + "FROM `ticket_schedule` "
@@ -34,6 +32,13 @@ public interface TicketScheduleMapper {
 			@Result(property = "daySchedule.type", column = "type")
 	})*/
     List<TicketSchedule> getDayScheduleById(int scheduleId);
+
+    @Update("UPDATE ticket_schedule "
+            + "SET ticket=#{ticket}, patientId=#{patient.id} "
+            + "WHERE scheduleId=#{id} "
+            + "AND timeStart = #{timeStart} "
+            + "AND ticket IS NULL AND patientId IS null;")
+    int insertTicketByDoctorId(TicketSchedule ticket);
 
 }
 

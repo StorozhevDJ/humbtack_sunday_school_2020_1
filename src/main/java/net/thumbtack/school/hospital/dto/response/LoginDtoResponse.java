@@ -1,28 +1,34 @@
 package net.thumbtack.school.hospital.dto.response;
 
-/*{
-"id": идентификационный номер,
-"firstName": "имя",
-"lastName": "фамилия",
-"patronymic": "отчество",
-"email": "адрес",
-"address": "домашний адрес, одной строкой",
-"phone": "номер"
-}*/
 
-public class LoginPatientDtoResponse {
+import net.thumbtack.school.hospital.database.model.DaySchedule;
+import net.thumbtack.school.hospital.database.model.ScheduleType;
 
+public class LoginDtoResponse {
     private int id;
     private String firstName;
     private String lastName;
     private String patronymic;
+    private String position;
+    private String speciality;
     private String email;
     private String address;
     private String phone;
+    private String room;
+    private DaySchedule daySchedule;
 
+    public LoginDtoResponse() {}
 
-    public LoginPatientDtoResponse(int id, String firstName, String lastName, String patronymic, String email,
-                                   String address, String phone) {
+    public LoginDtoResponse(int id, String firstName, String lastName, String patronymic, String position) {
+        setId(id);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setPatronymic(patronymic);
+        setPosition(position);
+    }
+
+    public LoginDtoResponse(int id, String firstName, String lastName, String patronymic, String email,
+                            String address, String phone) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -32,6 +38,13 @@ public class LoginPatientDtoResponse {
         this.phone = phone;
     }
 
+    /*public LoginDtoResponse(int id, String firstName, String lastName, String patronymic, String room) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.patronymic = patronymic;
+        this.room = room;
+    }*/
 
     public int getId() {
         return id;
@@ -65,6 +78,14 @@ public class LoginPatientDtoResponse {
         this.patronymic = patronymic;
     }
 
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -88,5 +109,24 @@ public class LoginPatientDtoResponse {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public String getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(String speciality) {
+        this.speciality = speciality;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
+
+
 
 }

@@ -5,14 +5,20 @@ package net.thumbtack.school.hospital.dto.request;
 "password": "пароль"
 }*/
 
+import net.thumbtack.school.hospital.dto.validation.Login;
+import net.thumbtack.school.hospital.dto.validation.Password;
+
 public class LoginDtoRequest {
 
+    //@Login
     private String login;
+    //@Password
     private String password;
 
+    public LoginDtoRequest() {}
 
     public LoginDtoRequest(String login, String password) {
-        super();
+        //super();
         this.login = login;
         this.password = password;
     }

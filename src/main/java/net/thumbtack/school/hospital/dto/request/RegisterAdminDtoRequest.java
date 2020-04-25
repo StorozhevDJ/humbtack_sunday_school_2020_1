@@ -1,5 +1,8 @@
 package net.thumbtack.school.hospital.dto.request;
 
+import net.thumbtack.school.hospital.dto.validation.Login;
+import net.thumbtack.school.hospital.dto.validation.Password;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -15,7 +18,7 @@ import javax.validation.constraints.Size;
 }
  */
 
-public class AddAdminDtoRequest {
+public class RegisterAdminDtoRequest {
 
 
     @NotBlank(message = "Имя админстратора не задано. ")
@@ -27,12 +30,13 @@ public class AddAdminDtoRequest {
     @Pattern(regexp = "^[А-ЯЁ][а-яА-ЯёЁ\\w-]{1,50}$", message = "Отчество администратора может содержать только только русские буквы, пробелы и знак “минус” (используемый как тире) и быть длинной от 1 до 50 символов. ")
     private String patronymic;
     private String position;
-    @Size(min = 2, max = 50)
+    @Login
     private String login;
+    @Password
     private String password;
 
 
-    public AddAdminDtoRequest(String firstName, String lastName, String patronymic, String position, String login, String password) {
+    public RegisterAdminDtoRequest(String firstName, String lastName, String patronymic, String position, String login, String password) {
         setFirstName(firstName);
         setLastName(lastName);
         setPatronymic(patronymic);
@@ -41,7 +45,7 @@ public class AddAdminDtoRequest {
         setPassword(password);
     }
 
-    public AddAdminDtoRequest() {
+    public RegisterAdminDtoRequest() {
         this(new String(), new String(), new String(), new String(), new String(), new String());
     }
 

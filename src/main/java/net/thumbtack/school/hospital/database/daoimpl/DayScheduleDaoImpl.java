@@ -1,85 +1,97 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
 import net.thumbtack.school.hospital.database.dao.DayScheduleDao;
+import net.thumbtack.school.hospital.database.mappers.DayScheduleMapper;
+import net.thumbtack.school.hospital.database.mappers.TicketScheduleMapper;
 import net.thumbtack.school.hospital.database.model.DaySchedule;
 import net.thumbtack.school.hospital.database.model.TicketSchedule;
+import net.thumbtack.school.hospital.serverexception.ServerError;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-public class DayScheduleDaoImpl extends DaoImplBase implements DayScheduleDao {
+@Component
+public class DayScheduleDaoImpl implements DayScheduleDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PatientDaoImpl.class);
 
+    private DayScheduleMapper dayScheduleMapper;
+    private TicketScheduleMapper ticketScheduleMapper;
+
+    public DayScheduleDaoImpl() {
+    }
+
+    @Autowired
+    public DayScheduleDaoImpl(DayScheduleMapper dayScheduleMapper, TicketScheduleMapper ticketScheduleMapper) {
+        this.dayScheduleMapper = dayScheduleMapper;
+        this.ticketScheduleMapper = ticketScheduleMapper;
+    }
+
     @Override
-    public int createSchedule(List<DaySchedule> daySchedule) {
+    public int createSchedule(List<DaySchedule> daySchedule) throws ServerException {
         LOGGER.debug("DAO insert Schedule {}", daySchedule);
         int ret = 0;
-        try (SqlSession sqlSession = getSession()) {
-            try {
-                getScheduleMapper(sqlSession).insert(daySchedule);
-                for (DaySchedule s : daySchedule) {
-                    ret += getDayScheduleMapper(sqlSession).insertDay(s.getTicketSchedule(), s.getId());
-                }
-            } catch (RuntimeException ex) {
-                LOGGER.info("Can't insert Schedule {} {}", daySchedule, ex);
-                sqlSession.rollback();
-                throw ex;
+        try {
+            dayScheduleMapper.insert(daySchedule);
+            for (DaySchedule s : daySchedule) {
+                ret += ticketScheduleMapper.insertTicket(s.getTicketSchedule(), s.getId());
             }
-            sqlSession.commit();
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't insert Schedule {} {}", daySchedule, ex);
+            throw new ServerException(ServerError.OTHER_ERROR);
         }
         return ret;
     }
 
     @Override
-    public List<DaySchedule> getByDoctorId(int id) {
+    public List<DaySchedule> getByDoctorId(int id) throws ServerException {
         LOGGER.debug("DAO get Doctor Schedule by id {}", id);
-        try (SqlSession sqlSession = getSession()) {
-            return getScheduleMapper(sqlSession).getByDoctorId(id);
-        } catch (RuntimeException ex) {
+        try {
+            return dayScheduleMapper.getByDoctorId(id);
+        } catch (DataAccessException ex) {
             LOGGER.info("Can't get Doctor Schedule by id {} {}", id, ex);
-            throw ex;
+            throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
 
     @Override
-    public List<DaySchedule> getByDoctorSpeciality(String speciality) {
+    public List<DaySchedule> getByDoctorSpeciality(String speciality) throws ServerException {
         LOGGER.debug("DAO get Doctor Schedule by speciality {}", speciality);
-        try (SqlSession sqlSession = getSession()) {
-            return getScheduleMapper(sqlSession).getBySpeciality(speciality);
-        } catch (RuntimeException ex) {
+        try {
+            return dayScheduleMapper.getBySpeciality(speciality);
+        } catch (DataAccessException ex) {
             LOGGER.info("Can't get Doctor Schedule by speciality {} {}", speciality, ex);
-            throw ex;
+            throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
 
     @Override
-    public List<DaySchedule> getAllSchedule() {
+    public List<DaySchedule> getAllSchedule() throws ServerException {
         LOGGER.debug("DAO get All Doctor Schedule");
-        try (SqlSession sqlSession = getSession()) {
-            return getScheduleMapper(sqlSession).getAll();
-        } catch (RuntimeException ex) {
+        try {
+            return dayScheduleMapper.getAll();
+        } catch (DataAccessException ex) {
             LOGGER.info("Can't get All Doctor Schedule {}", ex);
-            throw ex;
+            throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
 
     @Override
-    public boolean addTicket(TicketSchedule schedule) {
+    public boolean addTicket(TicketSchedule schedule) throws ServerException {
         LOGGER.debug("DAO insert Ticket {}", schedule);
         int ret = 0;
-        try (SqlSession sqlSession = getSession()) {
             try {
-                ret = getScheduleMapper(sqlSession).insertTicketByDoctorId(schedule);
-            } catch (RuntimeException ex) {
+                ret = ticketScheduleMapper.insertTicketByDoctorId(schedule);
+            } catch (DataAccessException ex) {
                 LOGGER.info("Can't insert Ticket {} {}", schedule, ex);
-                sqlSession.rollback();
-                throw ex;
+                throw new ServerException(ServerError.OTHER_ERROR);
             }
-            sqlSession.commit();
-        }
         return ret == 1;
     }
 

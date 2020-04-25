@@ -11,8 +11,8 @@ public class HospitalServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(HospitalServer.class);
 
     public static void main(String[] args) {
-        LOGGER.info(" -------- Start Hospital Server -------- ");
+        LOGGER.info(" ---------------------------------- Start Hospital Server ---------------------------------- ");
         SpringApplication.run(HospitalServer.class, args);
-        LOGGER.info(" -------- Stop Hospital Server -------- ");
+        LOGGER.info(" --------------------------------- Hospital Server started --------------------------------- ");
     }
 }

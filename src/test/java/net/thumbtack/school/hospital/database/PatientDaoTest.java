@@ -1,5 +1,7 @@
 package net.thumbtack.school.hospital.database;
 
+import net.thumbtack.school.hospital.database.dao.*;
+import net.thumbtack.school.hospital.database.daoimpl.*;
 import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.UserType;
 import net.thumbtack.school.hospital.serverexception.ServerException;
@@ -7,23 +9,41 @@ import org.junit.jupiter.api.Test;
 
 import net.thumbtack.school.hospital.database.model.Patient;
 import net.thumbtack.school.hospital.database.model.User;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class})
 public class PatientDaoTest extends DatabasePrepare {
 
+    private UserDao userDao;
+
+    @Autowired
+    public PatientDaoTest(CommonDao commonDao,
+                       UserDao userDao,
+                       AdminDao adminDao,
+                       DoctorDao doctorDao,
+                       PatientDao patientDao) {
+        super(commonDao, adminDao, doctorDao, patientDao);
+        this.userDao = userDao;
+    }
+
     @Test
-    public void testGetCount() {
+    public void testGetCount() throws ServerException {
         assertEquals(1, patientDao.getCount());
     }
 
     @Test
-    public void testAddPatient() {
+    public void testAddPatient() throws ServerException {
         User user = new User("Вася", "Петечкин", "Васильевич", "testPatient", "password", null);
         Patient patient = new Patient(user, "e@mail", "Addr", "79012345678");
         patientDao.insert(patient);
-        assertThrows(RuntimeException.class, () -> patientDao.insert(patient));// Check double add
-        assertThrows(RuntimeException.class, () -> patientDao.insert(null));
+        assertThrows(ServerException.class, () -> patientDao.insert(patient));// Check double add
         assertAll(
                 () -> assertNotEquals(0, patient.getId()),
                 () -> assertEquals(patient.getUser().getId(), user.getId()),
@@ -33,7 +53,7 @@ public class PatientDaoTest extends DatabasePrepare {
     }
 
     @Test
-    public void testGetByToken() {
+    public void testGetByToken() throws ServerException {
         try {
             userDao.logIn(new User("patientLogin", "passwordPatient", new Session("token")));
         } catch (ServerException e) {
@@ -87,7 +107,7 @@ public class PatientDaoTest extends DatabasePrepare {
     }
 
     @Test
-    public void testGetByPatientId() {
+    public void testGetByPatientId() throws ServerException {
         int id = 0;
         try {
             id = patientDao.getByUserId(userDao.getByLogin("patientLogin", "passwordPatient").getId()).getId();

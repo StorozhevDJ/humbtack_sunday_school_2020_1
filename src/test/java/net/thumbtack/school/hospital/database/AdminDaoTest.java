@@ -2,24 +2,41 @@ package net.thumbtack.school.hospital.database;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import net.thumbtack.school.hospital.database.dao.*;
+import net.thumbtack.school.hospital.database.daoimpl.*;
 import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.UserType;
+import net.thumbtack.school.hospital.serverexception.ServerError;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
 
 import net.thumbtack.school.hospital.database.model.Admin;
 import net.thumbtack.school.hospital.database.model.User;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
 
-
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class})
 public class AdminDaoTest extends DatabasePrepare {
 
+    private UserDao userDao;
+
+    @Autowired
+    public AdminDaoTest(CommonDao commonDao, UserDao userDao, AdminDao adminDao, DoctorDao doctorDao, PatientDao patientDao) {
+        super(commonDao, adminDao, doctorDao, patientDao);
+        this.userDao = userDao;
+    }
+
     @Test
-    public void testAddAdminGetByUserId() {
+    public void testAddAdminAndGetByUserId() throws ServerException {
         User user = new User("Вася", "Петечкин", "Васильевич", "testAdmin", "password", null);
         Admin admin = new Admin(user, "SecondAdmin");
         adminDao.insert(admin);
         // Check double add
-        assertThrows(RuntimeException.class, () -> adminDao.insert(admin));
+        assertThrows(ServerException.class, () -> adminDao.insert(admin));
         assertAll(
                 () -> assertNotEquals(0, admin.getId()),
                 () -> assertEquals(admin.getUser().getId(), user.getId()),
@@ -42,7 +59,7 @@ public class AdminDaoTest extends DatabasePrepare {
     }
 
     @Test
-    public void testGetDefaultAdmin() {
+    public void testGetDefaultAdmin() throws ServerException {
         User user = null;
         try {
             user = userDao.getByLogin("admin", "admin");
@@ -56,7 +73,7 @@ public class AdminDaoTest extends DatabasePrepare {
     }
 
     @Test
-    public void testGetByToken() {
+    public void testGetByToken() throws ServerException {
         try {
             userDao.logIn(new User("admin", "admin", new Session("token")));
         } catch (ServerException e) {

@@ -11,6 +11,8 @@ package net.thumbtack.school.hospital.dto.request;
 "newPassword": "новый пароль"
 }*/
 
+import net.thumbtack.school.hospital.dto.validation.Password;
+
 public class EditPatientDtoRequest {
 
     private String firstName;
@@ -19,7 +21,9 @@ public class EditPatientDtoRequest {
     private String email;
     private String address;
     private String phone;
+    @Password
     private String oldPassword;
+    @Password
     private String newPassword;
 
     public EditPatientDtoRequest(String firstName, String lastName, String patronymic, String email, String address,

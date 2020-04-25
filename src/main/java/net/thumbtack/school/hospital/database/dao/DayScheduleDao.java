@@ -4,46 +4,10 @@ import java.util.List;
 
 import net.thumbtack.school.hospital.database.model.DaySchedule;
 import net.thumbtack.school.hospital.database.model.TicketSchedule;
+import net.thumbtack.school.hospital.serverexception.ServerException;
+
 
 public interface DayScheduleDao {
-
-	/*
-	{
-    "dateStart": "дата, начиная с которой вносятся изменения в расписание",
-    "dateEnd": "дата, до которой вносятся изменения в расписание",
-    "weekSchedule":
-       {
-            “timeStart” :"время начала приема",
-            “timeEnd” : "время окончания приема",
-            “weekDays” :
-            [
-               день недели 1.. день недели N
-            ]
-       },
-   "weekDaysSchedule":
-       [
-         daySchedule :{
-            “weekDay” : “день недели”
-            “timeStart” :"время начала приема",
-            “timeEnd” : "время окончания приема",
-         },
-       ...
-      ],
-  "duration": время на прием одного пациента в минутах
-}
-	 */
-
-	/*{
-     "ticket": “номер талона”,
-     "doctorId": идентификатор врача,
-     "firstName": "имя врача",
-     "lastName": "фамилия врача",
-     "patronymic": "отчество врача",
-     "speciality": "специальность врача",
-     "room": ”номер кабинета”,
-     "date": "дата",
-     "time": "время",
-}*/
 
 	/**
 	 * Insert new Schedule in to DB
@@ -51,7 +15,7 @@ public interface DayScheduleDao {
 	 * @param daySchedule list
 	 * @return count of schedule record
 	 */
-	int createSchedule(List<DaySchedule> daySchedule);
+	int createSchedule(List<DaySchedule> daySchedule) throws ServerException;
 
 	/**
 	 * Get Doctor schedule
@@ -59,7 +23,7 @@ public interface DayScheduleDao {
 	 * @param id Doctor
 	 * @return Schedule list
 	 */
-	List<DaySchedule> getByDoctorId(int id);
+	List<DaySchedule> getByDoctorId(int id) throws ServerException;
 
 	/**
 	 * Get schedule for all doctors with speciality
@@ -67,14 +31,14 @@ public interface DayScheduleDao {
 	 * @param speciality for find doctor
 	 * @return Schedule list
 	 */
-	List<DaySchedule> getByDoctorSpeciality(String speciality);
+	List<DaySchedule> getByDoctorSpeciality(String speciality) throws ServerException;
 
 	/**
 	 * Get All schedule
 	 *
 	 * @return
 	 */
-	List<DaySchedule> getAllSchedule();
+	List<DaySchedule> getAllSchedule() throws ServerException;
 
 	/**
 	 * Add ticket to schedule
@@ -82,6 +46,6 @@ public interface DayScheduleDao {
 	 * @param schedule
 	 * @return
 	 */
-	boolean addTicket(TicketSchedule schedule);
+	boolean addTicket(TicketSchedule schedule) throws ServerException;
 
 }

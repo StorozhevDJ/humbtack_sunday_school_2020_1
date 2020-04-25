@@ -4,14 +4,35 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
+import net.thumbtack.school.hospital.database.dao.*;
+import net.thumbtack.school.hospital.database.daoimpl.*;
 import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.UserType;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
 
 import net.thumbtack.school.hospital.database.model.User;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
 
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class})
 public class UserDaoTest extends DatabasePrepare {
+
+	private UserDao userDao;
+
+	@Autowired
+	public UserDaoTest(CommonDao commonDao,
+					  UserDao userDao,
+					  AdminDao adminDao,
+					  DoctorDao doctorDao,
+					  PatientDao patientDao) {
+		super(commonDao, adminDao, doctorDao, patientDao);
+		this.userDao = userDao;
+	}
 
 	@Test
 	public void testGetUserByLogin() {
@@ -34,12 +55,12 @@ public class UserDaoTest extends DatabasePrepare {
 	@Test
 	public void testLogInLogOut() {
 		assertAll(
-				() -> assertThrows(ServerException.class, () -> userDao.logIn(new User("admin", "errorPass", new Session("token")))),
-				() -> assertThrows(ServerException.class, () -> userDao.logIn(new User("errorUser", "admin", new Session("token")))),
-				() -> assertThrows(ServerException.class, () -> userDao.logIn(new User("admin", "", new Session("token")))),
-				() -> assertThrows(ServerException.class, () -> userDao.logIn(new User("", "errorPass", new Session("token")))),
-				() -> assertThrows(ServerException.class, () -> userDao.logIn(new User(null, null, new Session("token")))),
-				() -> assertThrows(ServerException.class, () -> userDao.logIn(new User("admin", "Admin", new Session("token")))),
+				() -> assertThrows(Exception.class, () -> userDao.logIn(new User("admin", "errorPass", new Session("token")))),
+				() -> assertThrows(Exception.class, () -> userDao.logIn(new User("errorUser", "admin", new Session("token")))),
+				() -> assertThrows(Exception.class, () -> userDao.logIn(new User("admin", "", new Session("token")))),
+				() -> assertThrows(Exception.class, () -> userDao.logIn(new User("", "errorPass", new Session("token")))),
+				() -> assertThrows(Exception.class, () -> userDao.logIn(new User(null, null, new Session("token")))),
+				() -> assertThrows(Exception.class, () -> userDao.logIn(new User("admin", "Admin", new Session("token")))),
 				() -> userDao.logIn(new User("admin", "admin", new Session("token0"))),
 				() -> userDao.logIn(new User("AdMin", "admin", new Session("token"))),
 				() -> userDao.logOut(new Session("errorToken")),

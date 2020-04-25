@@ -5,6 +5,7 @@ import java.util.List;
 import net.thumbtack.school.hospital.database.model.Patient;
 import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.database.model.User;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 
 public interface PatientDao {
     /**
@@ -13,7 +14,7 @@ public interface PatientDao {
      * @param patient - new patient
      * @return inserted patient
      */
-    Patient insert(Patient patient);
+    Patient insert(Patient patient) throws ServerException;
 
     /**
      * Get patient by Patient ID
@@ -21,7 +22,7 @@ public interface PatientDao {
      * @param id - patient DB id
      * @return patient
      */
-    Patient getByPatientId(int id);
+    Patient getByPatientId(int id) throws ServerException;
 
     /**
      * Get patient by User ID
@@ -29,14 +30,14 @@ public interface PatientDao {
      * @param id - patient DB id
      * @return patient
      */
-    Patient getByUserId(int id);
+    Patient getByUserId(int id) throws ServerException;
 
     /**
      * Get patient by token
      *
      * @return patient
      */
-    Patient getByToken(Session token);
+    Patient getByToken(Session token) throws ServerException;
 
     /**
      * Get ALL patients by Doctor ID
@@ -44,12 +45,12 @@ public interface PatientDao {
      * @param id - patient DB id
      * @return patient
      */
-    List<Patient> getAllPatientByDoctorId(int id);
+    List<Patient> getAllPatientByDoctorId(int id) throws ServerException;
 
     /**
      * Get Patients count in DB
      *
      * @return int
      */
-    int getCount();
+    int getCount() throws ServerException;
 }

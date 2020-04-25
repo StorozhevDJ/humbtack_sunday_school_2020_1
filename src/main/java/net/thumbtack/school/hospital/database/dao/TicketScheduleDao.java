@@ -1,6 +1,7 @@
 package net.thumbtack.school.hospital.database.dao;
 
 import net.thumbtack.school.hospital.database.model.TicketSchedule;
+import net.thumbtack.school.hospital.serverexception.ServerException;
 
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface TicketScheduleDao {
      * @param scheduleId
      * @return
      */
-    List<TicketSchedule> getDayScheduleById(int scheduleId);
+    List<TicketSchedule> getDayScheduleById(int scheduleId) throws ServerException;
 }
