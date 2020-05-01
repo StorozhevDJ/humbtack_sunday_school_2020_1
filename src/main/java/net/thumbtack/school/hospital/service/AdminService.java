@@ -51,6 +51,7 @@ public class AdminService {
     public LoginDtoResponse registerAdmin (RegisterAdminDtoRequest registerAdminDtoRequest, String cookie) throws ServerException {
         Admin admin = AdminMapper.convertToEntity(registerAdminDtoRequest);
         admin = adminDao.insert(admin);
+        // REVU см. REVU в классе Admin
         admin.getUser().setSession(new Session(admin.getUser().getId(), cookie));
         userDao.logIn(admin.getUser());
         return AdminMapper.convertToDto(admin);
@@ -61,6 +62,9 @@ public class AdminService {
         if ((user != null) && (user.getType() != UserType.ADMINISTRATOR)) {
             throw new ServerException(ServerError.ACCESS_DENIED);
         }
+        // REVU не надо тут новый Admin создавать
+        // получите Admin по cookie и измените его поля, потом запишите
+        // кстати, записать надо не только поля user, но и поля admin 
         Admin admin = AdminMapper.convertToEntity(editAdminDtoRequest, user.getLogin());
         user.setPassword(admin.getUser().getPassword());
         userDao.update(user);
@@ -85,6 +89,7 @@ public class AdminService {
         List<DaySchedule> dayScheduleList = new ArrayList<>();
 
         // Create from WeekSchedule
+        // REVU выделите private метод,Ю который из реквеста делает детальное расписание
         if (registerDtoRequest.getWeekSchedule() != null) {
             if (registerDtoRequest.getWeekSchedule().getWeekDays() != null) {
                 daysList = Arrays.asList(registerDtoRequest.getWeekSchedule().getWeekDays());
@@ -93,6 +98,10 @@ public class AdminService {
             }
             // For each day of the week
             for (LocalDate date = dateStart; date.isBefore(dateEnd.plusDays(1)); date = date.plusDays(1)) {
+            	// REVU Лучше не список дней
+            	// https://docs.oracle.com/javase/8/docs/api/java/time/DayOfWeek.html
+            	// Поотом сделайте EnumSet<DayOfWeek> и в него добавьте нужные дни недели
+            	// ну и по нему contains
                 if (daysList.contains(date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US))) {
                     timeStart = LocalTime.parse(registerDtoRequest.getWeekSchedule().getTimeStart(), DateTimeFormatter.ofPattern("HHmm"));
                     timeEnd = LocalTime.parse(registerDtoRequest.getWeekSchedule().getTimeEnd(), DateTimeFormatter.ofPattern("HHmm"));
@@ -118,6 +127,7 @@ public class AdminService {
             for (LocalDate date = dateStart; date.isBefore(dateEnd.plusDays(1)); date = date.plusDays(1)) {
                 List<RegisterDoctorDtoRequest.WeekDaysSchedule.DaySchedule> dsl = Arrays.asList(registerDtoRequest.getWeekDaysSchedules().getDaySchedule());
                 for (RegisterDoctorDtoRequest.WeekDaysSchedule.DaySchedule ds:dsl) {
+                	// REVU аналогично
                     if(date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US).equals(ds.getWeekDay())) {
                         List<TicketSchedule> ticketScheduleList = new ArrayList<>();
                         timeStart = LocalTime.parse(registerDtoRequest.getWeekSchedule().getTimeStart(), DateTimeFormatter.ofPattern("HHmm"));

@@ -10,6 +10,9 @@ public class User {
     private UserType type;
     private String login;
     private String password;
+    // REVU в классе User не должно быть поля Session
+    // только залогиненные User его имеют
+    // оно тут просто не нужно
     private Session session;
 
 

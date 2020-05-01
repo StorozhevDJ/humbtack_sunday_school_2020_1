@@ -39,6 +39,7 @@ public class AdminDaoImpl extends DaoImplBase implements AdminDao {
     public Admin insert(Admin admin) throws ServerException {
         LOGGER.debug("DAO insert Admin {}", admin);
             try {
+            	// REVU а если такой логин уже существует ?
                 userMapper.insert(admin.getUser());
                 adminMapper.insert(admin);
             } catch (DataAccessException ex) {
