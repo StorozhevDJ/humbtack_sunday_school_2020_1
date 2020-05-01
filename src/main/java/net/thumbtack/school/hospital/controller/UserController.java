@@ -1,6 +1,8 @@
 package net.thumbtack.school.hospital.controller;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import net.thumbtack.school.hospital.dto.request.LoginDtoRequest;
+import net.thumbtack.school.hospital.dto.response.EmptyResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import net.thumbtack.school.hospital.service.UserService;
@@ -26,13 +28,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(
-            path = "/sessions",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(path = "/sessions", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public LoginDtoResponse loginUser(
-            @RequestBody @Valid LoginDtoRequest dtoRequest,
+            @RequestBody LoginDtoRequest dtoRequest,
             HttpServletResponse response
     ) throws ServerException {
         String cookie = UUID.randomUUID().toString();
@@ -41,10 +39,7 @@ public class UserController {
         return dto;
     }
 
-    @DeleteMapping(
-            path = "/sessions",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @DeleteMapping(path = "/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
     public String logoutUser(
             @CookieValue("JAVASESSIONID") String cookie,
             HttpServletResponse response
@@ -54,10 +49,7 @@ public class UserController {
         return dto;
     }
 
-    @GetMapping(
-            path = "/sessions",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(path = "/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
     public LoginDtoResponse infoUser(
             @CookieValue("JAVASESSIONID") String cookie,
             HttpServletResponse response

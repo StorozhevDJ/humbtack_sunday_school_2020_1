@@ -35,7 +35,7 @@ public class AdminDaoImpl extends DaoImplBase implements AdminDao {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = ServerException.class)
     public Admin insert(Admin admin) throws ServerException {
         LOGGER.debug("DAO insert Admin {}", admin);
             try {
@@ -43,7 +43,7 @@ public class AdminDaoImpl extends DaoImplBase implements AdminDao {
                 adminMapper.insert(admin);
             } catch (DataAccessException ex) {
                 LOGGER.info("Can't insert Admin {} {}", admin, ex);
-                throw new ServerException(ServerError.OTHER_ERROR);
+                throw new ServerException(ServerError.LOGIN_ALREADY_EXISTS);
             }
         return admin;
     }

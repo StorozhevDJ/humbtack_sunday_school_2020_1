@@ -13,7 +13,7 @@ package net.thumbtack.school.hospital.dto.response;
 "duration": время, отведенное на комиссию в минутах
 }*/
 
-public class AddComissionDtoResponse {
+public class AddCommissionDtoResponse {
 
     private String ticket;
     private String patientId;
@@ -23,8 +23,8 @@ public class AddComissionDtoResponse {
     private String time;
     private String duration;
 
-    public AddComissionDtoResponse(String ticket, String patientId, int doctorIds, String room, String date,
-                                   String time, String duration) {
+    public AddCommissionDtoResponse(String ticket, String patientId, int doctorIds, String room, String date,
+                                    String time, String duration) {
         super();
         this.ticket = ticket;
         this.patientId = patientId;

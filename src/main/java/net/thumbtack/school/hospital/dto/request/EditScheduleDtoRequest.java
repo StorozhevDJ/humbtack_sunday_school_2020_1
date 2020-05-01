@@ -30,8 +30,7 @@ public class EditScheduleDtoRequest {
     private String dateEnd;
 
     public class WeekSchedule {
-        private String timeStart;
-        private String timeEnd;
+        private String timeStart, timeEnd;
         private String[] weekDays;
 
         public WeekSchedule(String timeStart, String timeEnd, String[] weekDays) {

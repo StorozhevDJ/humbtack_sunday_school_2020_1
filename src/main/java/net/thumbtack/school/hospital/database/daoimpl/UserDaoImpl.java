@@ -31,6 +31,17 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void update(User user) throws ServerException {
+        LOGGER.debug("DAO get User by login \"{}\"", user.getLogin());
+        try  {
+            userMapper.update(user);
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't get User by login {} {}", user.getLogin(), ex);
+            throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);
+        }
+    }
+
+    @Override
     public User getByLogin(String login, String password) throws ServerException {
         LOGGER.debug("DAO get User by login \"{}\"", login);
         try  {
@@ -57,12 +68,6 @@ public class UserDaoImpl implements UserDao {
     public void logIn(User user) throws ServerException {
         LOGGER.debug("DAO LogIn user \"{}\" ", user.getLogin());
         try {
-            int userId = userMapper.getByLogin(user.getLogin(), user.getPassword()).getId();
-            if (userId == 0) {
-                throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);
-            }
-            user.setId(userId);
-            user.getSession().setUserId(userId);
             userMapper.insertToken(user);
         } catch (DataAccessException ex) {
             LOGGER.info("Can't LogIn user {} {} ", user.getLogin(), ex);

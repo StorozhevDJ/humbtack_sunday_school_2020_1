@@ -74,13 +74,13 @@ public class AdminDaoTest extends DatabasePrepare {
 
     @Test
     public void testGetByToken() throws ServerException {
+        User user = null;
         try {
-            userDao.logIn(new User("admin", "admin", new Session("token")));
+            user = userDao.getByLogin("admin", "admin");
         } catch (ServerException e) {
             fail();
         }
-
-        Admin admin = adminDao.getByToken(new Session("token"));
+        Admin admin = adminDao.getByUserId(user.getId());
         assertAll(
                 () -> assertEquals("Superadmin", admin.getPosition(), "Admin position is not Superadmin"),
                 () -> assertEquals(UserType.ADMINISTRATOR, admin.getUser().getType(), "User type is not admin"),

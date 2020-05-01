@@ -33,18 +33,13 @@ public class GetTicketDtoResponse {
     private String room;
     private String date;
     private String time;
-    // для случая приема у одного врача
+
     private int doctorId;
     private String firstName;
     private String lastName;
     private String patronymic;
     private String speciality;
-    // для случая приема на врачебной комиссии
-    //private int doctorId;
-    //private String firstName;
-    //private String lastName;
-    //private String patronymic;
-    //private String speciality;
+
 
     public GetTicketDtoResponse(String ticket, String room, String date, String time, int doctorId, String firstName,
                                 String lastName, String patronymic, String speciality) {

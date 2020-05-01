@@ -1,5 +1,6 @@
 package net.thumbtack.school.hospital.controller;
 
+import net.thumbtack.school.hospital.dto.response.EmptyResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import net.thumbtack.school.hospital.service.DebugService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class DebugController {
 
 
     @PostMapping(path = "/clear")
-    public String clearDatabase() throws ServerException {
+    public EmptyResponse clearDatabase() throws ServerException {
         return debugService.clearDatabase();
     }
 

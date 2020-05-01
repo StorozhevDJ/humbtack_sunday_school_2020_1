@@ -44,13 +44,14 @@ public class DoctorDaoTest extends DatabasePrepare {
 
     @Test
     public void testGetByToken() throws ServerException {
+        User user =null;
         try {
-            userDao.logIn(new User("doc", "doctor", new Session("token")));
+            user = userDao.getByLogin("doc", "doctor");
         } catch (ServerException e) {
             fail();
         }
 
-        Doctor doc = doctorDao.getByToken(new Session("token"));
+        Doctor doc = doctorDao.getByUserId(user.getId());
         assertAll(
                 () -> assertEquals("spec", doc.getSpeciality().getName()),
                 () -> assertEquals("1", doc.getRoom().getNumber()),

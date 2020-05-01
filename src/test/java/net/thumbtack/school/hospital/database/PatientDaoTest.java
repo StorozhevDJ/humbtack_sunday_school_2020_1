@@ -54,13 +54,14 @@ public class PatientDaoTest extends DatabasePrepare {
 
     @Test
     public void testGetByToken() throws ServerException {
+        User user = null;
         try {
-            userDao.logIn(new User("patientLogin", "passwordPatient", new Session("token")));
+            user = userDao.getByLogin("patientLogin", "passwordPatient");
         } catch (ServerException e) {
             fail();
         }
 
-        Patient patient = patientDao.getByToken(new Session("token"));
+        Patient patient = patientDao.getByUserId(user.getId());
         assertAll(
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
@@ -70,7 +71,6 @@ public class PatientDaoTest extends DatabasePrepare {
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
                 () -> assertEquals("partronymicPatient", patient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),
                 () -> assertEquals("patientLogin", patient.getUser().getLogin(), "User login is not patientLogin"),
-                () -> assertEquals("token", patient.getUser().getSession().getToken(), "User token is not token"),
                 () -> assertNull(patient.getUser().getPassword(), "User password is not null"),
                 () -> assertNull(patientDao.getByToken(new Session("errorToken"))),
                 () -> assertNull(patientDao.getByToken(new Session(""))),

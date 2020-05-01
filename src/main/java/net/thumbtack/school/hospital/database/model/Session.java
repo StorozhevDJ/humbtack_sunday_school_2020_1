@@ -10,6 +10,10 @@ public class Session {
     public Session(String token) {
         this.token = token;
     }
+    public Session(int userId, String token) {
+        this.setUserId(userId);
+        this.setToken(token);
+    }
 
 
     public int getUserId() {

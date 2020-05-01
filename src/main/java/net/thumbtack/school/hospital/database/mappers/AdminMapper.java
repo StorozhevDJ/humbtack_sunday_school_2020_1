@@ -13,6 +13,11 @@ public interface AdminMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Admin admin);
 
+    @Insert("UPDATE `admin` " +
+            "SET ( `userId`, `position`) "
+            + "VALUES (#{user.id}, #{position} )")
+    void update(Admin admin);
+
     @Select("SELECT admin.id, userId, firstName, lastName, patronymic, type, login, position "
             + "FROM admin JOIN user "
             + "ON userId = user.id "

@@ -48,12 +48,17 @@ public class RegisterDoctorDtoRequest {
     private String login;
     @Password
     private String password;
-    private String dateStart;
-    private String dateEnd;
+    private String dateStart, dateEnd;
+
+    private WeekSchedule weekSchedule;
+    private WeekDaysSchedule weekDaysSchedules;
+
+    private int duration;
+
+
 
     public class WeekSchedule {
-        private String timeStart;
-        private String timeEnd;
+        private String timeStart, timeEnd;
         private String[] weekDays;
 
         public String getTimeStart() {
@@ -80,6 +85,8 @@ public class RegisterDoctorDtoRequest {
             this.weekDays = weekDays;
         }
 
+        public WeekSchedule(){}
+
         public WeekSchedule(String timeStart, String timeEnd, String[] weekDays) {
             setTimeStart(timeStart);
             setTimeEnd(timeEnd);
@@ -88,42 +95,54 @@ public class RegisterDoctorDtoRequest {
     }
 
     public class WeekDaysSchedule {
-        private String[] weekDay;
-        private String timeStart;
-        private String timeEnd;
+        public class DaySchedule {
+            private String weekDay;
+            private String timeStart, timeEnd;
 
-        public String[] getWeekDay() {
-            return weekDay;
+            public String getWeekDay() {
+                return weekDay;
+            }
+
+            public void setWeekDay(String weekDay) {
+                this.weekDay = weekDay;
+            }
+
+            public String getTimeStart() {
+                return timeStart;
+            }
+
+            public void setTimeStart(String timeStart) {
+                this.timeStart = timeStart;
+            }
+
+            public String getTimeEnd() {
+                return timeEnd;
+            }
+
+            public void setTimeEnd(String timeEnd) {
+                this.timeEnd = timeEnd;
+            }
+
+            public DaySchedule(String weekDay, String timeStart, String timeEnd) {
+                setWeekDay(weekDay);
+                setTimeStart(timeStart);
+                setTimeEnd(timeEnd);
+            }
         }
 
-        public void setWeekDay(String[] weekDay) {
-            this.weekDay = weekDay;
-        }
+    private DaySchedule[] daySchedule;
 
-        public String getTimeStart() {
-            return timeStart;
-        }
-
-        public void setTimeStart(String timeStart) {
-            this.timeStart = timeStart;
-        }
-
-        public String getTimeEnd() {
-            return timeEnd;
-        }
-
-        public void setTimeEnd(String timeEnd) {
-            this.timeEnd = timeEnd;
-        }
-
-        public WeekDaysSchedule(String[] weekDay, String timeStart, String timeEnd) {
-            setWeekDay(weekDay);
-            setTimeStart(timeStart);
-            setTimeEnd(timeEnd);
-        }
+    public DaySchedule[] getDaySchedule() {
+        return daySchedule;
     }
 
-    private int duration;
+    public void setDaySchedule(DaySchedule[] daySchedule) {
+        this.daySchedule = daySchedule;
+    }
+
+}
+
+
 
 
     public String getFirstName() {
@@ -204,5 +223,21 @@ public class RegisterDoctorDtoRequest {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public WeekSchedule getWeekSchedule() {
+        return weekSchedule;
+    }
+
+    public void setWeekSchedule(WeekSchedule weekSchedule) {
+        this.weekSchedule = weekSchedule;
+    }
+
+    public WeekDaysSchedule getWeekDaysSchedules() {
+        return weekDaysSchedules;
+    }
+
+    public void setWeekDaysSchedules(WeekDaysSchedule weekDaysSchedules) {
+        this.weekDaysSchedules = weekDaysSchedules;
     }
 }

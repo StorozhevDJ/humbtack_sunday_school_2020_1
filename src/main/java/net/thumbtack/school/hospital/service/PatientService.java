@@ -5,6 +5,7 @@ import net.thumbtack.school.hospital.dto.request.AddTicketDtoRequest;
 import net.thumbtack.school.hospital.dto.request.EditPatientDtoRequest;
 import net.thumbtack.school.hospital.dto.request.RegisterPatientDtoRequest;
 import net.thumbtack.school.hospital.dto.response.AddTicketDtoResponse;
+import net.thumbtack.school.hospital.dto.response.EmptyResponse;
 import net.thumbtack.school.hospital.dto.response.GetTicketDtoResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
@@ -50,14 +51,14 @@ public class PatientService {
         return addTicketDtoResponse;
     }
 
-    public String cancelTicket (String cookie, String ticket) throws ServerException {
+    public EmptyResponse cancelTicket (String cookie, String ticket) throws ServerException {
 
-        return "{}";
+        return new EmptyResponse();
     }
 
-    public String cancelCommission (String cookie, String ticket) throws ServerException {
+    public EmptyResponse cancelCommission (String cookie, String ticket) throws ServerException {
 
-        return "{}";
+        return new EmptyResponse();
     }
 
     public List<GetTicketDtoResponse> getTicketsList (String cookie) throws ServerException {

@@ -1,5 +1,6 @@
 package net.thumbtack.school.hospital.database.model;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Doctor {
@@ -7,7 +8,7 @@ public class Doctor {
     private User user;
     private Speciality speciality;
     private Room room;
-    // REVU и вот сюда List или Set из Schedule
+    private List<DaySchedule> dayScheduleList;
 
 
     public Doctor(int id, User user, Speciality speciality, Room room) {
@@ -56,6 +57,14 @@ public class Doctor {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    public List<DaySchedule> getDayScheduleList() {
+        return dayScheduleList;
+    }
+
+    public void setDayScheduleList(List<DaySchedule> dayScheduleList) {
+        this.dayScheduleList = dayScheduleList;
     }
 
     @Override

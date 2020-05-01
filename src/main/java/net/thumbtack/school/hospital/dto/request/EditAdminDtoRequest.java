@@ -17,11 +17,14 @@ public class EditAdminDtoRequest {
     private String lastName;
     private String patronymic;
     private String position;
-    @Password
+    //@Password
     private String oldPassword;
-    @Password
+    //@Password
     private String newPassword;
 
+
+    public EditAdminDtoRequest() {
+    }
 
     public EditAdminDtoRequest(String firstName, String lastName, String patronymic, String position,
                                String oldPassword, String newPassword) {

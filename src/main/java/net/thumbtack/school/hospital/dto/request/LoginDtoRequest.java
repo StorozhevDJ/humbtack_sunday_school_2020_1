@@ -10,9 +10,9 @@ import net.thumbtack.school.hospital.dto.validation.Password;
 
 public class LoginDtoRequest {
 
-    //@Login
+    @Login
     private String login;
-    //@Password
+    @Password
     private String password;
 
     public LoginDtoRequest() {}

@@ -9,17 +9,14 @@ public class GetServerSettingsDtoResponse {
 
     private int maxNameLength;
     private int minPasswordLength;
-    private int serverPort;
-    private String cookie;
 
     public GetServerSettingsDtoResponse() {
     }
 
-    public GetServerSettingsDtoResponse(int maxNameLength, int minPasswordLength, int serverPort) {
+    public GetServerSettingsDtoResponse(int maxNameLength, int minPasswordLength) {
         super();
         this.maxNameLength = maxNameLength;
         this.minPasswordLength = minPasswordLength;
-        this.serverPort = serverPort;
     }
 
     public int getMaxNameLength() {
@@ -38,19 +35,4 @@ public class GetServerSettingsDtoResponse {
         this.minPasswordLength = minPasswordLength;
     }
 
-    public int getServerPort() {
-        return serverPort;
-    }
-
-    public void setServerPort(int serverPort) {
-        this.serverPort = serverPort;
-    }
-
-    public String getCookie() {
-        return cookie;
-    }
-
-    public void setCookie(String cookie) {
-        this.cookie = cookie;
-    }
 }

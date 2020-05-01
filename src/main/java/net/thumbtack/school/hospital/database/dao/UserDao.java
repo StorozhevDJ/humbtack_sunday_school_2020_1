@@ -7,6 +7,13 @@ import net.thumbtack.school.hospital.serverexception.ServerException;
 public interface UserDao {
 
     /**
+     * Update user info
+     * @param user
+     * @throws ServerException
+     */
+    void update(User user) throws ServerException;
+
+    /**
      * Get user info by Login and password
      *
      * @param login

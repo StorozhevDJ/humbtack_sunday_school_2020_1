@@ -1,7 +1,7 @@
 package net.thumbtack.school.hospital.controller;
 
-import net.thumbtack.school.hospital.dto.request.AddComissionDtoRequest;
-import net.thumbtack.school.hospital.dto.response.AddComissionDtoResponse;
+import net.thumbtack.school.hospital.dto.request.AddCommissionDtoRequest;
+import net.thumbtack.school.hospital.dto.response.AddCommissionDtoResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import net.thumbtack.school.hospital.service.DoctorService;
@@ -50,11 +50,11 @@ public class DoctorController {
     }
 
     @GetMapping(path = "/commissions")
-    public AddComissionDtoResponse addCommission(
+    public AddCommissionDtoResponse addCommission(
             @CookieValue("JAVASESSIONID") String cookie,
-            @RequestBody @Valid AddComissionDtoRequest dtoRequest
+            @RequestBody @Valid AddCommissionDtoRequest dtoRequest
     ) throws ServerException {
-        AddComissionDtoResponse dto = doctorService.addCommission(cookie, dtoRequest);
+        AddCommissionDtoResponse dto = doctorService.addCommission(cookie, dtoRequest);
         return dto;
     }
 

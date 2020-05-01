@@ -13,8 +13,11 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     @Value("${min_password_length}")
     private int minPasswordLength;
 
+    //private String message;
+
     @Override
     public void initialize(Password constraintAnnotation) {
+        //message = constraintAnnotation.message();
     }
 
     @Override

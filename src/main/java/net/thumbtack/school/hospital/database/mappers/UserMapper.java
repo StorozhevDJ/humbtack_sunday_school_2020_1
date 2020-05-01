@@ -13,6 +13,28 @@ public interface UserMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(User user);
 
+    @Update({"<script>",
+            "UPDATE `user` ",
+            "<set>",
+            "<if test='firstName != null'> `firstName` = #{firstName}, </if>",
+            "<if test='lastName != null'> `lastName` = #{lastName}, </if>",
+            "<if test='patronymic != null'> `patronymic` = #{patronymic}, </if>",
+            "<if test='password != null'> `password` = MD5(#{password}) </if>",
+            "</set>",
+            "WHERE id = #{id};",
+            "</script>"})
+    /*@Select({"<script>",
+            "SELECT * FROM trainee",
+            "<where>",
+            "<if test='firstName != null'> firstName like #{firstName}</if>",
+            "<if test='lastName != null'> AND lastName like #{lastName}</if>",
+            "<if test='rating != null'> AND rating = #{rating}",
+            "</if>",
+            "</where>",
+            "</script>"})*/
+    //List<Trainee> getAllWithParams(@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("rating") Integer rating);
+    void update(User user);
+
     @Update("REPLACE into session (userId, token) VALUES (#{id}, #{session.token});")
     int insertToken(User user);
 
@@ -27,9 +49,10 @@ public interface UserMapper {
     })
     User getByLogin(@Param("login") String login, @Param("password") String password);
 
-    @Select("SELECT id, firstName, lastName, patronymic, type, login, token "
+    @Select("SELECT user.id, firstName, lastName, patronymic, type, login, token "
             + "FROM user "
-            + "WHERE token = #{token};")
+            + "JOIN session ON session.userId = user.id "
+            + "WHERE session.token = #{token};")
     @Results({
             @Result(property = "type", column = "type", javaType = UserType.class),
             @Result(property = "session.token", column = "token")

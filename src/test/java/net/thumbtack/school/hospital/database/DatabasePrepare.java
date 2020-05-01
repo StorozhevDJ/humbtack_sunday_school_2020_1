@@ -31,13 +31,6 @@ public abstract class DatabasePrepare {
         this.patientDao = patientDao;
     }
 
-    /*@BeforeAll()
-    public static void setUp() {
-        boolean initSqlSessionFactory = MyBatisUtils.initSqlSessionFactory();
-        if (!initSqlSessionFactory) {
-            throw new RuntimeException("Can't create connection, stop");
-        }
-    }*/
 
     @BeforeEach
     public void clearDB() throws ServerException {

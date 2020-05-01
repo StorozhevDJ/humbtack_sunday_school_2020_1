@@ -1,8 +1,8 @@
 package net.thumbtack.school.hospital.service;
 
 import net.thumbtack.school.hospital.database.dao.DoctorDao;
-import net.thumbtack.school.hospital.dto.request.AddComissionDtoRequest;
-import net.thumbtack.school.hospital.dto.response.AddComissionDtoResponse;
+import net.thumbtack.school.hospital.dto.request.AddCommissionDtoRequest;
+import net.thumbtack.school.hospital.dto.response.AddCommissionDtoResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +35,8 @@ public class DoctorService {
         return dto;
     }
 
-    public AddComissionDtoResponse addCommission (String cookie, AddComissionDtoRequest addComissionDtoRequest) throws ServerException {
-        AddComissionDtoResponse dto = null;
+    public AddCommissionDtoResponse addCommission (String cookie, AddCommissionDtoRequest addCommissionDtoRequest) throws ServerException {
+        AddCommissionDtoResponse dto = null;
 
         return dto;
     }

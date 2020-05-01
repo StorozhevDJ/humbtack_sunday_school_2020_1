@@ -1,24 +1,34 @@
 package net.thumbtack.school.hospital.dto.response;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import net.thumbtack.school.hospital.database.model.DaySchedule;
 import net.thumbtack.school.hospital.database.model.ScheduleType;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginDtoResponse {
     private int id;
     private String firstName;
     private String lastName;
     private String patronymic;
-    private String position;
-    private String speciality;
-    private String email;
-    private String address;
-    private String phone;
-    private String room;
+    private String position;    //Administrator
+    private String speciality;  //Doctor
+    private String email;       //Patient
+    private String address;     //Patient
+    private String phone;       //Patient
+    private String room;        //Doctor
     private DaySchedule daySchedule;
 
     public LoginDtoResponse() {}
 
+    /**
+     * Admin Login DTO response constructor
+     * @param id
+     * @param firstName
+     * @param lastName
+     * @param patronymic
+     * @param position
+     */
     public LoginDtoResponse(int id, String firstName, String lastName, String patronymic, String position) {
         setId(id);
         setFirstName(firstName);
@@ -27,6 +37,16 @@ public class LoginDtoResponse {
         setPosition(position);
     }
 
+    /**
+     * User Login DTO response constructor
+     * @param id
+     * @param firstName
+     * @param lastName
+     * @param patronymic
+     * @param email
+     * @param address
+     * @param phone
+     */
     public LoginDtoResponse(int id, String firstName, String lastName, String patronymic, String email,
                             String address, String phone) {
         this.id = id;
@@ -38,13 +58,23 @@ public class LoginDtoResponse {
         this.phone = phone;
     }
 
-    /*public LoginDtoResponse(int id, String firstName, String lastName, String patronymic, String room) {
+    /**
+     * Doctor Login DTO response constructor
+     * @param id
+     * @param firstName
+     * @param lastName
+     * @param patronymic
+     * @param speciality
+     * @param room
+     */
+    public LoginDtoResponse(int id, String firstName, String lastName, String patronymic, String speciality, String room) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.patronymic = patronymic;
+        this.speciality = speciality;
         this.room = room;
-    }*/
+    }
 
     public int getId() {
         return id;

@@ -47,7 +47,7 @@ public class DoctorDaoImpl implements DoctorDao {
             }
         } catch (DataAccessException ex) {
             LOGGER.info("Can't insert Doctor {} {}", doctor, ex);
-            throw new ServerException(ServerError.OTHER_ERROR);
+            throw new ServerException(ServerError.LOGIN_ALREADY_EXISTS);
         }
         return doctor;
     }

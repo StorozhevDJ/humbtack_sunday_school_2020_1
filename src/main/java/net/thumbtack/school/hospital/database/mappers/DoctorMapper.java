@@ -15,12 +15,13 @@ public interface DoctorMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Doctor doctor);
 
-    @Select("SELECT doctor.id, userId, firstName, lastName, patronymic, type, login, token, name, room "
+    @Select("SELECT doctor.id, doctor.userId, firstName, lastName, patronymic, type, login, token, name, room "
             + "FROM doctor JOIN user "
             + "ON userId = user.id "
             + "JOIN speciality ON specialityId = speciality.id "
             + "JOIN room ON room.id = roomId "
-            + "WHERE user.id = #{id};")
+            + "LEFT JOIN session ON session.userId = user.id "
+            + "WHERE doctor.userId = #{id};")
     @Results({
             @Result(property = "user.id", column = "userId"),
             @Result(property = "user.firstName", column = "firstName"),
@@ -29,7 +30,9 @@ public interface DoctorMapper {
             @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login"),
             @Result(property = "speciality.name", column = "name"),
-            @Result(property = "room.number", column = "room")
+            @Result(property = "room.number", column = "room"),
+            @Result(property = "user.session.userId", column = "userId"),
+            @Result(property = "user.session.token", column = "token")
     })
     Doctor getByUserId(int id);
 

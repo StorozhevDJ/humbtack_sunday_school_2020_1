@@ -12,7 +12,7 @@ package net.thumbtack.school.hospital.dto.request;
 "duration": время, отведенное на комиссию в минутах
 }*/
 
-public class AddComissionDtoRequest {
+public class AddCommissionDtoRequest {
 
 	private String patientId;
 	private int[] doctorIds;
@@ -21,8 +21,8 @@ public class AddComissionDtoRequest {
 	private String time;
 	private String duration;
 
-	public AddComissionDtoRequest(String patientId, int[] doctorIds, String room, String date, String time,
-								  String duration) {
+	public AddCommissionDtoRequest(String patientId, int[] doctorIds, String room, String date, String time,
+								   String duration) {
 		super();
 		this.patientId = patientId;
 		this.doctorIds = doctorIds;
