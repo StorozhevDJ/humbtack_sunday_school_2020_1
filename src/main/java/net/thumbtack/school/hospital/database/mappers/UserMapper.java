@@ -21,7 +21,7 @@ public interface UserMapper {
             "<if test='patronymic != null'> `patronymic` = #{patronymic}, </if>",
             "<if test='password != null'> `password` = MD5(#{password}) </if>",
             "</set>",
-            "WHERE id = #{id};",
+            "<where> id = #{id}</where>",
             "</script>"})
     /*@Select({"<script>",
             "SELECT * FROM trainee",
@@ -55,6 +55,7 @@ public interface UserMapper {
             + "WHERE session.token = #{token};")
     @Results({
             @Result(property = "type", column = "type", javaType = UserType.class),
+            @Result(property = "session.userId", column = "user.id"),
             @Result(property = "session.token", column = "token")
     })
     User getByToken(Session token);

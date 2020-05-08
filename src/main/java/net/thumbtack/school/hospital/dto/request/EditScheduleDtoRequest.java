@@ -29,92 +29,11 @@ public class EditScheduleDtoRequest {
     private String dateStart;
     private String dateEnd;
 
-    public class WeekSchedule {
-        private String timeStart, timeEnd;
-        private String[] weekDays;
+    public WeekScheduleDtoRequest weekSchedule;
+    public WeekDaysScheduleDtoRequest[] weekDaysSchedule;
 
-        public WeekSchedule(String timeStart, String timeEnd, String[] weekDays) {
-            super();
-            this.timeStart = timeStart;
-            this.timeEnd = timeEnd;
-            this.weekDays = weekDays;
-        }
-
-        public String getTimeStart() {
-            return timeStart;
-        }
-
-        public void setTimeStart(String timeStart) {
-            this.timeStart = timeStart;
-        }
-
-        public String getTimeEnd() {
-            return timeEnd;
-        }
-
-        public void setTimeEnd(String timeEnd) {
-            this.timeEnd = timeEnd;
-        }
-
-        public String[] getWeekDays() {
-            return weekDays;
-        }
-
-        public void setWeekDays(String[] weekDays) {
-            this.weekDays = weekDays;
-        }
-    }
-
-    private WeekSchedule weekSchedule;
-
-    public class WeekDaysSchedule {
-        private String daySchedule;
-        private String timeStart;
-        private String timeEnd;
-
-        public WeekDaysSchedule(String daySchedule, String timeStart, String timeEnd) {
-            super();
-            this.daySchedule = daySchedule;
-            this.timeStart = timeStart;
-            this.timeEnd = timeEnd;
-        }
-
-        public String getDaySchedule() {
-            return daySchedule;
-        }
-
-        public void setDaySchedule(String daySchedule) {
-            this.daySchedule = daySchedule;
-        }
-
-        public String getTimeStart() {
-            return timeStart;
-        }
-
-        public void setTimeStart(String timeStart) {
-            this.timeStart = timeStart;
-        }
-
-        public String getTimeEnd() {
-            return timeEnd;
-        }
-
-        public void setTimeEnd(String timeEnd) {
-            this.timeEnd = timeEnd;
-        }
-    }
-
-    private WeekDaysSchedule[] weekDaysSchedule;
     private int duration;
 
-    public EditScheduleDtoRequest(String dateStart, String dateEnd, WeekSchedule weekSchedule,
-                                  WeekDaysSchedule[] weekDaysSchedule, int duration) {
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
-        this.weekSchedule = weekSchedule;
-        this.weekDaysSchedule = weekDaysSchedule;
-        this.duration = duration;
-    }
 
     public String getDateStart() {
         return dateStart;
@@ -132,19 +51,19 @@ public class EditScheduleDtoRequest {
         this.dateEnd = dateEnd;
     }
 
-    public WeekSchedule getWeekSchedule() {
+    public WeekScheduleDtoRequest getWeekSchedule() {
         return weekSchedule;
     }
 
-    public void setWeekSchedule(WeekSchedule weekSchedule) {
+    public void setWeekSchedule(WeekScheduleDtoRequest weekSchedule) {
         this.weekSchedule = weekSchedule;
     }
 
-    public WeekDaysSchedule[] getWeekDaysSchedule() {
+    public WeekDaysScheduleDtoRequest[] getWeekDaysSchedule() {
         return weekDaysSchedule;
     }
 
-    public void setWeekDaysSchedule(WeekDaysSchedule[] weekDaysSchedule) {
+    public void setWeekDaysSchedule(WeekDaysScheduleDtoRequest[] weekDaysSchedule) {
         this.weekDaysSchedule = weekDaysSchedule;
     }
 

@@ -26,12 +26,7 @@ public class DaySchedule {
         this(0, doctor, date, null);
     }
 
-    /*public Schedule(String ticket, Doctor doctor, Date date, Time timeStart, Time timeEnd, Patient patient) {
-        this(0, ticket, doctor, date, timeStart, timeEnd, patient);
-    }*/
-
     public DaySchedule() {
-
     }
 
     public int getId() {

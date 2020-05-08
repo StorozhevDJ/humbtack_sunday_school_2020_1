@@ -1,13 +1,15 @@
 package net.thumbtack.school.hospital.service;
 
+import net.thumbtack.school.hospital.ApplicationProperties;
 import net.thumbtack.school.hospital.database.dao.AdminDao;
 import net.thumbtack.school.hospital.database.dao.DoctorDao;
 import net.thumbtack.school.hospital.database.dao.PatientDao;
 import net.thumbtack.school.hospital.database.dao.UserDao;
-import net.thumbtack.school.hospital.database.daoimpl.AdminDaoImpl;
-import net.thumbtack.school.hospital.database.model.*;
+import net.thumbtack.school.hospital.database.model.Session;
+import net.thumbtack.school.hospital.database.model.User;
 import net.thumbtack.school.hospital.dto.request.LoginDtoRequest;
-import net.thumbtack.school.hospital.dto.response.EmptyResponse;
+import net.thumbtack.school.hospital.dto.response.EmptyDtoResponse;
+import net.thumbtack.school.hospital.dto.response.GetServerSettingsDtoResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
 import net.thumbtack.school.hospital.mapper.AdminMapper;
 import net.thumbtack.school.hospital.mapper.DoctorMapper;
@@ -33,6 +35,10 @@ public class UserService {
     private PatientDao patientDao;
 
     @Autowired
+    ApplicationProperties prop;
+
+
+    @Autowired
     public UserService(UserDao userDao, AdminDao adminDao, DoctorDao doctorDao, PatientDao patientDao) {
         this.userDao = userDao;
         this.adminDao = adminDao;
@@ -40,6 +46,14 @@ public class UserService {
         this.patientDao = patientDao;
     }
 
+    /**
+     * User login
+     *
+     * @param loginDtoRequest
+     * @param cookie
+     * @return LoginDtoResponse
+     * @throws ServerException
+     */
     public LoginDtoResponse loginUser(LoginDtoRequest loginDtoRequest, String cookie) throws ServerException {
         User user = userDao.getByLogin(loginDtoRequest.getLogin(), loginDtoRequest.getPassword());
         if (user == null) {
@@ -62,11 +76,25 @@ public class UserService {
         throw new ServerException(ServerError.OTHER_ERROR);
     }
 
-    public String logoutUser(String cookie) throws ServerException {
+    /**
+     * User LogOut
+     *
+     * @param cookie
+     * @return EmptyDtoResponse
+     * @throws ServerException
+     */
+    public EmptyDtoResponse logoutUser(String cookie) throws ServerException {
         userDao.logOut(new Session(cookie));
-        return new EmptyResponse().getEmptyResponse();
+        return new EmptyDtoResponse();
     }
 
+    /**
+     * Get current User account information
+     *
+     * @param cookie
+     * @return LoginDtoResponse
+     * @throws ServerException
+     */
     public LoginDtoResponse infoUser(String cookie) throws ServerException {
         User user = userDao.getByToken(new Session(cookie));
         if (user == null) {
@@ -84,6 +112,19 @@ public class UserService {
             }
         }
         throw new ServerException(ServerError.OTHER_ERROR);
+    }
+
+
+    /**
+     * Get server settings for current user
+     *
+     * @param cookie
+     */
+    public GetServerSettingsDtoResponse getServerSettings(String cookie) throws ServerException {
+        GetServerSettingsDtoResponse dto = new GetServerSettingsDtoResponse();
+        dto.setMaxNameLength(prop.getMaxNameLength());
+        dto.setMinPasswordLength(prop.getMinPasswordLength());
+        return dto;
     }
 
 }

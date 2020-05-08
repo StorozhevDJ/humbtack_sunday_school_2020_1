@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
 
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class, DayScheduleDao.class, TicketScheduleDaoImpl.class})
+@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class, ScheduleDao.class})
 public class CommissionDaoTest {
 
     /*@Test

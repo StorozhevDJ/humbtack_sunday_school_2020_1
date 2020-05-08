@@ -13,18 +13,24 @@ package net.thumbtack.school.hospital.dto.request;
 
 import net.thumbtack.school.hospital.dto.validation.Password;
 
+import javax.validation.constraints.NotNull;
+
 public class EditPatientDtoRequest {
 
     private String firstName;
     private String lastName;
     private String patronymic;
     private String email;
+    @NotNull
     private String address;
     private String phone;
     @Password
     private String oldPassword;
     @Password
     private String newPassword;
+
+    public EditPatientDtoRequest() {
+    }
 
     public EditPatientDtoRequest(String firstName, String lastName, String patronymic, String email, String address,
                                  String phone, String oldPassword, String newPassword) {

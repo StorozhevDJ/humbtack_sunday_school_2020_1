@@ -2,10 +2,6 @@ package net.thumbtack.school.hospital.database;
 
 import net.thumbtack.school.hospital.database.dao.*;
 import net.thumbtack.school.hospital.database.daoimpl.*;
-import net.thumbtack.school.hospital.database.model.DaySchedule;
-import net.thumbtack.school.hospital.database.model.TicketSchedule;
-import net.thumbtack.school.hospital.database.model.Doctor;
-import net.thumbtack.school.hospital.database.model.Patient;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -13,35 +9,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.*;
 
-/*@MybatisTest
+@MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class, DayScheduleDao.class, TicketScheduleDaoImpl.class})*/
+@Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class, ScheduleDaoImpl.class})
 public class DayScheduleDaoTest extends DatabasePrepare {
 
-    //@Autowired
+    private UserDao userDao;
+    private ScheduleDao scheduleDao;
+
+    @Autowired
     public DayScheduleDaoTest(CommonDao commonDao,
-                              UserDao userDao,
                               AdminDao adminDao,
                               DoctorDao doctorDao,
                               PatientDao patientDao,
-                              DayScheduleDao scheduleDao,
-                              TicketScheduleDao ticketScheduleDao) {
+                              UserDao userDao,
+                              ScheduleDao scheduleDao) {
         super(commonDao, adminDao, doctorDao, patientDao);
+        this.userDao = userDao;
+        this.scheduleDao = scheduleDao;
     }
 
-    /*@Test
+    @Test
     public void testCreateSchedule() throws ServerException {
 
-        Doctor doc = doctorDao.getBySpeciality("spec").get(0);
+        /*Doctor doc = doctorDao.getBySpeciality("spec").get(0);
         List<DaySchedule> dayScheduleList = createTestSchedule(doc, 15, 8);
 
         int insertedCnt = scheduleDao.createSchedule(dayScheduleList);
@@ -56,10 +50,10 @@ public class DayScheduleDaoTest extends DatabasePrepare {
                 //() -> assertNull(scheduleList.get(0).getDaySchedule().get(0).getPatient()),
                 //() -> assertNull(scheduleList.get(0).getDaySchedule().get(0).getTicket()),
                 () -> assertEquals(8, ts.size())
-        );
+        );*/
     }
 
-    @Test
+    /*@Test
     public void testGetAllSchedule() throws ServerException {
         Doctor doc = doctorDao.getBySpeciality("spec").get(0);
         List<DaySchedule> dayScheduleList = createTestSchedule(doc, 20, 15);

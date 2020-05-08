@@ -15,6 +15,14 @@ public interface AdminDao {
     Admin insert(Admin admin) throws ServerException;
 
     /**
+     * Update admin info (position)
+     *
+     * @param admin
+     * @throws ServerException
+     */
+    void update(Admin admin) throws ServerException;
+
+    /**
      * Get admin info by token from JAVASESSIONID cookie
      *
      * @param token

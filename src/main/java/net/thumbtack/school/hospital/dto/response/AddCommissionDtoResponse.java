@@ -16,15 +16,15 @@ package net.thumbtack.school.hospital.dto.response;
 public class AddCommissionDtoResponse {
 
     private String ticket;
-    private String patientId;
-    private int doctorIds;
+    private Integer patientId;
+    private Integer[] doctorIds;
     private String room;
     private String date;
     private String time;
-    private String duration;
+    private int duration;
 
-    public AddCommissionDtoResponse(String ticket, String patientId, int doctorIds, String room, String date,
-                                    String time, String duration) {
+    public AddCommissionDtoResponse(String ticket, Integer patientId, Integer[] doctorIds, String room, String date,
+                                    String time, int duration) {
         super();
         this.ticket = ticket;
         this.patientId = patientId;
@@ -43,19 +43,19 @@ public class AddCommissionDtoResponse {
         this.ticket = ticket;
     }
 
-    public String getPatientId() {
+    public Integer getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(String patientId) {
+    public void setPatientId(Integer patientId) {
         this.patientId = patientId;
     }
 
-    public int getDoctorIds() {
+    public Integer[] getDoctorIds() {
         return doctorIds;
     }
 
-    public void setDoctorIds(int doctorIds) {
+    public void setDoctorIds(Integer[] doctorIds) {
         this.doctorIds = doctorIds;
     }
 
@@ -83,11 +83,11 @@ public class AddCommissionDtoResponse {
         this.time = time;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 

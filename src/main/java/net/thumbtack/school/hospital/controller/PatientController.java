@@ -5,8 +5,8 @@ import net.thumbtack.school.hospital.dto.request.AddTicketDtoRequest;
 import net.thumbtack.school.hospital.dto.request.EditPatientDtoRequest;
 import net.thumbtack.school.hospital.dto.request.RegisterPatientDtoRequest;
 import net.thumbtack.school.hospital.dto.response.AddTicketDtoResponse;
-import net.thumbtack.school.hospital.dto.response.EmptyResponse;
-import net.thumbtack.school.hospital.dto.response.GetTicketDtoResponse;
+import net.thumbtack.school.hospital.dto.response.EmptyDtoResponse;
+import net.thumbtack.school.hospital.dto.response.getticket.GetTicketListDtoResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import net.thumbtack.school.hospital.service.PatientService;
@@ -16,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -25,73 +24,96 @@ public class PatientController {
 
     private PatientService patientService;
 
+    private static final String COOKIE_NAME = "JAVASESSIONID";
+
 
     @Autowired
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
 
-
+    /**
+     * 3.4. Patients - registering new patients
+     * POST /api/patients
+     */
     @PostMapping(path = "/patients", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public LoginDtoResponse registerPatients(
             @RequestBody @Valid RegisterPatientDtoRequest dtoRequest,
-            // REVU private static final COOKIE_NAME = "JAVASESSIONID" и везде его 
-            @CookieValue("JAVASESSIONID") String cookie
+            @CookieValue(COOKIE_NAME) String cookie
     ) throws ServerException {
-        LoginDtoResponse dto = patientService.registerPatient(cookie, dtoRequest);
-        return dto;
+        return patientService.registerPatient(cookie, dtoRequest);
     }
 
+    /**
+     * 3.10. Administrator or doctor - get patient information
+     * GET /api/patients/идентификатор_пациента
+     */
     @GetMapping(path = "/patients/{patientId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public LoginDtoResponse infoPatient(
-            @PathVariable("patientId") long patientId,
-            @CookieValue("JAVASESSIONID") String cookie
+            @PathVariable("patientId") int patientId,
+            @CookieValue(COOKIE_NAME) String cookie
     ) throws ServerException {
-        LoginDtoResponse dto = patientService.infoPatient(cookie, patientId);
-        return dto;
+        return patientService.infoPatient(cookie, patientId);
     }
 
+    /**
+     * 3.13. Patient - change current user account
+     * PUT /api/patients
+     */
     @PutMapping(path = "/patients", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public LoginDtoResponse editPatient(
-            @CookieValue("JAVASESSIONID") String cookie,
+            @CookieValue(COOKIE_NAME) String cookie,
             @RequestBody @Valid EditPatientDtoRequest dtoRequest
     ) throws ServerException {
-        LoginDtoResponse dto = patientService.editPatient(cookie, dtoRequest);
-        return dto;
+        return patientService.editPatient(cookie, dtoRequest);
     }
 
+    /**
+     * 3.15. Patient - record to the doctor
+     * POST /api/tickets
+     */
     @PostMapping(path = "/tickets", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public AddTicketDtoResponse addTicket(
             @RequestBody @Valid AddTicketDtoRequest dtoRequest,
-            @CookieValue("JAVASESSIONID") String cookie
+            @CookieValue(COOKIE_NAME) String cookie
     ) throws ServerException {
-        AddTicketDtoResponse dto = patientService.addTicket(cookie, dtoRequest);
-        return dto;
+        return patientService.addTicket(cookie, dtoRequest);
     }
 
+    /**
+     * 3.16. Cancel ticket to the doctor
+     * DELETE /api/tickets/номер_талона
+     */
     @DeleteMapping(path = "/tickets/{ticket}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmptyResponse cancelTicket(
+    public EmptyDtoResponse cancelTicket(
             @PathVariable("ticket") String ticket,
-            @CookieValue("JAVASESSIONID") String cookie
+            @CookieValue(COOKIE_NAME) String cookie
     ) throws ServerException {
-        EmptyResponse dto = patientService.cancelTicket(cookie, ticket);
-        return dto;
+        return patientService.cancelTicket(cookie, ticket);
     }
 
+    /**
+     * 3.18. Patient - cancel the commission
+     * DELETE /api/commissions/номер_талона_на_комиссию
+     */
     @DeleteMapping(path = "/commissions/{ticket}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmptyResponse cancelCommission(
+    public EmptyDtoResponse cancelCommission(
             @PathVariable("ticket") String ticket,
-            @CookieValue("JAVASESSIONID") String cookie
+            @CookieValue(COOKIE_NAME) String cookie
     ) throws ServerException {
-        EmptyResponse dto = patientService.cancelCommission(cookie, ticket);
+        EmptyDtoResponse dto = patientService.cancelCommission(cookie, ticket);
         return dto;
     }
 
-    @GetMapping(path = "/tickets", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public List<GetTicketDtoResponse> infoPatient(
-            @CookieValue("JAVASESSIONID") String cookie
+    /**
+     * 3.19. Patient - get tickets list
+     * GET /api/tickets
+     */
+    @GetMapping(path = "/tickets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public GetTicketListDtoResponse getTicketsList(
+            @CookieValue(COOKIE_NAME) String cookie
     ) throws ServerException {
-        List<GetTicketDtoResponse> dto = patientService.getTicketsList(cookie);
+        GetTicketListDtoResponse dto = patientService.getTicketsList(cookie);
         return dto;
     }
 }

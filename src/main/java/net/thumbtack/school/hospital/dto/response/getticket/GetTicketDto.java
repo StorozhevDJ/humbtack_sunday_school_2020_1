@@ -1,48 +1,30 @@
-package net.thumbtack.school.hospital.dto.response;
+package net.thumbtack.school.hospital.dto.response.getticket;
 
-/*{
-[
-"ticket": “номер талона”,
-"room": ”номер кабинета”,
-"date": "дата",
-"time": "время",
-// для случая приема у одного врача
-"doctorId": идентификатор врача,
-"firstName": "имя врача",
-"lastName": "фамилия врача",
-"patronymic": "отчество врача",
-"speciality": "специальность врача",
-// для случая приема на врачебной комиссии
-[
-{
-"doctorId": идентификатор врача,
-"firstName": "имя врача",
-"lastName": "фамилия врача",
-"patronymic": "отчество врача",
-"speciality": "специальность врача",
-}
-...
-]
-...
-]
-}*/
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-public class GetTicketDtoResponse {
+import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class GetTicketDto {
     private String ticket;
     private String room;
     private String date;
     private String time;
-
-    private int doctorId;
+    // For doctor reception
+    private Integer doctorId;
     private String firstName;
     private String lastName;
     private String patronymic;
     private String speciality;
+    // For commission
+    private List<GetTicketCommissionDto> doctorsCommissionList;
 
+    public GetTicketDto() {
+    }
 
-    public GetTicketDtoResponse(String ticket, String room, String date, String time, int doctorId, String firstName,
-                                String lastName, String patronymic, String speciality) {
+    public GetTicketDto(String ticket, String room, String date, String time, int doctorId, String firstName,
+                        String lastName, String patronymic, String speciality) {
         super();
         this.ticket = ticket;
         this.room = room;
@@ -87,11 +69,11 @@ public class GetTicketDtoResponse {
         this.time = time;
     }
 
-    public int getDoctorId() {
+    public Integer getDoctorId() {
         return doctorId;
     }
 
-    public void setDoctorId(int doctorId) {
+    public void setDoctorId(Integer doctorId) {
         this.doctorId = doctorId;
     }
 
@@ -127,5 +109,12 @@ public class GetTicketDtoResponse {
         this.speciality = speciality;
     }
 
+    //@JsonValue
+    public List<GetTicketCommissionDto> getDoctorsCommissionList() {
+        return doctorsCommissionList;
+    }
 
+    public void setDoctorsCommissionList(List<GetTicketCommissionDto> doctorsCommissionList) {
+        this.doctorsCommissionList = doctorsCommissionList;
+    }
 }

@@ -29,14 +29,6 @@ public class TicketSchedule {
         setScheduleType(scheduleType);
     }
 
-    /*public TicketSchedule(int scheduleId, String ticket, LocalTime timeStart, LocalTime timeEnd, Patient patient) {
-        this(0, scheduleId, ticket, timeStart, timeEnd, patient, null);
-    }
-
-    public TicketSchedule(String ticket, LocalTime timeStart, LocalTime timeEnd, Patient patient) {
-        this(0, 0, ticket, timeStart, timeEnd, patient, null);
-    }*/
-
     public int getId() {
         return id;
     }

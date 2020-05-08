@@ -1,6 +1,10 @@
 package net.thumbtack.school.hospital.mapper;
 
 import net.thumbtack.school.hospital.database.model.Patient;
+import net.thumbtack.school.hospital.database.model.User;
+import net.thumbtack.school.hospital.database.model.UserType;
+import net.thumbtack.school.hospital.dto.request.EditPatientDtoRequest;
+import net.thumbtack.school.hospital.dto.request.RegisterPatientDtoRequest;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
 
 public class PatientMapper {
@@ -17,6 +21,41 @@ public class PatientMapper {
                 patient.getEmail(),
                 patient.getAddress(),
                 patient.getPhone()
+        );
+    }
+
+
+    public static Patient convertToEntity(RegisterPatientDtoRequest dtoRequest) {
+        return new Patient(
+                new User(
+                        dtoRequest.getFirstName(),
+                        dtoRequest.getLastName(),
+                        dtoRequest.getPatronymic(),
+                        UserType.PATIENT,
+                        dtoRequest.getLogin(),
+                        dtoRequest.getPassword(),
+                        null
+                ),
+                dtoRequest.getEmail(),
+                dtoRequest.getAddress(),
+                dtoRequest.getPhone()
+        );
+    }
+
+    public static Patient convertToEntity(EditPatientDtoRequest dtoRequest) {
+        return new Patient(
+                new User(
+                        dtoRequest.getFirstName(),
+                        dtoRequest.getLastName(),
+                        dtoRequest.getPatronymic(),
+                        UserType.PATIENT,
+                        null,
+                        dtoRequest.getNewPassword(),
+                        null
+                ),
+                dtoRequest.getEmail(),
+                dtoRequest.getAddress(),
+                dtoRequest.getPhone()
         );
     }
 

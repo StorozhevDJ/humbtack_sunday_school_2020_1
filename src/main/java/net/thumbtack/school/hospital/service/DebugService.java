@@ -2,7 +2,7 @@ package net.thumbtack.school.hospital.service;
 
 
 import net.thumbtack.school.hospital.database.dao.CommonDao;
-import net.thumbtack.school.hospital.dto.response.EmptyResponse;
+import net.thumbtack.school.hospital.dto.response.EmptyDtoResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -20,9 +20,15 @@ public class DebugService {
         this.commonDao = commonDao;
     }
 
-    public EmptyResponse clearDatabase () throws ServerException {
+    /**
+     * Clear server database
+     *
+     * @return EmptyDtoResponse
+     * @throws ServerException
+     */
+    public EmptyDtoResponse clearDatabase() throws ServerException {
         commonDao.clear();
-        return new EmptyResponse();
+        return new EmptyDtoResponse();
     }
 
 }

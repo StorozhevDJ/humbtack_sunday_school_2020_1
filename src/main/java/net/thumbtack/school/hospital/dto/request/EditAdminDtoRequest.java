@@ -11,15 +11,19 @@ package net.thumbtack.school.hospital.dto.request;
 
 import net.thumbtack.school.hospital.dto.validation.Password;
 
+import javax.validation.constraints.NotNull;
+
 public class EditAdminDtoRequest {
+
 
     private String firstName;
     private String lastName;
     private String patronymic;
+    @NotNull
     private String position;
-    //@Password
+    @Password
     private String oldPassword;
-    //@Password
+    @Password
     private String newPassword;
 
 

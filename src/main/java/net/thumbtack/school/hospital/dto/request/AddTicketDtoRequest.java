@@ -14,6 +14,9 @@ public class AddTicketDtoRequest {
     private String date;
     private String time;
 
+    public AddTicketDtoRequest() {
+    }
+
     public AddTicketDtoRequest(String doctorId, String speciality, String date, String time) {
         this.doctorId = doctorId;
         this.speciality = speciality;

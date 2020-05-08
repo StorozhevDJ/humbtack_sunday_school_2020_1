@@ -1,5 +1,7 @@
 package net.thumbtack.school.hospital.database.mappers;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import net.thumbtack.school.hospital.database.model.*;
@@ -18,94 +20,80 @@ public interface DayScheduleMapper {
 	@Options(useGeneratedKeys = true, keyProperty = "id")
 	int insert(@Param("list") List<DaySchedule> daySchedule);
 
-	@Select("SELECT schedule.id, doctorId, date "
+
+	@Select("<script>" +
+			"SELECT schedule.id, doctorId, date, room, speciality.name "
 			+ "FROM `schedule` "
 			+ "JOIN doctor ON doctor.id = doctorId "
 			+ "JOIN room ON room.id = doctor.roomId "
-			+ "WHERE doctor.id = #{id} "
-			+ "AND date >= CURDATE() AND date < CURDATE() + INTERVAL 2 MONTH "
-			+ "ORDER BY date ASC;")
+			+ "JOIN speciality ON speciality.id = specialityId " +
+			"<where> " +
+			"<if test='doctorId > 0'> doctor.id = #{doctorId} </if> " +
+			"<if test='speciality != null'> AND speciality.name = #{speciality} </if> " +
+			"<if test='dateStart != null'> AND date >= #{dateStart} </if> " +
+			"<if test='dateEnd != null'> AND #{dateEnd} > date </if> " +
+			"</where> " +
+			"ORDER BY date ASC " +
+			"</script>")
 	@Results({
 			@Result(property = "id", column = "id"),
 			@Result(property = "doctor", column = "doctorId",
 					javaType = Doctor.class,
 					one = @One(select = "net.thumbtack.school.hospital.database.mappers.DoctorMapper.getByDoctorId",
 							fetchType = FetchType.LAZY)),
-			/*@Result(property = "daySchedule", column = "id",
-					javaType = List.class,
-					one = @One(select = "net.thumbtack.school.hospital.database.mappers.ScheduleMapper.getDayByScheduleId",
-							fetchType = FetchType.EAGER))*//*,
-			@Result(property = "daySchedule.id", column = "id"),
-			@Result(property = "daySchedule.ticket", column = "ticket"),
-			@Result(property = "daySchedule.patient", column = "patientId",
+			/*@Result(property = "patient", column = "patientId",
 					javaType = Patient.class,
 					one = @One(select = "net.thumbtack.school.hospital.database.mappers.PatientMapper.getByPatientId",
-							fetchType = FetchType.LAZY)),
-			@Result(property = "daySchedule.timeStart", column = "timeStart"),
-			@Result(property = "daySchedule.timeEnd", column = "timeEnd"),
-			@Result(property = "daySchedule.type", column = "type")*/
+							fetchType = FetchType.LAZY)),*/
+			@Result(property = "ticketSchedule", column = "id",
+					javaType = List.class,
+					one = @One(select = "net.thumbtack.school.hospital.database.mappers.TicketScheduleMapper.getTicketScheduleById",
+							fetchType = FetchType.EAGER))
 	})
-	List<DaySchedule> getByDoctorId(int id);
+	List<DaySchedule> getDaySchedule(@Param("doctorId") int doctorId, @Param("speciality") String speciality, @Param("dateStart") LocalDate dateStart, @Param("dateEnd") LocalDate dateEnd);
 
-	@Select("SELECT schedule.id, ticket, doctorId, scheduleId, patientId, date, timeStart, timeEnd, room "
-            + "FROM `schedule` "
-            + "JOIN ticket_schedule ON scheduleId = schedule.id "
-            + "JOIN doctor ON doctor.id = doctorId "
-            + "JOIN room ON room.id = doctor.roomId "
-            + "JOIN speciality ON speciality.id = specialityId "
-            + "WHERE speciality.name = #{name} "
-            + "AND date >= CURDATE() AND date < CURDATE() + INTERVAL 2 MONTH "
-            + "ORDER BY date ASC, timeStart ASC;")
-	@Results({
-			@Result(property = "id", column = "id"),
-			@Result(property = "doctor", column = "doctorId",
-					javaType = Doctor.class,
-					one = @One(select = "net.thumbtack.school.hospital.database.mappers.DoctorMapper.getByDoctorId",
-                            fetchType = FetchType.LAZY)),
-            @Result(property = "patient", column = "patientId",
-                    javaType = Patient.class,
-                    one = @One(select = "net.thumbtack.school.hospital.database.mappers.PatientMapper.getByPatientId",
-                            fetchType = FetchType.LAZY)),
-            @Result(property = "commission", column = "id",
-                    javaType = List.class,
-                    one = @One(select = "net.thumbtack.school.hospital.database.mappers.CommissionMapper.getByScheduleId",
-                            fetchType = FetchType.LAZY))
-    })
-    List<DaySchedule> getBySpeciality(String name);
-
-	@Select("SELECT schedule.id, ticket, doctorId, scheduleId, patientId, date, timeStart, timeEnd, room "
-			+ "FROM `schedule` "
-			+ "JOIN ticket_schedule ON scheduleId = schedule.id "
-			+ "JOIN doctor ON doctor.id = doctorId "
-			+ "JOIN room ON room.id = doctor.roomId "
-			+ "JOIN speciality ON speciality.id = specialityId "
-			+ "AND date >= CURDATE() AND date < CURDATE() + INTERVAL 2 MONTH "
-			+ "ORDER BY date ASC, timeStart ASC;")
+	@Select("<script>" +
+			"SELECT ticket, date, timeStart, timeEnd, doctorId, schedule.id, type " +
+			"FROM `schedule` " +
+			"JOIN ticket_schedule ON schedule.id = scheduleId " +
+			"WHERE doctorId IN " +
+			"(<foreach item='item' collection='list' separator=','> #{item}</foreach>) " +
+			"AND date = #{date} " +
+			"AND ((timeStart >= #{timeStart} AND #{timeEnd} > timeStart) OR (timeEnd >= #{timeStart} AND #{timeEnd} > timeEnd)) " +
+			"AND type != 'FREE' " +
+			"</script>")
 	@Results({
 			@Result(property = "id", column = "id"),
 			@Result(property = "doctor", column = "doctorId",
 					javaType = Doctor.class,
 					one = @One(select = "net.thumbtack.school.hospital.database.mappers.DoctorMapper.getByDoctorId",
 							fetchType = FetchType.LAZY)),
-			@Result(property = "patient", column = "patientId",
-					javaType = Patient.class,
-					one = @One(select = "net.thumbtack.school.hospital.database.mappers.PatientMapper.getByPatientId",
-							fetchType = FetchType.LAZY)),
-			@Result(property = "commission", column = "id",
+			@Result(property = "ticketSchedule", column = "{scheduleId=id,type=type,timeStart=timeStart,timeEnd=timeEnd}",
 					javaType = List.class,
-					one = @One(select = "net.thumbtack.school.hospital.database.mappers.CommissionMapper.getByScheduleId",
+					one = @One(select = "net.thumbtack.school.hospital.database.mappers.TicketScheduleMapper.getTicketSchedule",
 							fetchType = FetchType.LAZY))
 	})
-	List<DaySchedule> getAll();
+	List<DaySchedule> getTicketListByDoctorsId(@Param("list") List<Integer> doctorIds, @Param("date") LocalDate date, @Param("timeStart") LocalTime timeStart, @Param("timeEnd") LocalTime timeEnd);
 
+	// ToDo
+	@Select("SELECT ticket, date, timeStart, timeEnd, doctorId, schedule.id, type " +
+			"FROM `schedule` " +
+			"JOIN ticket_schedule ON schedule.id = scheduleId " +
+			"WHERE patientId = #{patientId} ")
+	@Results({
+			@Result(property = "id", column = "id"),
+			@Result(property = "doctor", column = "doctorId",
+					javaType = Doctor.class,
+					one = @One(select = "net.thumbtack.school.hospital.database.mappers.DoctorMapper.getByDoctorId",
+							fetchType = FetchType.LAZY)),
+			@Result(property = "ticketSchedule", column = "{scheduleId=id,type=type,timeStart=timeStart,timeEnd=timeEnd}",
+					javaType = List.class,
+					one = @One(select = "net.thumbtack.school.hospital.database.mappers.TicketScheduleMapper.getTicketSchedule",
+							fetchType = FetchType.LAZY))
+	})
+	List<DaySchedule> getTicketListByPatientId(int patientId);
 
-    
-    /*@Update("UPDATE schedule "
-    		+ "SET ticket=#{ticket}, patientId=#{patient.id} "
-    		+ "WHERE doctorId=#{doctor.id} "
-    		+ "AND date = #{date} AND timeStart = #{timeStart} "
-    		+ "AND ticket IS NULL AND patientId IS null "
-    		+ "LIMIT 1;")
-    int insertTicketByDoctorSpeciality(Schedule ticket);*/
+	@Delete("DELETE FROM schedule WHERE doctorId = #{doctorId} AND date >= #{date};")
+	void deleteScheduleByDoctorIdFromDate(@Param("doctorId") int doctorId, @Param("date") LocalDate date);
 
 }

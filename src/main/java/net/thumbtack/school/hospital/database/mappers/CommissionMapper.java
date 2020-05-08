@@ -9,14 +9,10 @@ import java.util.List;
 @Mapper
 public interface CommissionMapper {
 
-    @Insert({"<script>",
-            "INSERT INTO commission (`scheduleId`, `doctorId`) VALUES",
-            "<foreach item='item' collection='list' separator=','>",
-            "( #{item.scheduleId}, #{item.doctorId})",
-            "</foreach>",
-            "</script>"})
+    @Insert({"INSERT INTO commission (ticket, patientId, room, date, timeStart, timeEnd) " +
+            "VALUES (#{ticket}, #{patientId}, (SELECT id FROM room WHERE room = #{room}), #{date}, #{timeStart}, #{timeEnd})"})
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insertCommission(@Param("list") List<Commission> schedule);
+    int insertCommission(Commission schedule);
 
     @Select("SELECT id, scheduleId, doctorId FROM commission WHERE scheduleId = #{id};")
     List<Commission> getByScheduleId(int id);

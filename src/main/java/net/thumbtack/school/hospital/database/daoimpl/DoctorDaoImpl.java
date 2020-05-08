@@ -107,5 +107,16 @@ public class DoctorDaoImpl implements DoctorDao {
         }
     }
 
+    @Override
+    public void deleteById(int id) throws ServerException {
+        LOGGER.debug("Delete Doctor By ID {}", id);
+        try {
+            doctorMapper.deleteById(id);
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't delete doctor by Id {}. {}", id, ex);
+            throw new ServerException(ServerError.OTHER_ERROR);
+        }
+    }
+
 
 }

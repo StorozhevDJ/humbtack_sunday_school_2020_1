@@ -95,6 +95,9 @@ public interface DoctorMapper {
     @Select("SELECT COUNT(*) FROM doctor;")
     int getCount();
 
+    @Delete("DELETE FROM doctor WHERE id = #{id}")
+    void deleteById(int id);
+
     @Delete("DELETE FROM doctor")
     void deleteAll();
 

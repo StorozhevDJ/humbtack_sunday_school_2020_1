@@ -4,6 +4,7 @@ import net.thumbtack.school.hospital.dto.validation.Login;
 import net.thumbtack.school.hospital.dto.validation.Password;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -29,6 +30,7 @@ public class RegisterAdminDtoRequest {
     private String lastName;
     @Pattern(regexp = "^[А-ЯЁ][а-яА-ЯёЁ\\w-]{1,50}$", message = "Отчество администратора может содержать только только русские буквы, пробелы и знак “минус” (используемый как тире) и быть длинной от 1 до 50 символов. ")
     private String patronymic;
+    @NotNull
     private String position;
     @Login
     private String login;
@@ -46,7 +48,7 @@ public class RegisterAdminDtoRequest {
     }
 
     public RegisterAdminDtoRequest() {
-        this(new String(), new String(), new String(), new String(), new String(), new String());
+        //this(new String(), new String(), new String(), new String(), new String(), new String());
     }
 
 

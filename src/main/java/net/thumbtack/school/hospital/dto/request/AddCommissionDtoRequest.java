@@ -12,17 +12,25 @@ package net.thumbtack.school.hospital.dto.request;
 "duration": время, отведенное на комиссию в минутах
 }*/
 
+import javax.validation.constraints.NotNull;
+
 public class AddCommissionDtoRequest {
 
-	private String patientId;
-	private int[] doctorIds;
+	@NotNull
+	private Integer patientId;
+	private Integer[] doctorIds;
+	@NotNull
 	private String room;
 	private String date;
 	private String time;
-	private String duration;
+	@NotNull
+	Integer duration;
 
-	public AddCommissionDtoRequest(String patientId, int[] doctorIds, String room, String date, String time,
-								   String duration) {
+	public AddCommissionDtoRequest() {
+	}
+
+	public AddCommissionDtoRequest(Integer patientId, Integer[] doctorIds, String room, String date, String time,
+								   Integer duration) {
 		super();
 		this.patientId = patientId;
 		this.doctorIds = doctorIds;
@@ -32,19 +40,19 @@ public class AddCommissionDtoRequest {
 		this.duration = duration;
 	}
 
-	public String getPatientId() {
+	public Integer getPatientId() {
 		return patientId;
 	}
 
-	public void setPatientId(String patientId) {
+	public void setPatientId(Integer patientId) {
 		this.patientId = patientId;
 	}
 
-	public int[] getDoctorIds() {
+	public Integer[] getDoctorIds() {
 		return doctorIds;
 	}
 
-	public void setDoctorIds(int[] doctorIds) {
+	public void setDoctorIds(Integer[] doctorIds) {
 		this.doctorIds = doctorIds;
 	}
 
@@ -72,11 +80,11 @@ public class AddCommissionDtoRequest {
 		this.time = time;
 	}
 
-	public String getDuration() {
+	public Integer getDuration() {
 		return duration;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(Integer duration) {
 		this.duration = duration;
 	}
 

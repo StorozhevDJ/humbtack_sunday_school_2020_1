@@ -8,6 +8,9 @@ public class DeleteDoctorDtoRequest {
         this.date = date;
     }
 
+    public DeleteDoctorDtoRequest() {
+    }
+
     public String getDate() {
         return date;
     }

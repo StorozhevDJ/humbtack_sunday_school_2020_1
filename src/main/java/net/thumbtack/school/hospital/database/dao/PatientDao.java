@@ -17,6 +17,14 @@ public interface PatientDao {
     Patient insert(Patient patient) throws ServerException;
 
     /**
+     * Change patient account information
+     *
+     * @param patient
+     * @throws ServerException
+     */
+    void update(Patient patient) throws ServerException;
+
+    /**
      * Get patient by Patient ID
      *
      * @param id - patient DB id

@@ -16,6 +16,17 @@ public interface PatientMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Patient patient);
 
+    @Update({"<script>",
+            "UPDATE `patient` ",
+            "<set>",
+            "<if test='email != null'> `email` = #{email}, </if>",
+            "<if test='address != null'> `address` = #{address}, </if>",
+            "<if test='phone != null'> `phone` = #{phone}, </if>",
+            "</set>",
+            "WHERE id = #{id};",
+            "</script>"})
+    void update(Patient patient);
+
     @Select("SELECT patient.id, userId, firstName, lastName, patronymic, type, login, email, address, phone " +
             "FROM patient JOIN user ON user.id = userId " +
             "WHERE patient.id = #{id}")
@@ -56,6 +67,7 @@ public interface PatientMapper {
             @Result(property = "user.patronymic", column = "patronymic"),
             @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login"),
+            @Result(property = "user.session.userId", column = "userId"),
             @Result(property = "user.session.token", column = "token")
     })
     Patient getByToken(Session token);

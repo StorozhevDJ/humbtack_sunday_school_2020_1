@@ -48,25 +48,6 @@ public  class AdminMapper {
     }
 
 
-    public static Admin convertToEntity(RegisterAdminDtoRequest dto, Session session) {
-        if (dto == null) {
-            return null;
-        }
-        return new Admin(
-                new User(
-                        dto.getFirstName(),
-                        dto.getLastName(),
-                        dto.getPatronymic(),
-                        UserType.ADMINISTRATOR,
-                        dto.getLogin(),
-                        dto.getPassword(),
-                        session
-                ),
-                dto.getPosition()
-        );
-
-    }
-
     public static Admin convertToEntity(EditAdminDtoRequest dto, String login) {
         if (dto == null) {
             return null;

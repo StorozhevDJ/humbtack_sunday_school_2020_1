@@ -38,17 +38,26 @@ public class AdminDaoImpl extends DaoImplBase implements AdminDao {
     @Transactional(rollbackFor = ServerException.class)
     public Admin insert(Admin admin) throws ServerException {
         LOGGER.debug("DAO insert Admin {}", admin);
-            try {
-            	// REVU а если такой логин уже существует ?
-                userMapper.insert(admin.getUser());
-                adminMapper.insert(admin);
-            } catch (DataAccessException ex) {
-                LOGGER.info("Can't insert Admin {} {}", admin, ex);
-                throw new ServerException(ServerError.LOGIN_ALREADY_EXISTS);
-            }
+        try {
+            userMapper.insert(admin.getUser());
+            adminMapper.insert(admin);
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't insert Admin {} {}", admin, ex);
+            throw new ServerException(ServerError.LOGIN_ALREADY_EXISTS);
+        }
         return admin;
     }
 
+    @Override
+    public void update(Admin admin) throws ServerException {
+        LOGGER.debug("DAO insert Admin {}", admin);
+        try {
+            adminMapper.update(admin);
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't insert Admin {} {}", admin, ex);
+            throw new ServerException(ServerError.LOGIN_ALREADY_EXISTS);
+        }
+    }
 
 
     @Override

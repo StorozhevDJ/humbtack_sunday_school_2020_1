@@ -55,6 +55,18 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
+    public void update(Patient patient) throws ServerException {
+        LOGGER.debug("DAO insert Patient {}", patient);
+        try {
+            userMapper.update(patient.getUser());
+            patientMapper.update(patient);
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't insert Patient {} {}", patient, ex);
+            throw new ServerException(ServerError.OTHER_ERROR);
+        }
+    }
+
+    @Override
     public Patient getByPatientId(int id) throws ServerException {
         LOGGER.debug("DAO get Patient by id {}", id);
         try {

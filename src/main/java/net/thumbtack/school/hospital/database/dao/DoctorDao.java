@@ -53,4 +53,12 @@ public interface DoctorDao {
 	 */
 	int getCount() throws ServerException;
 
+	/**
+	 * Delete Doctor by doctor ID
+	 *
+	 * @param id
+	 * @throws ServerException
+	 */
+	void deleteById(int id) throws ServerException;
+
 }

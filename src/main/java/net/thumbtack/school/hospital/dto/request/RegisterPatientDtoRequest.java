@@ -15,12 +15,15 @@ package net.thumbtack.school.hospital.dto.request;
 import net.thumbtack.school.hospital.dto.validation.Login;
 import net.thumbtack.school.hospital.dto.validation.Password;
 
+import javax.validation.constraints.NotNull;
+
 public class RegisterPatientDtoRequest {
 
     private String firstName;
     private String lastName;
     private String patronymic;
     private String email;
+    @NotNull
     private String address;
     private String phone;
     @Login
@@ -28,6 +31,8 @@ public class RegisterPatientDtoRequest {
     @Password
     private String password;
 
+    public RegisterPatientDtoRequest() {
+    }
 
     public RegisterPatientDtoRequest(String firstName, String lastName, String patronymic, String email, String address,
                                      String phone, String login, String password) {
