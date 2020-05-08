@@ -198,6 +198,7 @@ public class AdminService {
                 // For each hour in day
                 List<TicketSchedule> ticketScheduleList = new ArrayList<>();
                 for (LocalTime t = timeStart; t.isBefore(timeEnd); t = t.plusMinutes(duration)) {
+                	// REVU сделайте конструктор с параметрами
                     TicketSchedule ticketSchedule = new TicketSchedule();
                     ticketSchedule.setTimeStart(t);
                     ticketSchedule.setTimeEnd(t.plusMinutes(duration));

@@ -80,6 +80,8 @@ public class PatientService {
         }
         Patient patient = patientDao.getByPatientId(patientId);
         if (patient == null) {
+        	// REVU это как так ? Вы же User уже получили раньше, как же может быть USER_ID_INVALID ?
+        	// как минимум неверная диагностика ошибки
             throw new ServerException(ServerError.USER_ID_INVALID);
         }
         return PatientMapper.convertToDto(patient);
@@ -98,6 +100,7 @@ public class PatientService {
         if (patient == null) {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
+        // REVU зачем ? Вы уже получили Patient, в нем есть User, просто сравните пароли
         User user = userDao.getByLogin(patient.getUser().getLogin(), editPatientDtoRequest.getOldPassword());
         if (user == null) {
             throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);

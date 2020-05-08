@@ -83,6 +83,10 @@ public class DoctorService {
      * QueryParam endDate = “дата”
      */
     public List<EditScheduleDtoResponse> doctorsInfo(String cookie, String speciality, String schedule, String startDate, String endDate) throws ServerException {
+    	// что-то я идею не пойму
+    	// есть cookie. Вы ее заворачиваете в Session, где есть еще user_id, который при этом получает значение 0
+    	// а после этого берете userDao.getByToken, передавая туда эту Session, чтобы там потом взять из нее token и по нему получить User
+    	// может, проще в getByToken просто cookie передать ?
         User user = userDao.getByToken(new Session(cookie));
         if (user == null) {
             throw new ServerException(ServerError.TOKEN_INVALID);
@@ -94,6 +98,7 @@ public class DoctorService {
             dayScheduleList = scheduleDao.getByDoctorSpeciality(speciality, dateStart, dateEnd);
         }
         // Delete info about other patients
+        // REVU вместо того, чтобы удалять, лучше не добавлять, если не нужно
         if (user.getType() == UserType.PATIENT) {
             for (DaySchedule daySchedule : dayScheduleList) {
                 for (TicketSchedule ticketSchedule : daySchedule.getTicketSchedule()) {
@@ -113,6 +118,14 @@ public class DoctorService {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
         // Check doctors schedule to free by doctors IDs, date time start and time end
+        // REVU проверили,и что ? А если между scheduleDao.checkFreeScheduleToCommission и scheduleDao.addCommissionTicket
+        // другой пациент займет это время ?
+        // нельзя так
+        // надо найти все TicketSchedule всех докторов комиссии, которые нужно захватить для комиссии
+        // и поставить им всем ScheduleType.COMISSION, если они ScheduleType.FREE
+        // и определить, сколько поставилось (mapper.update вернет это значение)
+        // если поставилось столько, сколько ставили - значит, все были FREE и можно продолжать
+        // а иначе rollback
         LocalDate date = LocalDate.parse(addCommissionDtoRequest.getDate(), DateTimeFormatter.ofPattern(DATE_FORMAT));
         LocalTime timeStart = LocalTime.parse(addCommissionDtoRequest.getTime(), DateTimeFormatter.ofPattern(TIME_FORMAT));
         LocalTime timeEnd = timeStart.plusMinutes(addCommissionDtoRequest.getDuration());
@@ -128,6 +141,7 @@ public class DoctorService {
         }
         sb.append(addCommissionDtoRequest.getDate());
         sb.append(addCommissionDtoRequest.getTime());
+        // REVU сделайте нужный конструктор в Commission и не вызывайте сеттеры без необходимости 
         Commission commission = new Commission();
         commission.setTicket(sb.toString());
         Set<Integer> idSet = new HashSet<>(Arrays.asList(addCommissionDtoRequest.getDoctorIds()));
@@ -139,7 +153,9 @@ public class DoctorService {
         commission.setRoom(addCommissionDtoRequest.getRoom());
         commission.setPatientId(addCommissionDtoRequest.getPatientId());
 
+        // REVU то же
         TicketSchedule ticketSchedule = new TicketSchedule();
+        // REVU это что за бомж ?
         Patient patient = new Patient(new User(), null, null, null);
         patient.setId(addCommissionDtoRequest.getPatientId());
         ticketSchedule.setPatient(patient);
