@@ -1,8 +1,11 @@
 package net.thumbtack.school.hospital.database.mappers;
 
 import net.thumbtack.school.hospital.database.model.Doctor;
+
+import java.time.LocalDate;
 import java.util.List;
-import net.thumbtack.school.hospital.database.model.Session;
+
+import net.thumbtack.school.hospital.database.model.Statistic;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
@@ -90,15 +93,15 @@ public interface DoctorMapper {
             @Result(property = "user.login", column = "login"),
             @Result(property = "user.session.token", column = "token")
     })
-    Doctor getByToken(Session token);
+    Doctor getByToken(String token);
 
-    @Select("SELECT COUNT(*) FROM doctor;")
-    int getCount();
-
-    @Delete("DELETE FROM doctor WHERE id = #{id}")
-    void deleteById(int id);
-
-    @Delete("DELETE FROM doctor")
-    void deleteAll();
+    @Select("SELECT type, COUNT(*) AS count " +
+            "FROM ticket_schedule " +
+            "JOIN schedule ON scheduleId = schedule.id " +
+            "WHERE doctorId = #{doctorId} " +
+            "AND date >= #{dateStart} " +
+            "AND date <  #{dateEnd} " +
+            "GROUP BY type ;")
+    List<Statistic> getTicketsCount(@Param("doctorId") Integer doctorId, @Param("dateStart") LocalDate dateStart, @Param("dateEnd") LocalDate dateEnd);
 
 }

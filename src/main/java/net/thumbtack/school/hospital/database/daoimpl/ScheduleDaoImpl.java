@@ -4,10 +4,7 @@ import net.thumbtack.school.hospital.database.dao.ScheduleDao;
 import net.thumbtack.school.hospital.database.mappers.CommissionMapper;
 import net.thumbtack.school.hospital.database.mappers.DayScheduleMapper;
 import net.thumbtack.school.hospital.database.mappers.TicketScheduleMapper;
-import net.thumbtack.school.hospital.database.model.Commission;
-import net.thumbtack.school.hospital.database.model.DaySchedule;
-import net.thumbtack.school.hospital.database.model.ScheduleType;
-import net.thumbtack.school.hospital.database.model.TicketSchedule;
+import net.thumbtack.school.hospital.database.model.*;
 import net.thumbtack.school.hospital.serverexception.ServerError;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.slf4j.Logger;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -46,24 +44,41 @@ public class ScheduleDaoImpl implements ScheduleDao {
         try {
             dayScheduleMapper.insert(daySchedule);
             for (DaySchedule s : daySchedule) {
-                ret += ticketScheduleMapper.insertTicketList(s.getTicketSchedule(), s.getId());
+                ret += ticketScheduleMapper.insertScheduleTicketList(s.getTicketSchedule(), s.getId());
             }
         } catch (DataAccessException ex) {
             LOGGER.info("Can't insert Schedule {} {}", daySchedule, ex);
-            throw new ServerException(ServerError.OTHER_ERROR);
+            throw new ServerException(ServerError.INSERT_SCHEDULE_FAIL);
         }
         return ret;
     }
 
-
     @Override
     public boolean addTicket(TicketSchedule schedule) throws ServerException {
         LOGGER.debug("DAO insert Ticket {}", schedule);
-        int ret = 0;
+        int ret;
         try {
             ret = ticketScheduleMapper.insertTicket(schedule);
         } catch (DataAccessException ex) {
             LOGGER.info("Can't insert Ticket {} {}", schedule, ex);
+            throw new ServerException(ServerError.INSERT_TICKET_FAIL);
+        }
+        return ret == 1;
+    }
+
+    @Override
+    public boolean addCommissionTicket(Commission commission, List<Integer> ticketScheduleList) throws ServerException {
+        LOGGER.debug("DAO insert Commission Ticket {}", commission);
+        int ret;
+        try {
+            ret = commissionMapper.insertCommissionTicket(ticketScheduleList, commission);
+            if (ret != ticketScheduleList.size()) {
+                throw new ServerException(ServerError.INSERT_TICKET_FAIL);
+            }
+            ret = commissionMapper.insertCommission(commission);
+            commissionMapper.insertCommissionDoctorsId(new ArrayList<Doctor>(commission.getDoctorSet()), commission.getId());
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't insert Commission Ticket {} {}", commission, ex);
             throw new ServerException(ServerError.INSERT_TICKET_FAIL);
         }
         return ret == 1;
@@ -87,28 +102,6 @@ public class ScheduleDaoImpl implements ScheduleDao {
             return dayScheduleMapper.getDaySchedule(0, speciality, dateStart, dateEnd);
         } catch (DataAccessException ex) {
             LOGGER.info("Can't get Doctor Schedule by speciality {} {}", speciality, ex);
-            throw new ServerException(ServerError.OTHER_ERROR);
-        }
-    }
-
-    @Override
-    public List<DaySchedule> getAllSchedule() throws ServerException {
-        LOGGER.debug("DAO get All Doctor Schedule");
-        try {
-            return dayScheduleMapper.getDaySchedule(0, null, null, null);
-        } catch (DataAccessException ex) {
-            LOGGER.info("Can't get All Doctor Schedule {}", ex);
-            throw new ServerException(ServerError.OTHER_ERROR);
-        }
-    }
-
-    @Override
-    public List<TicketSchedule> getTicketScheduleById(int scheduleId) throws ServerException {
-        LOGGER.debug("DAO get Day Schedule by id {}", scheduleId);
-        try {
-            return ticketScheduleMapper.getTicketSchedule(scheduleId, null, null, null);
-        } catch (DataAccessException ex) {
-            LOGGER.info("Can't get Day Schedule by id {} {}", scheduleId, ex);
             throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
@@ -147,24 +140,73 @@ public class ScheduleDaoImpl implements ScheduleDao {
     }
 
     @Override
-    public List<DaySchedule> checkFreeScheduleToCommission(List<Integer> doctorIds, LocalDate date, LocalTime timeStart, LocalTime timeEnd) throws ServerException {
-        LOGGER.debug("Check free Ticket {} from schedule with doctors id {}, date {}, time {} - {}", doctorIds, date, timeStart, timeEnd);
+    public List<Integer> getCountFreeSchedule(List<Integer> doctorIds, LocalDate date, LocalTime timeStart, LocalTime timeEnd) throws ServerException {
+        LOGGER.debug("Get count free Ticket from schedule with doctors id {}, date {}, time {} - {}", doctorIds, date, timeStart, timeEnd);
         try {
-            return dayScheduleMapper.getTicketListByDoctorsId(doctorIds, date, timeStart, timeEnd);
+            return ticketScheduleMapper.getTicketsIdByDoctorsId(doctorIds, date, timeStart, timeEnd);
         } catch (DataAccessException ex) {
-            LOGGER.info("Can't Check free Ticket {} from schedule with doctors id {}, date {}, time {} - {}. {}", doctorIds, date, timeStart, timeEnd, ex);
+            LOGGER.info("Can't get count free Ticket from schedule with doctors id {}, date {}, time {} - {}. {}", doctorIds, date, timeStart, timeEnd, ex);
             throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
 
     @Override
-    public boolean cancelTicket(String ticket) throws ServerException {
+    public List<Commission> getCommission(int patientId) throws ServerException {
+        LOGGER.debug("DAO get schedule with ticket list by patient ID {}.", patientId);
+        try {
+            return commissionMapper.getByPatientId(patientId);
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't get schedule with ticket list by patient ID {}, {}", patientId, ex);
+            throw new ServerException(ServerError.OTHER_ERROR);
+        }
+    }
+
+    @Override
+    public void cancelTicket(String ticket, int patientId) throws ServerException {
         LOGGER.debug("Cancel Ticket {} from schedule.", ticket);
         try {
-            return ticketScheduleMapper.cancelTicket(ticket) == 1 ? true : false;
+            if (ticketScheduleMapper.cancelTicket(ticket, patientId) != 1){
+                throw new ServerException(ServerError.CANCEL_TICKET_FAIL);
+            }
         } catch (DataAccessException ex) {
             LOGGER.info("Can't delete ticket {} from schedule. {}", ticket, ex);
-            throw new ServerException(ServerError.OTHER_ERROR);
+            throw new ServerException(ServerError.CANCEL_TICKET_FAIL);
+        }
+    }
+
+    @Override
+    public void cancelCommission(String ticket, int patientId) throws ServerException {
+        LOGGER.debug("Cancel Ticket {} from schedule.", ticket);
+        try {
+            if (commissionMapper.deleteCommission(ticket, patientId) == 0) {
+                throw new ServerException(ServerError.CANCEL_TICKET_FAIL);
+            }
+            if (commissionMapper.cancelCommissionSchedule(ticket) == 0){
+                throw new ServerException(ServerError.CANCEL_TICKET_FAIL);
+            }
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't delete ticket {} from schedule. {}", ticket, ex);
+            throw new ServerException(ServerError.CANCEL_TICKET_FAIL);
+        }
+    }
+
+    @Override
+    public void updateSchedule(Doctor doctor) throws ServerException {
+        LocalDate dateStart = doctor.getDayScheduleList().get(0).getDate();
+        LocalDate dateEnd = doctor.getDayScheduleList().get(doctor.getDayScheduleList().size()-1).getDate();
+        LOGGER.debug("Update Doctor schedule By ID {} from date {} to date {}.", doctor.getId(), dateStart, dateEnd);
+        try {
+            dayScheduleMapper.deleteFreeScheduleByDoctorIdByDate(doctor.getId(), dateStart, dateEnd.plusDays(1));
+            if (dayScheduleMapper.getDaySchedule(doctor.getId(), null, dateStart, dateEnd.plusDays(1)).size() != 0) {
+                throw new ServerException(ServerError.NOT_AVAILABLE_SCHEDULE);
+            }
+            dayScheduleMapper.insert(doctor.getDayScheduleList());
+            for (DaySchedule s : doctor.getDayScheduleList()) {
+                ticketScheduleMapper.insertScheduleTicketList(s.getTicketSchedule(), s.getId());
+            }
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't update doctor schedule by Id {} from date {} to date {}. {}", doctor.getId(), dateStart, dateEnd, ex);
+            throw new ServerException(ServerError.INSERT_SCHEDULE_FAIL);
         }
     }
 
@@ -178,23 +220,5 @@ public class ScheduleDaoImpl implements ScheduleDao {
             throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
-
-
-    @Override
-    public boolean addCommissionTicket(Commission schedule, TicketSchedule ticketSchedule) throws ServerException {
-        LOGGER.debug("DAO insert Commission Ticket {}", schedule);
-        int ret = 0;
-        try {
-            ret = commissionMapper.insertCommission(schedule);
-            if (ret == 1) {
-                ret = ticketScheduleMapper.insertCommissionTicket(ticketSchedule);
-            }
-        } catch (DataAccessException ex) {
-            LOGGER.info("Can't insert Commission Ticket {} {}", schedule, ex);
-            throw new ServerException(ServerError.INSERT_TICKET_FAIL);
-        }
-        return ret >= 1;
-    }
-
 
 }

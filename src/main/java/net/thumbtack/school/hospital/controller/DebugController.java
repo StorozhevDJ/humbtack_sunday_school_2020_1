@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/debug")
 public class DebugController {
 
-    private DebugService debugService;
+    private final DebugService debugService;
 
     @Autowired
     public DebugController(DebugService debugService) {

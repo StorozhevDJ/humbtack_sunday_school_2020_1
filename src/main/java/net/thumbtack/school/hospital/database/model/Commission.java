@@ -1,9 +1,7 @@
 package net.thumbtack.school.hospital.database.model;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,17 +13,22 @@ public class Commission {
     private LocalDate date;
     private String room;
     private Integer patientId;
-    private Set<Integer> doctorIdSet;
+    private Set<Doctor> doctorSet;
 
 
-    public Commission(int id, String ticket, LocalTime timeStart, LocalTime timeEnd, LocalDate date, String room, Integer patientId, Set<Integer> doctorIdSet) {
+    public Commission(int id, String ticket, LocalTime timeStart, LocalTime timeEnd, LocalDate date, String room, Integer patientId, Set<Doctor> doctorSet) {
         setId(id);
         setTicket(ticket);
         setTimeStart(timeStart);
         setTimeEnd(timeEnd);
-
+        setDate(date);
+        setRoom(room);
         setPatientId(patientId);
-        setDoctorIdSet(doctorIdSet);
+        setDoctorSet(doctorSet);
+    }
+
+    public Commission(String ticket, LocalTime timeStart, LocalTime timeEnd, LocalDate date, String room, Integer patientId, Set<Doctor> doctorSet) {
+        this(0, ticket, timeStart, timeEnd, date, room, patientId, doctorSet);
     }
 
     public Commission() {
@@ -87,12 +90,12 @@ public class Commission {
         this.patientId = patientId;
     }
 
-    public Set<Integer> getDoctorIdSet() {
-        return doctorIdSet;
+    public Set<Doctor> getDoctorSet() {
+        return doctorSet;
     }
 
-    public void setDoctorIdSet(Set<Integer> doctorIdSet) {
-        this.doctorIdSet = doctorIdSet;
+    public void setDoctorSet(Set<Doctor> doctorSet) {
+        this.doctorSet = doctorSet;
     }
 
     @Override
@@ -107,11 +110,11 @@ public class Commission {
                 Objects.equals(getDate(), that.getDate()) &&
                 Objects.equals(getRoom(), that.getRoom()) &&
                 Objects.equals(getPatientId(), that.getPatientId()) &&
-                Objects.equals(getDoctorIdSet(), that.getDoctorIdSet());
+                Objects.equals(getDoctorSet(), that.getDoctorSet());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTicket(), getTimeStart(), getTimeEnd(), getDate(), getRoom(), getPatientId(), getDoctorIdSet());
+        return Objects.hash(getId(), getTicket(), getTimeStart(), getTimeEnd(), getDate(), getRoom(), getPatientId(), getDoctorSet());
     }
 }

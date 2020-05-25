@@ -7,11 +7,16 @@ package net.thumbtack.school.hospital.dto.request;
 "time": "время",
 }*/
 
+import net.thumbtack.school.hospital.dto.validation.Date;
+import net.thumbtack.school.hospital.dto.validation.Time;
+
 public class AddTicketDtoRequest {
 
     private String doctorId;
     private String speciality;
+    @Date
     private String date;
+    @Time
     private String time;
 
     public AddTicketDtoRequest() {

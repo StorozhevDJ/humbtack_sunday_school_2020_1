@@ -38,7 +38,7 @@ public class PatientMapper {
                 ),
                 dtoRequest.getEmail(),
                 dtoRequest.getAddress(),
-                dtoRequest.getPhone()
+                dtoRequest.getPhone().replaceAll("[^+0-9]", "")
         );
     }
 

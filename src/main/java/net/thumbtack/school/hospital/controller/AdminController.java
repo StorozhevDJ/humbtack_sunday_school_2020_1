@@ -4,6 +4,7 @@ import net.thumbtack.school.hospital.dto.request.*;
 import net.thumbtack.school.hospital.dto.response.EditScheduleDtoResponse;
 import net.thumbtack.school.hospital.dto.response.EmptyDtoResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
+import net.thumbtack.school.hospital.dto.response.StatisticDtoResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import net.thumbtack.school.hospital.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import javax.validation.constraints.Min;
 @Validated
 public class AdminController {
 
-    private AdminService adminService;
+    private final AdminService adminService;
 
     private static final String COOKIE_NAME = "JAVASESSIONID";
 
@@ -93,6 +94,21 @@ public class AdminController {
             @PathVariable(name = "doctorId") @Min(1) int doctorId
     ) throws ServerException {
         return adminService.deleteDoctor(dtoRequest, doctorId, cookie);
+    }
+
+    /**
+     * 3.20 Get statistic
+     * GET /api/statistic
+     */
+    @GetMapping(path = "/statistic")
+    public StatisticDtoResponse statistic(
+            @CookieValue(COOKIE_NAME) String cookie,
+            @RequestParam(name = "doctor", required = false) Integer doctor,
+            @RequestParam(name = "patient", required = false) Integer patient,
+            @RequestParam(name = "startDate", defaultValue = "", required = false) String startDate,
+            @RequestParam(name = "endDate", defaultValue = "", required = false) String endDate
+    ) throws ServerException {
+        return adminService.statistic(cookie, doctor, patient, startDate, endDate);
     }
 
 

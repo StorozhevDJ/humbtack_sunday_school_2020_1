@@ -1,5 +1,6 @@
 package net.thumbtack.school.hospital.database.model;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Patient {
@@ -8,8 +9,7 @@ public class Patient {
     private String email;
     private String address;
     private String phone;
-    // а здесь Set или List из его талонов
-
+    private List<TicketSchedule> ticketsList;
 
     public Patient(int id, User user, String email, String address, String phone) {
         setId(id);
@@ -25,7 +25,7 @@ public class Patient {
     }
 
     public Patient() {
-        this(new User(), new String(), new String(), new String());
+        this(new User(), "", "", "");
     }
 
     public int getId() {
@@ -68,6 +68,14 @@ public class Patient {
         this.phone = phone;
     }
 
+    public List<TicketSchedule> getTicketsSet() {
+        return ticketsList;
+    }
+
+    public void setTicketsSet(List<TicketSchedule> ticketsList) {
+        this.ticketsList = ticketsList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,11 +85,12 @@ public class Patient {
                 Objects.equals(getUser(), patient.getUser()) &&
                 Objects.equals(getEmail(), patient.getEmail()) &&
                 Objects.equals(getAddress(), patient.getAddress()) &&
-                Objects.equals(getPhone(), patient.getPhone());
+                Objects.equals(getPhone(), patient.getPhone()) &&
+                Objects.equals(ticketsList, patient.ticketsList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUser(), getEmail(), getAddress(), getPhone());
+        return Objects.hash(getId(), getUser(), getEmail(), getAddress(), getPhone(), ticketsList);
     }
 }

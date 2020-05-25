@@ -118,7 +118,6 @@ create TABLE `ticket_schedule` (
 	`type` ENUM('FREE', 'RECEPTION', 'COMMISSION', 'OTHER')NOT NULL DEFAULT 'FREE',
 	FOREIGN KEY(`scheduleId`)REFERENCES `schedule`(id) ON delete CASCADE,
 	FOREIGN KEY(`patientId`)REFERENCES `patient`(id) ON delete SET NULL,
-	UNIQUE(`ticket`),
 	UNIQUE(`scheduleId`, `timeStart`),
 	UNIQUE(`scheduleId`, `patientId`)
 )ENGINE= INNODB DEFAULT CHARSET=utf8;
@@ -129,13 +128,14 @@ create TABLE `ticket_schedule` (
 -- -----------------------------------------------------
 create TABLE `commission` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	`ticket` VARCHAR(50) NULL,	-- NULL if schedule free
-	`patientId` INT UNSIGNED NULL,
-	`room` INT NULL,
+	`ticket` VARCHAR(50) NOT NULL,	-- NULL if schedule free
+	`patientId` INT UNSIGNED NOT NULL,
+	`roomId` INT NOT NULL,
 	`date` DATE NOT NULL,    -- Date of schedule
 	`timeStart` TIME NOT NULL,  -- Start reception time
 	`timeEnd` TIME NOT NULL,  -- End reception time
-	FOREIGN KEY(`patientId`)REFERENCES `patient`(id) ON delete CASCADE,
+	FOREIGN KEY(`patientId`) REFERENCES `patient`(id) ON delete CASCADE,
+	FOREIGN KEY(`room`) REFERENCES `room`(id) ON delete CASCADE,
 	UNIQUE(`ticket`)
 )ENGINE = INNODB DEFAULT CHARSET = utf8;
 

@@ -1,18 +1,18 @@
 package net.thumbtack.school.hospital.service;
 
-import net.thumbtack.school.hospital.database.dao.AdminDao;
-import net.thumbtack.school.hospital.database.dao.ScheduleDao;
-import net.thumbtack.school.hospital.database.dao.DoctorDao;
-import net.thumbtack.school.hospital.database.dao.UserDao;
+import net.thumbtack.school.hospital.database.dao.*;
 import net.thumbtack.school.hospital.database.model.*;
 import net.thumbtack.school.hospital.dto.request.*;
 import net.thumbtack.school.hospital.dto.response.EditScheduleDtoResponse;
 import net.thumbtack.school.hospital.dto.response.EmptyDtoResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
+import net.thumbtack.school.hospital.dto.response.StatisticDtoResponse;
 import net.thumbtack.school.hospital.mapper.AdminMapper;
 import net.thumbtack.school.hospital.mapper.DoctorMapper;
 import net.thumbtack.school.hospital.serverexception.ServerError;
 import net.thumbtack.school.hospital.serverexception.ServerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,17 +29,24 @@ import java.util.*;
 @Transactional(rollbackFor = ServerException.class)
 public class AdminService {
 
-    private AdminDao adminDao;
-    private UserDao userDao;
-    private DoctorDao doctorDao;
-    private ScheduleDao scheduleDao;
+    private static final String DATE_FORMAT = "dd-MM-yyyy";
+    private static final String TIME_FORMAT = "HH:mm";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminService.class);
+
+    private final AdminDao adminDao;
+    private final UserDao userDao;
+    private final DoctorDao doctorDao;
+    private final ScheduleDao scheduleDao;
+    private final PatientDao patientDao;
 
     @Autowired
-    public AdminService(AdminDao adminDao, UserDao userDao, DoctorDao doctorDao, ScheduleDao scheduleDao) {
+    public AdminService(AdminDao adminDao, UserDao userDao, DoctorDao doctorDao, ScheduleDao scheduleDao, PatientDao patientDao) {
         this.adminDao = adminDao;
         this.userDao = userDao;
         this.doctorDao = doctorDao;
         this.scheduleDao = scheduleDao;
+        this.patientDao = patientDao;
     }
 
 
@@ -52,8 +59,11 @@ public class AdminService {
      * @throws ServerException
      */
     public LoginDtoResponse registerAdmin(RegisterAdminDtoRequest registerAdminDtoRequest, String cookie) throws ServerException {
-        Admin admin = AdminMapper.convertToEntity(registerAdminDtoRequest);
-        admin = adminDao.insert(admin);
+        Admin admin = adminDao.getByToken(cookie);
+        if (admin == null) {
+            throw new ServerException(ServerError.ACCESS_DENIED);
+        }
+        admin = adminDao.insert(AdminMapper.convertToEntity(registerAdminDtoRequest));
         admin.getUser().setSession(new Session(admin.getUser().getId(), cookie));
         userDao.logIn(admin.getUser());
         return AdminMapper.convertToDto(admin);
@@ -70,18 +80,20 @@ public class AdminService {
      */
     public LoginDtoResponse editAdmin(EditAdminDtoRequest editAdminDtoRequest, String cookie) throws ServerException {
         // Check user type
-        User user = userDao.getByToken(new Session(cookie));
-        if ((user != null) && (user.getType() != UserType.ADMINISTRATOR)) {
+        Admin admin = adminDao.getByToken(cookie);
+        if (admin == null) {
             throw new ServerException(ServerError.ACCESS_DENIED);
         }
         // Update Admin position, if required
-        Admin admin = adminDao.getByToken(new Session(cookie));
-        if (admin.getPosition() != editAdminDtoRequest.getPosition()) {
+        if (!admin.getPosition().equals(editAdminDtoRequest.getPosition())) {
             admin.setPosition(editAdminDtoRequest.getPosition());
             adminDao.update(admin);
         }
         // Update user info
-        userDao.update(AdminMapper.convertToEntity(editAdminDtoRequest, user.getLogin()).getUser());
+        User user = AdminMapper.convertToEntity(editAdminDtoRequest, admin.getUser().getLogin()).getUser();
+        user.setId(admin.getUser().getId());
+        userDao.update(user);
+        admin.setUser(user);
         return AdminMapper.convertToDto(admin);
     }
 
@@ -96,16 +108,16 @@ public class AdminService {
      */
     public EditScheduleDtoResponse registerDoctor(RegisterDoctorDtoRequest registerDtoRequest, String cookie) throws ServerException {
         // Check user and permission
-        User user = userDao.getByToken(new Session(cookie));
-        if ((user != null) && (user.getType() != UserType.ADMINISTRATOR)) {
+        User user = userDao.getByToken(cookie);
+        if ((user == null) || (user.getUserType() != UserType.ADMINISTRATOR)) {
             throw new ServerException(ServerError.ACCESS_DENIED);
         }
         // Insert new doctor to DB
         Doctor doctor = DoctorMapper.convertToEntity(registerDtoRequest);
         doctor = doctorDao.insert(doctor);
 
-        LocalDate dateStart = LocalDate.parse(registerDtoRequest.getDateStart(), DateTimeFormatter.ofPattern("ddMMyyyy"));
-        LocalDate dateEnd = LocalDate.parse(registerDtoRequest.getDateEnd(), DateTimeFormatter.ofPattern("ddMMyyyy"));
+        LocalDate dateStart = LocalDate.parse(registerDtoRequest.getDateStart(), DateTimeFormatter.ofPattern(DATE_FORMAT));
+        LocalDate dateEnd = LocalDate.parse(registerDtoRequest.getDateEnd(), DateTimeFormatter.ofPattern(DATE_FORMAT));
         if (dateEnd.isAfter(dateStart.plusMonths(2))) {
             dateEnd = dateStart;
         }
@@ -131,7 +143,7 @@ public class AdminService {
 
 
     /**
-     * Edit doctor schedule (add new)
+     * Edit doctor schedule (and add new)
      *
      * @param editDto
      * @param doctorId
@@ -140,10 +152,38 @@ public class AdminService {
      * @throws ServerException
      */
     public EditScheduleDtoResponse editScheduleDoctor(EditScheduleDtoRequest editDto, int doctorId, String cookie) throws ServerException {
+        User user = userDao.getByToken(cookie);
+        if ((user == null) || (user.getUserType() != UserType.ADMINISTRATOR)) {
+            throw new ServerException(ServerError.ACCESS_DENIED);
+        }
+        LocalDate dateStart = LocalDate.parse(editDto.getDateStart(), DateTimeFormatter.ofPattern(DATE_FORMAT));
+        LocalDate dateEnd = LocalDate.parse(editDto.getDateEnd(), DateTimeFormatter.ofPattern(DATE_FORMAT));
 
-        EditScheduleDtoResponse dto = null;
+        Doctor doctor = doctorDao.getByDoctorId(doctorId);
+        if (doctor == null) {
+            throw new ServerException(ServerError.DOCTOR_ID_INVALID);
+        }
+        //List<Integer> ticketList = scheduleDao.getCountFreeSchedule(Arrays.asList(doctorId), date, timeStart, timeEnd);
 
-        return dto;
+        List<DaySchedule> dayScheduleList;
+        // Create from WeekSchedule
+        if (editDto.getWeekSchedule() != null) {
+            dayScheduleList = createWeekSchedule(editDto.getWeekSchedule(), dateStart, dateEnd, editDto.getDuration(), doctor);
+        }
+        // Create from WeekDaysSchedule
+        else if (editDto.getWeekDaysSchedules() != null) {
+            // For each day of the week
+            dayScheduleList = createWeekDaysSchedule(editDto.getWeekDaysSchedules(), dateStart, dateEnd, editDto.getDuration(), doctor);
+        } else {
+            ServerError er = ServerError.BAD_REQUEST_S;
+            er.setMessage(String.format(er.getMessage(), " Empty schedule"));
+            throw new ServerException(er);
+        }
+        doctor.setDayScheduleList(dayScheduleList);
+
+        scheduleDao.updateSchedule(doctor);
+
+        return DoctorMapper.convertToDto(doctor, dayScheduleList);
     }
 
 
@@ -157,15 +197,30 @@ public class AdminService {
      * @throws ServerException
      */
     public EmptyDtoResponse deleteDoctor(DeleteDoctorDtoRequest deleteDoctorDtoRequest, int doctorId, String cookie) throws ServerException {
-        User user = userDao.getByToken(new Session(cookie));
-        if ((user != null) && (user.getType() != UserType.ADMINISTRATOR)) {
+        User user = userDao.getByToken(cookie);
+        if ((user == null) || (user.getUserType() != UserType.ADMINISTRATOR)) {
             throw new ServerException(ServerError.ACCESS_DENIED);
         }
-        // ToDo add send sms/email
-        LocalDate date = LocalDate.parse(deleteDoctorDtoRequest.getDate(), DateTimeFormatter.ofPattern("ddMMyyyy"));
+        // Delete doctor
+        LocalDate date = LocalDate.parse(deleteDoctorDtoRequest.getDate(), DateTimeFormatter.ofPattern(DATE_FORMAT));
         List<DaySchedule> dayScheduleList = scheduleDao.getByDoctorId(doctorId, date, date.plusMonths(2));
-
         scheduleDao.deleteSchedule(doctorId, date);
+        // Send sms/email
+        Map<String, String> smsMap = new HashMap<>();
+        Map<String, String> emailMap = new HashMap<>();
+        for (DaySchedule daySchedule : dayScheduleList) {
+            for (TicketSchedule ticketSchedule : daySchedule.getTicketSchedule()) {
+                if (ticketSchedule.getPatient() != null) {
+                    String text = "Your ticket # " + ticketSchedule.getTicket() + " to " + daySchedule.getDate() + " is canceled.";
+                    smsMap.put(ticketSchedule.getPatient().getPhone(), text);
+                    emailMap.put(ticketSchedule.getPatient().getEmail(), text);
+                }
+            }
+        }
+        SendSmsThread sendSmsThread = new SendSmsThread(smsMap);
+        SendEmailThread sendEmailThread = new SendEmailThread(emailMap);
+        sendSmsThread.run();
+        sendEmailThread.run();
         return new EmptyDtoResponse();
     }
 
@@ -193,17 +248,12 @@ public class AdminService {
         // For each day of the week
         for (LocalDate date = dateStart; date.isBefore(dateEnd.plusDays(1)); date = date.plusDays(1)) {
             if (dayOfWeeksSet.contains(date.getDayOfWeek())) {
-                timeStart = LocalTime.parse(weekSchedule.getTimeStart(), DateTimeFormatter.ofPattern("HHmm"));
-                timeEnd = LocalTime.parse(weekSchedule.getTimeEnd(), DateTimeFormatter.ofPattern("HHmm"));
+                timeStart = LocalTime.parse(weekSchedule.getTimeStart(), DateTimeFormatter.ofPattern(TIME_FORMAT));
+                timeEnd = LocalTime.parse(weekSchedule.getTimeEnd(), DateTimeFormatter.ofPattern(TIME_FORMAT));
                 // For each hour in day
                 List<TicketSchedule> ticketScheduleList = new ArrayList<>();
                 for (LocalTime t = timeStart; t.isBefore(timeEnd); t = t.plusMinutes(duration)) {
-                	// REVU сделайте конструктор с параметрами
-                    TicketSchedule ticketSchedule = new TicketSchedule();
-                    ticketSchedule.setTimeStart(t);
-                    ticketSchedule.setTimeEnd(t.plusMinutes(duration));
-                    ticketSchedule.setScheduleType(ScheduleType.FREE);
-                    ticketScheduleList.add(ticketSchedule);
+                    ticketScheduleList.add(new TicketSchedule(t, t.plusMinutes(duration), ScheduleType.FREE));
                 }
                 // Create day schedule list
                 DaySchedule daySchedule = new DaySchedule(doctor, date);
@@ -230,8 +280,8 @@ public class AdminService {
         for (DayScheduleDtoRequest ds : Arrays.asList(weekDaysSchedule.getDaySchedule())) {
             DayOfWeek dow = parseDayOfWeek(ds.getWeekDay());
             dayOfWeeksSet.add(dow);
-            timeStartMap.put(dow, LocalTime.parse(ds.getTimeStart(), DateTimeFormatter.ofPattern("HHmm")));
-            timeEndMap.put(dow, LocalTime.parse(ds.getTimeEnd(), DateTimeFormatter.ofPattern("HHmm")));
+            timeStartMap.put(dow, LocalTime.parse(ds.getTimeStart(), DateTimeFormatter.ofPattern(TIME_FORMAT)));
+            timeEndMap.put(dow, LocalTime.parse(ds.getTimeEnd(), DateTimeFormatter.ofPattern(TIME_FORMAT)));
         }
         // For each day
         for (LocalDate date = dateStart; date.isBefore(dateEnd.plusDays(1)); date = date.plusDays(1)) {
@@ -265,7 +315,7 @@ public class AdminService {
      */
     private DayOfWeek parseDayOfWeek(String day) throws ServerException {
         SimpleDateFormat dayFormat = new SimpleDateFormat("E", Locale.US);
-        Date date = null;
+        Date date;
         try {
             date = dayFormat.parse(day);
         } catch (ParseException e) {
@@ -276,6 +326,98 @@ public class AdminService {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return DayOfWeek.of(calendar.get(Calendar.DAY_OF_WEEK) - 1);
+    }
+
+    /**
+     * Tickets count statistic for doctor or patient
+     *
+     * @param cookie
+     * @param doctor
+     * @param patient
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws ServerException
+     */
+    public StatisticDtoResponse statistic(String cookie, Integer doctor, Integer patient, String startDate, String endDate) throws ServerException {
+        User user = userDao.getByToken(cookie);
+        if ((user == null) || (user.getUserType() != UserType.ADMINISTRATOR)) {
+            throw new ServerException(ServerError.ACCESS_DENIED);
+        }
+        List<Statistic> stat;
+        LocalDate dateStart = LocalDate.parse(startDate, DateTimeFormatter.ofPattern(DATE_FORMAT));
+        LocalDate dateEnd = LocalDate.parse(endDate, DateTimeFormatter.ofPattern(DATE_FORMAT));
+        int freeTickets = 0, receptionTickets = 0, commissionTickets = 0;
+        if (doctor != null) {
+            stat = doctorDao.getTicketCount(doctor, dateStart, dateEnd);
+        } else if (patient != null) {
+            stat = patientDao.getTicketCount(patient, dateStart, dateEnd);
+        } else {
+            ServerError er = ServerError.BAD_REQUEST_S;
+            er.setMessage(String.format(er.getMessage(), " Empty doctor and patient ID"));
+            throw new ServerException(er);
+        }
+        for (Statistic s : stat) {
+            switch (s.getType()) {
+                case FREE:
+                    freeTickets = s.getCount();
+                    break;
+                case RECEPTION:
+                    receptionTickets = s.getCount();
+                    break;
+                case COMMISSION:
+                    commissionTickets = s.getCount();
+                    break;
+            }
+        }
+        return new StatisticDtoResponse(patient, doctor, freeTickets, receptionTickets, commissionTickets);
+    }
+
+
+    class SendSmsThread extends Thread {
+
+        private final Map<String, String> smsMap;
+
+        public SendSmsThread(Map<String, String> smsMap) {
+            this.smsMap = smsMap;
+        }
+
+        public void run() {
+            try {
+                smsMap.forEach((p, t) -> sendSms(t, p));
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println("Interrupted");
+            }
+            System.out.println("Thread exit.");
+        }
+    }
+
+    class SendEmailThread extends Thread {
+
+        private final Map<String, String> emailMap;
+
+        public SendEmailThread(Map<String, String> emailMap) {
+            this.emailMap = emailMap;
+        }
+
+        public void run() {
+            try {
+                emailMap.forEach((p, t) -> sendEmail(t, p));
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                System.out.println("Interrupted");
+            }
+            System.out.println("Thread exit.");
+        }
+    }
+
+    private void sendSms(String text, String phone) {
+        LOGGER.info("Send SMS to phone: {}. Text: {}", phone, text);
+    }
+
+    private void sendEmail(String text, String email) {
+        LOGGER.info("Send email to {}. Text: {}", email, text);
     }
 }
 

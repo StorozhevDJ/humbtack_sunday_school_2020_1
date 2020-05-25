@@ -24,15 +24,34 @@ daySchedule :{
 "duration": время на прием одного пациента в минутах
 }*/
 
+import net.thumbtack.school.hospital.dto.validation.Date;
+
 public class EditScheduleDtoRequest {
+    @Date
+    private String dateStart, dateEnd;
 
-    private String dateStart;
-    private String dateEnd;
-
-    public WeekScheduleDtoRequest weekSchedule;
-    public WeekDaysScheduleDtoRequest[] weekDaysSchedule;
+    private WeekScheduleDtoRequest weekSchedule;
+    private WeekDaysScheduleDtoRequest weekDaysSchedules;
 
     private int duration;
+
+
+    public EditScheduleDtoRequest() {
+    }
+
+    public EditScheduleDtoRequest(String dateStart, String dateEnd, WeekScheduleDtoRequest weekSchedule, int duration) {
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.weekSchedule = weekSchedule;
+        this.duration = duration;
+    }
+
+    public EditScheduleDtoRequest(String dateStart, String dateEnd, WeekDaysScheduleDtoRequest weekDaysSchedules, int duration) {
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.weekDaysSchedules = weekDaysSchedules;
+        this.duration = duration;
+    }
 
 
     public String getDateStart() {
@@ -59,12 +78,12 @@ public class EditScheduleDtoRequest {
         this.weekSchedule = weekSchedule;
     }
 
-    public WeekDaysScheduleDtoRequest[] getWeekDaysSchedule() {
-        return weekDaysSchedule;
+    public WeekDaysScheduleDtoRequest getWeekDaysSchedules() {
+        return weekDaysSchedules;
     }
 
-    public void setWeekDaysSchedule(WeekDaysScheduleDtoRequest[] weekDaysSchedule) {
-        this.weekDaysSchedule = weekDaysSchedule;
+    public void setWeekDaysSchedules(WeekDaysScheduleDtoRequest weekDaysSchedules) {
+        this.weekDaysSchedules = weekDaysSchedules;
     }
 
     public int getDuration() {

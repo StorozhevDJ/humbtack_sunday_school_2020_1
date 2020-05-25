@@ -20,7 +20,7 @@ public class Admin {
     }
 
     public Admin() {
-        this(new User(), new String());
+        this(new User(), "");
     }
 
     public int getId() {

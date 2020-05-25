@@ -4,10 +4,8 @@ import net.thumbtack.school.hospital.database.dao.*;
 import net.thumbtack.school.hospital.database.daoimpl.*;
 import net.thumbtack.school.hospital.database.model.*;
 import net.thumbtack.school.hospital.serverexception.ServerException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import net.thumbtack.school.hospital.database.utils.MyBatisUtils;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,10 +16,10 @@ import org.springframework.context.annotation.Import;
 @Import({CommonDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class})
 public abstract class DatabasePrepare {
 
-    private CommonDao commonDao;
-    protected AdminDao adminDao;
-    protected DoctorDao doctorDao;
-    protected PatientDao patientDao;
+    private final CommonDao commonDao;
+    protected final AdminDao adminDao;
+    protected final DoctorDao doctorDao;
+    protected final PatientDao patientDao;
 
     @Autowired
     public DatabasePrepare(CommonDao commonDao, AdminDao adminDao, DoctorDao doctorDao, PatientDao patientDao) {

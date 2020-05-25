@@ -9,19 +9,23 @@ package net.thumbtack.school.hospital.dto.request;
 "newPassword": "новый пароль"
 }*/
 
+import net.thumbtack.school.hospital.dto.validation.LastName;
 import net.thumbtack.school.hospital.dto.validation.Password;
+import net.thumbtack.school.hospital.dto.validation.FirstName;
+import net.thumbtack.school.hospital.dto.validation.Patronymic;
 
 import javax.validation.constraints.NotNull;
 
 public class EditAdminDtoRequest {
 
-
+    @FirstName
     private String firstName;
+    @LastName
     private String lastName;
+    @Patronymic
     private String patronymic;
     @NotNull
     private String position;
-    @Password
     private String oldPassword;
     @Password
     private String newPassword;

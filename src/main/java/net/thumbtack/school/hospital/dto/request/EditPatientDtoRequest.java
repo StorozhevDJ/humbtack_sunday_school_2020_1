@@ -11,20 +11,25 @@ package net.thumbtack.school.hospital.dto.request;
 "newPassword": "новый пароль"
 }*/
 
-import net.thumbtack.school.hospital.dto.validation.Password;
+import net.thumbtack.school.hospital.dto.validation.*;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 public class EditPatientDtoRequest {
 
+    @FirstName
     private String firstName;
+    @LastName
     private String lastName;
+    @Patronymic
     private String patronymic;
+    @Email
     private String email;
     @NotNull
     private String address;
+    @Phone
     private String phone;
-    @Password
     private String oldPassword;
     @Password
     private String newPassword;

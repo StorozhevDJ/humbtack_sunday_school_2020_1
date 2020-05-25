@@ -20,7 +20,7 @@ import java.util.UUID;
 @Validated
 public class UserController {
 
-    UserService userService;
+    private final UserService userService;
 
     private static final String COOKIE_NAME = "JAVASESSIONID";
 
@@ -67,8 +67,7 @@ public class UserController {
             @CookieValue(COOKIE_NAME) String cookie,
             HttpServletResponse response
     ) throws ServerException {
-        LoginDtoResponse dto = userService.infoUser(cookie);
-        return dto;
+        return userService.infoUser(cookie);
     }
 
     /**
@@ -76,8 +75,7 @@ public class UserController {
      * GET /api/settings
      */
     @GetMapping(path = "/settings", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GetServerSettingsDtoResponse getServerSettings(@CookieValue(value = COOKIE_NAME, defaultValue = "") String cookie) throws ServerException {
-        GetServerSettingsDtoResponse dto = userService.getServerSettings(cookie);
-        return dto;
+    public GetServerSettingsDtoResponse getServerSettings(@CookieValue(value = COOKIE_NAME, defaultValue = "") String cookie) {
+        return userService.getServerSettings(cookie);
     }
 }

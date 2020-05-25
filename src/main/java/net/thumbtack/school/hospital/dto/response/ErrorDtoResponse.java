@@ -1,9 +1,9 @@
 package net.thumbtack.school.hospital.dto.response;
 
 public class ErrorDtoResponse {
-    private String errorCode;
-    private String field;
-    private String message;
+    private final String errorCode;
+    private final String field;
+    private final String message;
 
     public ErrorDtoResponse(String errorCode, String field, String message) {
         this.errorCode = errorCode;

@@ -34,15 +34,17 @@ daySchedule :{
  */
 
 
-import net.thumbtack.school.hospital.dto.validation.Login;
-import net.thumbtack.school.hospital.dto.validation.Password;
+import net.thumbtack.school.hospital.dto.validation.*;
 
 import javax.validation.constraints.NotNull;
 
 public class RegisterDoctorDtoRequest {
 
+    @FirstName
     private String firstName;
+    @LastName
     private String lastName;
+    @Patronymic
     private String patronymic;
     @NotNull
     private String speciality;
@@ -52,6 +54,7 @@ public class RegisterDoctorDtoRequest {
     private String login;
     @Password
     private String password;
+    @Date
     private String dateStart, dateEnd;
 
     private WeekScheduleDtoRequest weekSchedule;
@@ -59,6 +62,36 @@ public class RegisterDoctorDtoRequest {
 
     private int duration;
 
+    public RegisterDoctorDtoRequest() {
+    }
+
+    public RegisterDoctorDtoRequest(String firstName, String lastName, String patronymic, @NotNull String speciality, @NotNull String room, String login, String password, String dateStart, String dateEnd, WeekScheduleDtoRequest weekSchedule, int duration) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.patronymic = patronymic;
+        this.speciality = speciality;
+        this.room = room;
+        this.login = login;
+        this.password = password;
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.weekSchedule = weekSchedule;
+        this.duration = duration;
+    }
+
+    public RegisterDoctorDtoRequest(String firstName, String lastName, String patronymic, @NotNull String speciality, @NotNull String room, String login, String password, String dateStart, String dateEnd, WeekDaysScheduleDtoRequest weekDaysSchedules, int duration) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.patronymic = patronymic;
+        this.speciality = speciality;
+        this.room = room;
+        this.login = login;
+        this.password = password;
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.weekDaysSchedules = weekDaysSchedules;
+        this.duration = duration;
+    }
 
     public String getFirstName() {
         return firstName;

@@ -1,12 +1,8 @@
 package net.thumbtack.school.hospital.dto.request;
 
-import net.thumbtack.school.hospital.dto.validation.Login;
-import net.thumbtack.school.hospital.dto.validation.Password;
+import net.thumbtack.school.hospital.dto.validation.*;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 /*
 {
@@ -22,13 +18,11 @@ import javax.validation.constraints.Size;
 public class RegisterAdminDtoRequest {
 
 
-    @NotBlank(message = "Имя админстратора не задано. ")
-    @Pattern(regexp = "^[А-ЯЁ][а-яА-ЯёЁ\\w-]{1,50}$", message = "Имя администратора может содержать только только русские буквы, пробелы и знак “минус” (используемый как тире) и быть длинной от 1 до 50 символов. ")
+    @FirstName
     private String firstName;
-    @NotBlank(message = "Фамилия админстратора не задана. ")
-    @Pattern(regexp = "^[А-ЯЁ][а-яА-ЯёЁ\\w-]{1,50}$", message = "Фамилия администратора может содержать только только русские буквы, пробелы и знак “минус” (используемый как тире) и быть длинной от 1 до 50 символов. ")
+    @LastName
     private String lastName;
-    @Pattern(regexp = "^[А-ЯЁ][а-яА-ЯёЁ\\w-]{1,50}$", message = "Отчество администратора может содержать только только русские буквы, пробелы и знак “минус” (используемый как тире) и быть длинной от 1 до 50 символов. ")
+    @Patronymic
     private String patronymic;
     @NotNull
     private String position;
@@ -48,7 +42,7 @@ public class RegisterAdminDtoRequest {
     }
 
     public RegisterAdminDtoRequest() {
-        //this(new String(), new String(), new String(), new String(), new String(), new String());
+
     }
 
 

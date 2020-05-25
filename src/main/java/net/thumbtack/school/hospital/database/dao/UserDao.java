@@ -25,16 +25,15 @@ public interface UserDao {
     /**
      * Get user info by token from JAVASESSIONID cookie
      *
-     * @param token
+     * @param cookie
      * @return inserted user if login and password is correct
      */
-    User getByToken(Session token) throws ServerException;
+    User getByToken(String cookie) throws ServerException;
 
     /**
      * LogIn user (Insert token for sign in user)
      *
      * @param user model with login/password and new token
-     * @return true if user login successful
      */
     void logIn(User user) throws ServerException;
 

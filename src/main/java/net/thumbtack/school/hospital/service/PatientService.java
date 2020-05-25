@@ -10,33 +10,35 @@ import net.thumbtack.school.hospital.dto.request.EditPatientDtoRequest;
 import net.thumbtack.school.hospital.dto.request.RegisterPatientDtoRequest;
 import net.thumbtack.school.hospital.dto.response.AddTicketDtoResponse;
 import net.thumbtack.school.hospital.dto.response.EmptyDtoResponse;
-import net.thumbtack.school.hospital.dto.response.getticket.GetTicketListDtoResponse;
 import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
+import net.thumbtack.school.hospital.dto.response.getticket.GetTicketListDtoResponse;
 import net.thumbtack.school.hospital.mapper.PatientMapper;
 import net.thumbtack.school.hospital.mapper.ScheduleMapper;
 import net.thumbtack.school.hospital.serverexception.ServerError;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-@Transactional(rollbackFor = DataAccessException.class)
+@Transactional(rollbackFor = ServerException.class)
 public class PatientService {
 
-    private static final String DATE_FORMAT = "ddMMyyyy";
-    private static final String TIME_FORMAT = "HHmm";
+    private static final String DATE_FORMAT = "dd-MM-yyyy";
+    private static final String TIME_FORMAT = "HH:mm";
 
-    private PatientDao patientDao;
-    private UserDao userDao;
-    private DoctorDao doctorDao;
-    private ScheduleDao scheduleDao;
+    private final PatientDao patientDao;
+    private final UserDao userDao;
+    private final DoctorDao doctorDao;
+    private final ScheduleDao scheduleDao;
 
     @Autowired
     public PatientService(PatientDao patientDao, UserDao userDao, DoctorDao doctorDao, ScheduleDao scheduleDao) {
@@ -71,18 +73,16 @@ public class PatientService {
      * @throws ServerException
      */
     public LoginDtoResponse infoPatient(String cookie, int patientId) throws ServerException {
-        User user = userDao.getByToken(new Session(cookie));
+        User user = userDao.getByToken(cookie);
         if (user == null) {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
-        if ((user.getType() != UserType.ADMINISTRATOR) && (user.getType() != UserType.DOCTOR)) {
+        if ((user.getUserType() != UserType.ADMINISTRATOR) && (user.getUserType() != UserType.DOCTOR)) {
             throw new ServerException(ServerError.ACCESS_DENIED);
         }
         Patient patient = patientDao.getByPatientId(patientId);
         if (patient == null) {
-        	// REVU это как так ? Вы же User уже получили раньше, как же может быть USER_ID_INVALID ?
-        	// как минимум неверная диагностика ошибки
-            throw new ServerException(ServerError.USER_ID_INVALID);
+            throw new ServerException(ServerError.PATIENT_NOT_FOUND);
         }
         return PatientMapper.convertToDto(patient);
     }
@@ -96,14 +96,16 @@ public class PatientService {
      * @throws ServerException
      */
     public LoginDtoResponse editPatient(String cookie, EditPatientDtoRequest editPatientDtoRequest) throws ServerException {
-        Patient patient = patientDao.getByToken(new Session(cookie));
+        Patient patient = patientDao.getByToken(cookie);
         if (patient == null) {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
-        // REVU зачем ? Вы уже получили Patient, в нем есть User, просто сравните пароли
-        User user = userDao.getByLogin(patient.getUser().getLogin(), editPatientDtoRequest.getOldPassword());
-        if (user == null) {
-            throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);
+        try {
+            if (!getMD5Hash(editPatientDtoRequest.getOldPassword()).equals(patient.getUser().getPassword())) {
+                throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new ServerException(ServerError.OTHER_ERROR);
         }
         patient.getUser().setFirstName(editPatientDtoRequest.getFirstName());
         patient.getUser().setLastName(editPatientDtoRequest.getLastName());
@@ -111,8 +113,23 @@ public class PatientService {
         patient.getUser().setPassword(editPatientDtoRequest.getNewPassword());
         patient.setAddress(editPatientDtoRequest.getAddress());
         patient.setPhone(editPatientDtoRequest.getPhone());
+        patient.setEmail(editPatientDtoRequest.getEmail());
         patientDao.update(patient);
         return PatientMapper.convertToDto(patient);
+    }
+
+    private static String getMD5Hash(String s) throws NoSuchAlgorithmException {
+        StringBuilder result = new StringBuilder(s);
+        if (s != null) {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(s.getBytes());
+            BigInteger hash = new BigInteger(1, md.digest());
+            result = new StringBuilder(hash.toString(16));
+            while (result.length() < 32) {
+                result.insert(0, "0");
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -125,7 +142,7 @@ public class PatientService {
      */
     public AddTicketDtoResponse addTicket(String cookie, AddTicketDtoRequest addTicketDtoRequest) throws ServerException {
         // Check user
-        Patient patient = patientDao.getByToken(new Session(cookie));
+        Patient patient = patientDao.getByToken(cookie);
         if (patient == null) {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
@@ -150,7 +167,7 @@ public class PatientService {
         daySchedule.setTicketSchedule(ticketScheduleList);
         daySchedule.setDoctor(daySchedule.getDoctor());
         daySchedule.setDate(daySchedule.getDate());
-        ticketSchedule.setTicket("D" + addTicketDtoRequest.getDoctorId() + addTicketDtoRequest.getDate() + addTicketDtoRequest.getTime());
+        ticketSchedule.setTicket("D" + addTicketDtoRequest.getDoctorId() + date.format(DateTimeFormatter.ofPattern("ddMMyyyy")) + time.format(DateTimeFormatter.ofPattern("HHmm")));
         ticketSchedule.setPatient(patient);
         ticketSchedule.setScheduleType(ScheduleType.RECEPTION);
 
@@ -169,17 +186,13 @@ public class PatientService {
      */
     public EmptyDtoResponse cancelTicket(String cookie, String ticket) throws ServerException {
         // Get user
-        Patient patient = patientDao.getByToken(new Session(cookie));
+        Patient patient = patientDao.getByToken(cookie);
         if (patient == null) {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
-        if (scheduleDao.cancelTicket(ticket) == false) {
-            throw new ServerException(ServerError.CANCEL_TICKET_FAIL);
-        }
+        scheduleDao.cancelTicket(ticket, patient.getId());
         return new EmptyDtoResponse();
     }
-
-    // ToDo add commission
 
     /**
      * Get Patient tickets list
@@ -190,23 +203,32 @@ public class PatientService {
      */
     public GetTicketListDtoResponse getTicketsList(String cookie) throws ServerException {
         // Get patient
-        Patient patient = patientDao.getByToken(new Session(cookie));
+        Patient patient = patientDao.getByToken(cookie);
         if (patient == null) {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
         //Get tickets list for doctor reception
         List<DaySchedule> ticketScheduleList = scheduleDao.getTicketsListByPatientId(patient.getId());
-        return ScheduleMapper.convertToDto(ticketScheduleList);
+        List<Commission> commissionList = scheduleDao.getCommission(patient.getId());
+
+        return ScheduleMapper.convertToDto(ticketScheduleList, commissionList);
     }
 
-    // ToDo
+    /**
+     * Cancel commission
+     *
+     * @param cookie
+     * @param ticket
+     * @return
+     * @throws ServerException
+     */
     public EmptyDtoResponse cancelCommission(String cookie, String ticket) throws ServerException {
-
+        Patient patient = patientDao.getByToken(cookie);
+        if (patient == null) {
+            throw new ServerException(ServerError.TOKEN_INVALID);
+        }
+        scheduleDao.cancelCommission(ticket, patient.getId());
         return new EmptyDtoResponse();
     }
-
-
-
-
 
 }

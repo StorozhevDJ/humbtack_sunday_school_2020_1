@@ -1,9 +1,9 @@
 package net.thumbtack.school.hospital.database.mappers;
 
+import java.time.LocalDate;
 import java.util.List;
 
-import net.thumbtack.school.hospital.database.model.Session;
-import net.thumbtack.school.hospital.database.model.User;
+import net.thumbtack.school.hospital.database.model.Statistic;
 import org.apache.ibatis.annotations.*;
 
 import net.thumbtack.school.hospital.database.model.Patient;
@@ -56,7 +56,7 @@ public interface PatientMapper {
     })
     Patient getByUserId(int id);
 
-    @Select("SELECT patient.id, patient.userId, firstName, lastName, patronymic, type, login, token, email, address, phone " +
+    @Select("SELECT patient.id, patient.userId, firstName, lastName, patronymic, type, login, password, token, email, address, phone " +
             "FROM patient JOIN user ON user.id = patient.userId " +
             "JOIN session ON session.userId = user.id " +
             "WHERE token = #{token}")
@@ -67,10 +67,11 @@ public interface PatientMapper {
             @Result(property = "user.patronymic", column = "patronymic"),
             @Result(property = "user.type", column = "type"),
             @Result(property = "user.login", column = "login"),
+            @Result(property = "user.password", column = "password"),
             @Result(property = "user.session.userId", column = "userId"),
             @Result(property = "user.session.token", column = "token")
     })
-    Patient getByToken(Session token);
+    Patient getByToken(String token);
 
     @Select("SELECT patient.id, userId, firstName, lastName, patronymic, type, login, email, address, phone " +
             "FROM patient JOIN user ON user.id = patient.userId " +
@@ -85,9 +86,15 @@ public interface PatientMapper {
     })
     List<Patient> getByDoctorId(int id);
 
+    @Select("SELECT type, COUNT(*) AS count " +
+            "FROM ticket_schedule " +
+            "JOIN schedule ON scheduleId = schedule.id " +
+            "WHERE patientId = #{patientId} " +
+            "AND date >= #{dateStart} " +
+            "AND date <  #{dateEnd} " +
+            "GROUP BY type ;")
+    List<Statistic> getTicketsCount(@Param("patientId") Integer patientId, @Param("dateStart") LocalDate dateStart, @Param("dateEnd") LocalDate dateEnd);
+
     @Select("SELECT COUNT(*) FROM patient;")
     int getCount();
-
-    @Delete("DELETE FROM `patient`")
-    void deleteAll();
 }

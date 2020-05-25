@@ -1,8 +1,6 @@
 package net.thumbtack.school.hospital.database.dao;
 
 import net.thumbtack.school.hospital.database.model.Admin;
-import net.thumbtack.school.hospital.database.model.Session;
-import net.thumbtack.school.hospital.database.model.User;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 
 public interface AdminDao {
@@ -28,7 +26,7 @@ public interface AdminDao {
      * @param token
      * @return admin account
      */
-    Admin getByToken(Session token) throws ServerException;
+    Admin getByToken(String token) throws ServerException;
 
     /**
      * Get admin info by User ID

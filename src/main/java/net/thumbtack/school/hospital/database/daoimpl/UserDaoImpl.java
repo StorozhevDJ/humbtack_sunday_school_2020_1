@@ -1,15 +1,13 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
+import net.thumbtack.school.hospital.database.dao.UserDao;
 import net.thumbtack.school.hospital.database.mappers.UserMapper;
 import net.thumbtack.school.hospital.database.model.Session;
+import net.thumbtack.school.hospital.database.model.User;
 import net.thumbtack.school.hospital.serverexception.ServerError;
 import net.thumbtack.school.hospital.serverexception.ServerException;
-import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.thumbtack.school.hospital.database.dao.UserDao;
-import net.thumbtack.school.hospital.database.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
@@ -33,7 +31,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(User user) throws ServerException {
         LOGGER.debug("DAO get User by login \"{}\"", user.getLogin());
-        try  {
+        try {
             userMapper.update(user);
         } catch (DataAccessException ex) {
             LOGGER.info("Can't get User by login {} {}", user.getLogin(), ex);
@@ -44,7 +42,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getByLogin(String login, String password) throws ServerException {
         LOGGER.debug("DAO get User by login \"{}\"", login);
-        try  {
+        try {
             return userMapper.getByLogin(login, password);
         } catch (DataAccessException ex) {
             LOGGER.info("Can't get User by login {} {}", login, ex);
@@ -53,7 +51,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getByToken(Session token) throws ServerException {
+    public User getByToken(String token) throws ServerException {
         LOGGER.debug("DAO get User by token {}", token);
         try {
             return userMapper.getByToken(token);
@@ -86,6 +84,5 @@ public class UserDaoImpl implements UserDao {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
     }
-
 
 }

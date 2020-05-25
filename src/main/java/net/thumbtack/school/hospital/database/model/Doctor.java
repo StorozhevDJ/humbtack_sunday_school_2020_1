@@ -24,7 +24,7 @@ public class Doctor {
     }
 
     public Doctor() {
-        this(new User(), new Speciality(new String()), new Room(new String()));
+        this(new User(), new Speciality(""), new Room(""));
     }
 
     public int getId() {
@@ -75,11 +75,12 @@ public class Doctor {
         return getId() == doctor.getId() &&
                 Objects.equals(getUser(), doctor.getUser()) &&
                 Objects.equals(getSpeciality(), doctor.getSpeciality()) &&
-                Objects.equals(getRoom(), doctor.getRoom());
+                Objects.equals(getRoom(), doctor.getRoom()) &&
+                Objects.equals(getDayScheduleList(), doctor.getDayScheduleList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUser(), getSpeciality(), getRoom());
+        return Objects.hash(getId(), getUser(), getSpeciality(), getRoom(), getDayScheduleList());
     }
 }

@@ -1,7 +1,5 @@
 package net.thumbtack.school.hospital.database.mappers;
 
-import net.thumbtack.school.hospital.database.model.Session;
-import net.thumbtack.school.hospital.database.model.User;
 import org.apache.ibatis.annotations.*;
 import net.thumbtack.school.hospital.database.model.Admin;
 
@@ -14,8 +12,8 @@ public interface AdminMapper {
     void insert(Admin admin);
 
     @Insert("UPDATE `admin` " +
-            "SET ( `userId`, `position`) "
-            + "VALUES (#{user.id}, #{position} )")
+            "SET `position` = #{position} " +
+            "WHERE `userId` = #{user.id};")
     void update(Admin admin);
 
     @Select("SELECT admin.id, userId, firstName, lastName, patronymic, type, login, position "
@@ -45,7 +43,7 @@ public interface AdminMapper {
             @Result(property = "user.login", column = "login"),
             @Result(property = "user.session.token", column = "token")
     })
-    Admin getByToken(Session token);
+    Admin getByToken(String token);
 
     @Select("SELECT COUNT(*) FROM admin;")
     int getCount();

@@ -1,28 +1,25 @@
 package net.thumbtack.school.hospital.database;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import net.thumbtack.school.hospital.database.dao.*;
 import net.thumbtack.school.hospital.database.daoimpl.*;
-import net.thumbtack.school.hospital.database.model.Session;
-import net.thumbtack.school.hospital.database.model.UserType;
-import net.thumbtack.school.hospital.serverexception.ServerError;
-import net.thumbtack.school.hospital.serverexception.ServerException;
-import org.junit.jupiter.api.Test;
-
 import net.thumbtack.school.hospital.database.model.Admin;
 import net.thumbtack.school.hospital.database.model.User;
+import net.thumbtack.school.hospital.database.model.UserType;
+import net.thumbtack.school.hospital.serverexception.ServerException;
+import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class})
 public class AdminDaoTest extends DatabasePrepare {
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
     @Autowired
     public AdminDaoTest(CommonDao commonDao, UserDao userDao, AdminDao adminDao, DoctorDao doctorDao, PatientDao patientDao) {
@@ -40,7 +37,7 @@ public class AdminDaoTest extends DatabasePrepare {
         assertAll(
                 () -> assertNotEquals(0, admin.getId()),
                 () -> assertEquals(admin.getUser().getId(), user.getId()),
-                () -> assertEquals(UserType.ADMINISTRATOR, admin.getUser().getType()),
+                () -> assertEquals(UserType.ADMINISTRATOR, admin.getUser().getUserType()),
                 () -> assertEquals(2, adminDao.getCount())
         );
 
@@ -49,7 +46,7 @@ public class AdminDaoTest extends DatabasePrepare {
                 () -> assertNotEquals(0, getAdmin.getId(), "admin id = 0"),
                 () -> assertEquals(getAdmin.getUser().getId(), user.getId(), "Admin and user IDs is different"),
                 () -> assertEquals("SecondAdmin", getAdmin.getPosition(), "Admin position is not SecondAdmin"),
-                () -> assertEquals(UserType.ADMINISTRATOR, getAdmin.getUser().getType(), "User type is not admin"),
+                () -> assertEquals(UserType.ADMINISTRATOR, getAdmin.getUser().getUserType(), "User type is not admin"),
                 () -> assertEquals("Вася", getAdmin.getUser().getFirstName(), "User firstName is not Вася"),
                 () -> assertEquals("Петечкин", getAdmin.getUser().getLastName(), "User lastname is not Петечкин"),
                 () -> assertEquals("Васильевич", getAdmin.getUser().getPatronymic(), "User patronymic is not Васильевич"),
@@ -83,14 +80,14 @@ public class AdminDaoTest extends DatabasePrepare {
         Admin admin = adminDao.getByUserId(user.getId());
         assertAll(
                 () -> assertEquals("Superadmin", admin.getPosition(), "Admin position is not Superadmin"),
-                () -> assertEquals(UserType.ADMINISTRATOR, admin.getUser().getType(), "User type is not admin"),
+                () -> assertEquals(UserType.ADMINISTRATOR, admin.getUser().getUserType(), "User type is not admin"),
                 () -> assertEquals("FirstNameAdmin", admin.getUser().getFirstName(), "User firstName is not FirstNameAdmin"),
                 () -> assertEquals("lastNameAdmin", admin.getUser().getLastName(), "User lastname is not lastNameAdmin"),
                 () -> assertNull(admin.getUser().getPatronymic(), "User patronymic is not null"),
                 () -> assertEquals("admin", admin.getUser().getLogin(), "User login is not Admin"),
                 () -> assertNull(admin.getUser().getPassword(), "User password is not null")
         );
-
     }
+
 
 }

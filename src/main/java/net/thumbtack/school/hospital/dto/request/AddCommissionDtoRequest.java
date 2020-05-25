@@ -12,18 +12,26 @@ package net.thumbtack.school.hospital.dto.request;
 "duration": время, отведенное на комиссию в минутах
 }*/
 
+import net.thumbtack.school.hospital.dto.validation.Date;
+import net.thumbtack.school.hospital.dto.validation.Time;
+
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class AddCommissionDtoRequest {
 
 	@NotNull
+	@Positive
 	private Integer patientId;
 	private Integer[] doctorIds;
 	@NotNull
 	private String room;
+	@Date
 	private String date;
+	@Time
 	private String time;
 	@NotNull
+	@Positive
 	Integer duration;
 
 	public AddCommissionDtoRequest() {

@@ -1,25 +1,21 @@
 package net.thumbtack.school.hospital.database.daoimpl;
 
-import java.util.List;
-
+import net.thumbtack.school.hospital.database.dao.PatientDao;
 import net.thumbtack.school.hospital.database.mappers.PatientMapper;
 import net.thumbtack.school.hospital.database.mappers.UserMapper;
-import net.thumbtack.school.hospital.database.model.Session;
-import net.thumbtack.school.hospital.database.model.User;
+import net.thumbtack.school.hospital.database.model.Patient;
+import net.thumbtack.school.hospital.database.model.Statistic;
 import net.thumbtack.school.hospital.serverexception.ServerError;
 import net.thumbtack.school.hospital.serverexception.ServerException;
-import net.thumbtack.school.hospital.service.PatientService;
-import net.thumbtack.school.hospital.service.UserService;
-import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.thumbtack.school.hospital.database.dao.PatientDao;
-import net.thumbtack.school.hospital.database.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Component
 public class PatientDaoImpl implements PatientDao {
@@ -39,18 +35,18 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = ServerException.class)
     public Patient insert(Patient patient) throws ServerException {
         LOGGER.debug("DAO insert Patient {}", patient);
-            try {
-                userMapper.insert(patient.getUser());
-                if (patientMapper.insert(patient) == 0) {
-                    throw new ServerException(ServerError.OTHER_ERROR);
-                }
-            } catch (DataAccessException ex) {
-                LOGGER.info("Can't insert Patient {} {}", patient, ex);
+        try {
+            userMapper.insert(patient.getUser());
+            if (patientMapper.insert(patient) == 0) {
                 throw new ServerException(ServerError.OTHER_ERROR);
             }
+        } catch (DataAccessException ex) {
+            LOGGER.info("Can't insert Patient {} {}", patient, ex);
+            throw new ServerException(ServerError.OTHER_ERROR);
+        }
         return patient;
     }
 
@@ -89,7 +85,7 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
-    public Patient getByToken(Session token) throws ServerException {
+    public Patient getByToken(String token) throws ServerException {
         LOGGER.debug("DAO get Patient by token {}", token);
         try {
             return patientMapper.getByToken(token);
@@ -100,12 +96,12 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
-    public List<Patient> getAllPatientByDoctorId(int id) throws ServerException {
-        LOGGER.debug("DAO get All Patient by id {}", id);
+    public List<Statistic> getTicketCount(int id, LocalDate dateStart, LocalDate dateEnd) throws ServerException {
+        LOGGER.debug("DAO get Doctors count");
         try {
-            return patientMapper.getByDoctorId(id);
+            return patientMapper.getTicketsCount(id, dateStart, dateEnd);
         } catch (DataAccessException ex) {
-            LOGGER.info("Can't get All Patient by id {} {}", id, ex);
+            LOGGER.info("Can't get Doctors count {} ", ex);
             throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
@@ -120,6 +116,5 @@ public class PatientDaoImpl implements PatientDao {
             throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
-
 
 }

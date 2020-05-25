@@ -5,11 +5,6 @@ import java.util.Objects;
 
 public class TicketSchedule {
     private int id;
-    // REVU не экспонируйте тут реляционную структуру
-    // private Schedule schedule должно быть, если это поле вообще нужно 
-    // Я в этом не уверен,и вот почему
-    // Schedule должен знать свой список из DaySchedule. Это логично
-    // А зачем DaySchedule знать свой Schedule - неясно. Нет такой задачи - по приему определить, к какому дню он относится
     private int scheduleId;
     private String ticket;
     private LocalTime timeStart;
@@ -26,6 +21,22 @@ public class TicketSchedule {
         setTimeStart(timeStart);
         setTimeEnd(timeEnd);
         setPatient(patient);
+        setScheduleType(scheduleType);
+    }
+
+    public TicketSchedule(int scheduleId, String ticket, LocalTime timeStart, LocalTime timeEnd, Patient patient, ScheduleType scheduleType) {
+        this(0, scheduleId, ticket, timeStart, timeEnd, patient, scheduleType);
+    }
+
+    public TicketSchedule(String ticket, LocalTime timeStart, LocalTime timeEnd, Patient patient, ScheduleType scheduleType) {
+        this(0, 0, ticket, timeStart, timeEnd, patient, scheduleType);
+    }
+
+
+    public TicketSchedule(LocalTime timeStart, LocalTime timeEnd,ScheduleType scheduleType) {
+        this();
+        setTimeStart(timeStart);
+        setTimeEnd(timeEnd);
         setScheduleType(scheduleType);
     }
 

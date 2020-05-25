@@ -1,7 +1,9 @@
 package net.thumbtack.school.hospital.dto.request;
 
-public class DeleteDoctorDtoRequest {
+import net.thumbtack.school.hospital.dto.validation.Date;
 
+public class DeleteDoctorDtoRequest {
+    @Date
     private String date;
 
     public DeleteDoctorDtoRequest(String date) {

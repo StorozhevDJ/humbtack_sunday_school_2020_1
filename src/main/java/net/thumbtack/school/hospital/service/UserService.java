@@ -29,10 +29,10 @@ public class UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-    private UserDao userDao;
-    private AdminDao adminDao;
-    private DoctorDao doctorDao;
-    private PatientDao patientDao;
+    private final UserDao userDao;
+    private final AdminDao adminDao;
+    private final DoctorDao doctorDao;
+    private final PatientDao patientDao;
 
     @Autowired
     ApplicationProperties prop;
@@ -57,12 +57,12 @@ public class UserService {
     public LoginDtoResponse loginUser(LoginDtoRequest loginDtoRequest, String cookie) throws ServerException {
         User user = userDao.getByLogin(loginDtoRequest.getLogin(), loginDtoRequest.getPassword());
         if (user == null) {
-            LOGGER.debug("Login user failed, user \"{}\" with login/password not found", user.getLogin());
+            LOGGER.debug("Login user failed, user \"{}\" with login/password not found", loginDtoRequest.getLogin());
             throw new ServerException(ServerError.LOGIN_OR_PASSWORD_INVALID);
         }
         user.setSession(new Session(user.getId(), cookie));
         userDao.logIn(user);
-        switch (user.getType()) {
+        switch (user.getUserType()) {
             case DOCTOR: {
                 return DoctorMapper.convertToDto(doctorDao.getByUserId(user.getId()));
             }
@@ -96,11 +96,11 @@ public class UserService {
      * @throws ServerException
      */
     public LoginDtoResponse infoUser(String cookie) throws ServerException {
-        User user = userDao.getByToken(new Session(cookie));
+        User user = userDao.getByToken(cookie);
         if (user == null) {
             throw new ServerException(ServerError.TOKEN_INVALID);
         }
-        switch (user.getType()) {
+        switch (user.getUserType()) {
             case DOCTOR: {
                 return DoctorMapper.convertToDto(doctorDao.getByUserId(user.getId()));
             }
@@ -120,7 +120,7 @@ public class UserService {
      *
      * @param cookie
      */
-    public GetServerSettingsDtoResponse getServerSettings(String cookie) throws ServerException {
+    public GetServerSettingsDtoResponse getServerSettings(String cookie) {
         GetServerSettingsDtoResponse dto = new GetServerSettingsDtoResponse();
         dto.setMaxNameLength(prop.getMaxNameLength());
         dto.setMinPasswordLength(prop.getMinPasswordLength());

@@ -1,10 +1,10 @@
 package net.thumbtack.school.hospital.database.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import net.thumbtack.school.hospital.database.model.Patient;
-import net.thumbtack.school.hospital.database.model.Session;
-import net.thumbtack.school.hospital.database.model.User;
+import net.thumbtack.school.hospital.database.model.Statistic;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 
 public interface PatientDao {
@@ -45,15 +45,12 @@ public interface PatientDao {
      *
      * @return patient
      */
-    Patient getByToken(Session token) throws ServerException;
+    Patient getByToken(String token) throws ServerException;
 
     /**
-     * Get ALL patients by Doctor ID
-     *
-     * @param id - patient DB id
-     * @return patient
+     * @return int
      */
-    List<Patient> getAllPatientByDoctorId(int id) throws ServerException;
+    List<Statistic> getTicketCount(int id, LocalDate dateStart, LocalDate dateEnd) throws ServerException;
 
     /**
      * Get Patients count in DB

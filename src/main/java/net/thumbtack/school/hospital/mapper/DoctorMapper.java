@@ -11,8 +11,8 @@ import java.util.List;
 
 public class DoctorMapper {
 
-    private static final String DATE_FORMAT = "ddMMyyyy";
-    private static final String TIME_FORMAT = "HHmm";
+    private static final String DATE_FORMAT = "dd-MM-yyyy";
+    private static final String TIME_FORMAT = "HH:mm";
 
 
     public static LoginDtoResponse convertToDto(Doctor doctor) {
@@ -39,10 +39,13 @@ public class DoctorMapper {
         response.setPatronymic(doctor.getUser().getPatronymic());
         response.setSpeciality(doctor.getSpeciality().getName());
         response.setRoom(doctor.getRoom().getNumber());
+        if (dayScheduleList == null) {
+            return response;
+        }
         // Day schedule
         List<EditScheduleDtoResponse.Schedule> scheduleList = new ArrayList<>();
-        EditScheduleDtoResponse.Schedule schedule = new EditScheduleDtoResponse().new Schedule();
         for (DaySchedule daySchedule : dayScheduleList) {
+            EditScheduleDtoResponse.Schedule schedule = new EditScheduleDtoResponse().new Schedule();
             response.setSchedule(scheduleList);
             scheduleList.add(schedule);
             schedule.setDate(daySchedule.getDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
@@ -65,7 +68,7 @@ public class DoctorMapper {
     }
 
 
-    public static List<EditScheduleDtoResponse> convertToDto(List<DaySchedule> dayScheduleList) {
+    public static List<EditScheduleDtoResponse> convertToDto(List<DaySchedule> dayScheduleList, User user) {
         List<EditScheduleDtoResponse> responseList = new ArrayList<>();
         for (DaySchedule daySchedule : dayScheduleList) {
             EditScheduleDtoResponse response = new EditScheduleDtoResponse();
@@ -88,15 +91,17 @@ public class DoctorMapper {
                 ticketScheduleDtoList.add(ticketScheduleDto);
                 ticketScheduleDto.setTime(ticketSchedule.getTimeStart().format(DateTimeFormatter.ofPattern(TIME_FORMAT)));
                 if (ticketSchedule.getPatient() != null) {
-                    EditScheduleDtoResponse.Schedule.TicketScheduleDto.Patient patientDto = new EditScheduleDtoResponse().new Schedule().new TicketScheduleDto().new Patient();
-                    ticketScheduleDto.setPatient(patientDto);
-                    patientDto.setPatientId(ticketSchedule.getPatient().getId());
-                    patientDto.setAddress(ticketSchedule.getPatient().getAddress());
-                    patientDto.setEmail(ticketSchedule.getPatient().getAddress());
-                    patientDto.setPhone(ticketSchedule.getPatient().getPhone());
-                    patientDto.setFirstName(ticketSchedule.getPatient().getUser().getFirstName());
-                    patientDto.setLastName(ticketSchedule.getPatient().getUser().getLastName());
-                    patientDto.setPatronymic(ticketSchedule.getPatient().getUser().getPatronymic());
+                    if ((user == null) || (ticketSchedule.getPatient().getUser().getId() == user.getId())) {
+                        EditScheduleDtoResponse.Schedule.TicketScheduleDto.Patient patientDto = new EditScheduleDtoResponse().new Schedule().new TicketScheduleDto().new Patient();
+                        ticketScheduleDto.setPatient(patientDto);
+                        patientDto.setPatientId(ticketSchedule.getPatient().getId());
+                        patientDto.setAddress(ticketSchedule.getPatient().getAddress());
+                        patientDto.setEmail(ticketSchedule.getPatient().getAddress());
+                        patientDto.setPhone(ticketSchedule.getPatient().getPhone());
+                        patientDto.setFirstName(ticketSchedule.getPatient().getUser().getFirstName());
+                        patientDto.setLastName(ticketSchedule.getPatient().getUser().getLastName());
+                        patientDto.setPatronymic(ticketSchedule.getPatient().getUser().getPatronymic());
+                    }
                 }
             }
         }
@@ -108,7 +113,7 @@ public class DoctorMapper {
         if (dto == null) {
             return null;
         }
-        Doctor doctor = new Doctor(
+        return new Doctor(
                 new User(
                         dto.getFirstName(),
                         dto.getLastName(),
@@ -121,7 +126,6 @@ public class DoctorMapper {
                 new Speciality(dto.getSpeciality()),
                 new Room(dto.getRoom())
         );
-        return doctor;
     }
 
 

@@ -1,11 +1,11 @@
 package net.thumbtack.school.hospital.dto.request;
 
-import javax.validation.constraints.NotNull;
+import net.thumbtack.school.hospital.dto.validation.Time;
 
 public class DayScheduleDtoRequest {
-    @NotNull
+
     private String weekDay;
-    @NotNull
+    @Time
     private String timeStart, timeEnd;
 
     public String getWeekDay() {

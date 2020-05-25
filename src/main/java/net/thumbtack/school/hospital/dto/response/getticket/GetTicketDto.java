@@ -1,7 +1,6 @@
 package net.thumbtack.school.hospital.dto.response.getticket;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.List;
 
@@ -35,6 +34,14 @@ public class GetTicketDto {
         this.lastName = lastName;
         this.patronymic = patronymic;
         this.speciality = speciality;
+    }
+
+    public GetTicketDto(String ticket, String room, String date, String time, List<GetTicketCommissionDto> doctorsCommissionList) {
+        this.ticket = ticket;
+        this.room = room;
+        this.date = date;
+        this.time = time;
+        this.doctorsCommissionList = doctorsCommissionList;
     }
 
     public String getTicket() {
@@ -109,7 +116,6 @@ public class GetTicketDto {
         this.speciality = speciality;
     }
 
-    //@JsonValue
     public List<GetTicketCommissionDto> getDoctorsCommissionList() {
         return doctorsCommissionList;
     }

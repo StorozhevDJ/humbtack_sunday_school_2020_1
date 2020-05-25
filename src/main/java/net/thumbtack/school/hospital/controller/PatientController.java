@@ -15,14 +15,17 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
 @Validated
 public class PatientController {
 
-    private PatientService patientService;
+    private final PatientService patientService;
 
     private static final String COOKIE_NAME = "JAVASESSIONID";
 
@@ -39,9 +42,12 @@ public class PatientController {
     @PostMapping(path = "/patients", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public LoginDtoResponse registerPatients(
             @RequestBody @Valid RegisterPatientDtoRequest dtoRequest,
-            @CookieValue(COOKIE_NAME) String cookie
+            HttpServletResponse response
     ) throws ServerException {
-        return patientService.registerPatient(cookie, dtoRequest);
+        String cookie = UUID.randomUUID().toString();
+        LoginDtoResponse responseDto = patientService.registerPatient(cookie, dtoRequest);
+        response.addCookie(new Cookie(COOKIE_NAME, cookie));
+        return responseDto;
     }
 
     /**
@@ -101,8 +107,7 @@ public class PatientController {
             @PathVariable("ticket") String ticket,
             @CookieValue(COOKIE_NAME) String cookie
     ) throws ServerException {
-        EmptyDtoResponse dto = patientService.cancelCommission(cookie, ticket);
-        return dto;
+        return patientService.cancelCommission(cookie, ticket);
     }
 
     /**
@@ -113,7 +118,6 @@ public class PatientController {
     public GetTicketListDtoResponse getTicketsList(
             @CookieValue(COOKIE_NAME) String cookie
     ) throws ServerException {
-        GetTicketListDtoResponse dto = patientService.getTicketsList(cookie);
-        return dto;
+        return patientService.getTicketsList(cookie);
     }
 }

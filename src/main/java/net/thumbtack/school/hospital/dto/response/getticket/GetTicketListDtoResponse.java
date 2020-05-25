@@ -37,6 +37,13 @@ public class GetTicketListDtoResponse {
 
     private List<GetTicketDto> listDto;
 
+    public GetTicketListDtoResponse(List<GetTicketDto> listDto) {
+        setListDto(listDto);
+    }
+
+    public GetTicketListDtoResponse() {
+    }
+
     @JsonValue
     public List<GetTicketDto> getListDto() {
         return listDto;
@@ -45,13 +52,5 @@ public class GetTicketListDtoResponse {
     public void setListDto(List<GetTicketDto> listDto) {
         this.listDto = listDto;
     }
-
-    public GetTicketListDtoResponse(List<GetTicketDto> listDto) {
-        setListDto(listDto);
-    }
-
-    public GetTicketListDtoResponse() {
-    }
-
 
 }

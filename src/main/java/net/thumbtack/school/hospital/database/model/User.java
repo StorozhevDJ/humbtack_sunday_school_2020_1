@@ -10,9 +10,6 @@ public class User {
     private UserType type;
     private String login;
     private String password;
-    // REVU в классе User не должно быть поля Session
-    // только залогиненные User его имеют
-    // оно тут просто не нужно
     private Session session;
 
 
@@ -82,7 +79,7 @@ public class User {
         this.patronymic = patronymic;
     }
 
-    public UserType getType() {
+    public UserType getUserType() {
         return type;
     }
 
@@ -123,7 +120,7 @@ public class User {
                 Objects.equals(getFirstName(), user.getFirstName()) &&
                 Objects.equals(getLastName(), user.getLastName()) &&
                 Objects.equals(getPatronymic(), user.getPatronymic()) &&
-                Objects.equals(getType(), user.getType()) &&
+                Objects.equals(getUserType(), user.getUserType()) &&
                 Objects.equals(getLogin(), user.getLogin()) &&
                 Objects.equals(getPassword(), user.getPassword()) &&
                 Objects.equals(getSession(), user.getSession());
@@ -131,6 +128,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFirstName(), getLastName(), getPatronymic(), getType(), getLogin(), getPassword(), getSession());
+        return Objects.hash(getId(), getFirstName(), getLastName(), getPatronymic(), getUserType(), getLogin(), getPassword(), getSession());
     }
 }

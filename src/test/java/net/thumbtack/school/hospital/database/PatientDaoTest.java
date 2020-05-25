@@ -2,13 +2,11 @@ package net.thumbtack.school.hospital.database;
 
 import net.thumbtack.school.hospital.database.dao.*;
 import net.thumbtack.school.hospital.database.daoimpl.*;
-import net.thumbtack.school.hospital.database.model.Session;
+import net.thumbtack.school.hospital.database.model.Patient;
+import net.thumbtack.school.hospital.database.model.User;
 import net.thumbtack.school.hospital.database.model.UserType;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import org.junit.jupiter.api.Test;
-
-import net.thumbtack.school.hospital.database.model.Patient;
-import net.thumbtack.school.hospital.database.model.User;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import({CommonDaoImpl.class, UserDaoImpl.class, AdminDaoImpl.class, DoctorDaoImpl.class, PatientDaoImpl.class})
 public class PatientDaoTest extends DatabasePrepare {
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
     @Autowired
     public PatientDaoTest(CommonDao commonDao,
-                       UserDao userDao,
-                       AdminDao adminDao,
-                       DoctorDao doctorDao,
-                       PatientDao patientDao) {
+                          UserDao userDao,
+                          AdminDao adminDao,
+                          DoctorDao doctorDao,
+                          PatientDao patientDao) {
         super(commonDao, adminDao, doctorDao, patientDao);
         this.userDao = userDao;
     }
@@ -47,7 +45,7 @@ public class PatientDaoTest extends DatabasePrepare {
         assertAll(
                 () -> assertNotEquals(0, patient.getId()),
                 () -> assertEquals(patient.getUser().getId(), user.getId()),
-                () -> assertEquals(UserType.PATIENT, patient.getUser().getType()),
+                () -> assertEquals(UserType.PATIENT, patient.getUser().getUserType()),
                 () -> assertEquals(2, patientDao.getCount())
         );
     }
@@ -66,16 +64,16 @@ public class PatientDaoTest extends DatabasePrepare {
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
                 () -> assertEquals("+79001112233", patient.getPhone()),
-                () -> assertEquals(UserType.PATIENT, patient.getUser().getType(), "User type is not patient"),
+                () -> assertEquals(UserType.PATIENT, patient.getUser().getUserType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
                 () -> assertEquals("partronymicPatient", patient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),
                 () -> assertEquals("patientLogin", patient.getUser().getLogin(), "User login is not patientLogin"),
                 () -> assertNull(patient.getUser().getPassword(), "User password is not null"),
-                () -> assertNull(patientDao.getByToken(new Session("errorToken"))),
-                () -> assertNull(patientDao.getByToken(new Session(""))),
-                () -> assertNull(patientDao.getByToken(new Session("   "))),
-                () -> assertNull(patientDao.getByToken(new Session(" token "))),
+                () -> assertNull(patientDao.getByToken("errorToken")),
+                () -> assertNull(patientDao.getByToken("")),
+                () -> assertNull(patientDao.getByToken("   ")),
+                () -> assertNull(patientDao.getByToken(" token ")),
                 () -> assertNull(patientDao.getByToken(null))
         );
     }
@@ -94,7 +92,7 @@ public class PatientDaoTest extends DatabasePrepare {
                 () -> assertEquals("patient@mail", finalPatient.getEmail()),
                 () -> assertEquals("addrPatient", finalPatient.getAddress()),
                 () -> assertEquals("+79001112233", finalPatient.getPhone()),
-                () -> assertEquals(UserType.PATIENT, finalPatient.getUser().getType(), "User type is not patient"),
+                () -> assertEquals(UserType.PATIENT, finalPatient.getUser().getUserType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", finalPatient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", finalPatient.getUser().getLastName(), "User lastname is not lastNamePatient"),
                 () -> assertEquals("partronymicPatient", finalPatient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),
@@ -121,7 +119,7 @@ public class PatientDaoTest extends DatabasePrepare {
                 () -> assertEquals("patient@mail", patient.getEmail()),
                 () -> assertEquals("addrPatient", patient.getAddress()),
                 () -> assertEquals("+79001112233", patient.getPhone()),
-                () -> assertEquals(UserType.PATIENT, patient.getUser().getType(), "User type is not patient"),
+                () -> assertEquals(UserType.PATIENT, patient.getUser().getUserType(), "User type is not patient"),
                 () -> assertEquals("FirstNamePatient", patient.getUser().getFirstName(), "User firstName is not FirstNamePatient"),
                 () -> assertEquals("lastNamePatient", patient.getUser().getLastName(), "User lastname is not lastNamePatient"),
                 () -> assertEquals("partronymicPatient", patient.getUser().getPatronymic(), "User patronymic is not partronymicPatient"),

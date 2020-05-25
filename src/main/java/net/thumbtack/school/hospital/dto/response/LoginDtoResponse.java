@@ -3,7 +3,6 @@ package net.thumbtack.school.hospital.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import net.thumbtack.school.hospital.database.model.DaySchedule;
-import net.thumbtack.school.hospital.database.model.ScheduleType;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginDtoResponse {

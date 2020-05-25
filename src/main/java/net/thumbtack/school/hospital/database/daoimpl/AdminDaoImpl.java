@@ -4,21 +4,18 @@ import net.thumbtack.school.hospital.database.dao.AdminDao;
 import net.thumbtack.school.hospital.database.mappers.AdminMapper;
 import net.thumbtack.school.hospital.database.mappers.UserMapper;
 import net.thumbtack.school.hospital.database.model.Admin;
-import net.thumbtack.school.hospital.database.model.Session;
 import net.thumbtack.school.hospital.serverexception.ServerError;
 import net.thumbtack.school.hospital.serverexception.ServerException;
-import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
-public class AdminDaoImpl extends DaoImplBase implements AdminDao {
+public class AdminDaoImpl implements AdminDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminDaoImpl.class);
 
@@ -59,9 +56,8 @@ public class AdminDaoImpl extends DaoImplBase implements AdminDao {
         }
     }
 
-
     @Override
-    public Admin getByToken(Session token) throws ServerException {
+    public Admin getByToken(String token) throws ServerException {
         LOGGER.debug("DAO get Admin by token {}", token);
         try {
             return adminMapper.getByToken(token);
@@ -92,6 +88,5 @@ public class AdminDaoImpl extends DaoImplBase implements AdminDao {
             throw new ServerException(ServerError.OTHER_ERROR);
         }
     }
-
 
 }

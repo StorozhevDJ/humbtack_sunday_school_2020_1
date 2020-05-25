@@ -3,7 +3,7 @@ package net.thumbtack.school.hospital.dto.response;
 import java.util.List;
 
 public class ExceptionDtoResponse {
-    private List<ErrorDtoResponse> errors;
+    private final List<ErrorDtoResponse> errors;
 
     public ExceptionDtoResponse(List<ErrorDtoResponse> errors) {
         this.errors = errors;

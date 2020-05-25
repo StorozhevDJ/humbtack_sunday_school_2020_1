@@ -3,7 +3,6 @@ package net.thumbtack.school.hospital.controller;
 import net.thumbtack.school.hospital.dto.request.AddCommissionDtoRequest;
 import net.thumbtack.school.hospital.dto.response.AddCommissionDtoResponse;
 import net.thumbtack.school.hospital.dto.response.EditScheduleDtoResponse;
-import net.thumbtack.school.hospital.dto.response.LoginDtoResponse;
 import net.thumbtack.school.hospital.serverexception.ServerException;
 import net.thumbtack.school.hospital.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.util.List;
 @Validated
 public class DoctorController {
 
-    private DoctorService doctorService;
+    private final DoctorService doctorService;
 
     private static final String COOKIE_NAME = "JAVASESSIONID";
 
@@ -36,11 +35,10 @@ public class DoctorController {
             @CookieValue(COOKIE_NAME) String cookie,
             @PathVariable("docId") int docId,
             @RequestParam(name = "schedule") String schedule,
-            @RequestParam(name = "startDate", required = false) String startDate,
-            @RequestParam(name = "endDate", required = false) String endDate
+            @RequestParam(name = "startDate", defaultValue = "", required = false) String startDate,
+            @RequestParam(name = "endDate", defaultValue = "", required = false) String endDate
     ) throws ServerException {
-        EditScheduleDtoResponse dto = doctorService.doctorInfo(cookie, docId, schedule, startDate, endDate);
-        return dto;
+        return doctorService.doctorInfo(cookie, docId, schedule, startDate, endDate);
     }
 
     /**
@@ -50,13 +48,12 @@ public class DoctorController {
     @GetMapping(path = "/doctors")
     public List<EditScheduleDtoResponse> infoDoctors(
             @CookieValue(COOKIE_NAME) String cookie,
-            @RequestParam(name = "speciality") String speciality,
+            @RequestParam(name = "speciality", required = false) String speciality,
             @RequestParam(name = "schedule", defaultValue = "no") String schedule,
             @RequestParam(name = "startDate", required = false) String startDate,
             @RequestParam(name = "endDate", required = false) String endDate
     ) throws ServerException {
-        List<EditScheduleDtoResponse> dto = doctorService.doctorsInfo(cookie, speciality, schedule, startDate, endDate);
-        return dto;
+        return doctorService.doctorsInfo(cookie, speciality, schedule, startDate, endDate);
     }
 
     /**
@@ -68,8 +65,7 @@ public class DoctorController {
             @CookieValue(COOKIE_NAME) String cookie,
             @RequestBody @Valid AddCommissionDtoRequest dtoRequest
     ) throws ServerException {
-        AddCommissionDtoResponse dto = doctorService.addCommission(cookie, dtoRequest);
-        return dto;
+        return doctorService.addCommission(cookie, dtoRequest);
     }
 
 }

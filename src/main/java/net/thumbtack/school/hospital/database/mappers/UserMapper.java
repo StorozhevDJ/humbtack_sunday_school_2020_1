@@ -23,16 +23,6 @@ public interface UserMapper {
             "</set>",
             "<where> id = #{id}</where>",
             "</script>"})
-    /*@Select({"<script>",
-            "SELECT * FROM trainee",
-            "<where>",
-            "<if test='firstName != null'> firstName like #{firstName}</if>",
-            "<if test='lastName != null'> AND lastName like #{lastName}</if>",
-            "<if test='rating != null'> AND rating = #{rating}",
-            "</if>",
-            "</where>",
-            "</script>"})*/
-    //List<Trainee> getAllWithParams(@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("rating") Integer rating);
     void update(User user);
 
     @Update("REPLACE into session (userId, token) VALUES (#{id}, #{session.token});")
@@ -58,8 +48,7 @@ public interface UserMapper {
             @Result(property = "session.userId", column = "user.id"),
             @Result(property = "session.token", column = "token")
     })
-    User getByToken(Session token);
-
+    User getByToken(String  token);
 
     @Delete("DELETE FROM user;")
     void deleteAll();

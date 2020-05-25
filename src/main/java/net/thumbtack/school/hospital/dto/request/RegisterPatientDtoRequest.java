@@ -12,19 +12,24 @@ package net.thumbtack.school.hospital.dto.request;
 "password": "пароль"
 }*/
 
-import net.thumbtack.school.hospital.dto.validation.Login;
-import net.thumbtack.school.hospital.dto.validation.Password;
+import net.thumbtack.school.hospital.dto.validation.*;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+//import javax.validation.constraints.Email;
 
 public class RegisterPatientDtoRequest {
 
+    @FirstName
     private String firstName;
+    @LastName
     private String lastName;
+    @Patronymic
     private String patronymic;
+    @Email
     private String email;
-    @NotNull
+    @NotBlank
     private String address;
+    @Phone
     private String phone;
     @Login
     private String login;
