@@ -135,7 +135,7 @@ create TABLE `commission` (
 	`timeStart` TIME NOT NULL,  -- Start reception time
 	`timeEnd` TIME NOT NULL,  -- End reception time
 	FOREIGN KEY(`patientId`) REFERENCES `patient`(id) ON delete CASCADE,
-	FOREIGN KEY(`room`) REFERENCES `room`(id) ON delete CASCADE,
+	FOREIGN KEY(`roomId`) REFERENCES `room`(id) ON delete CASCADE,
 	UNIQUE(`ticket`)
 )ENGINE = INNODB DEFAULT CHARSET = utf8;
 
